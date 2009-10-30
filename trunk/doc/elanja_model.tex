@@ -1,0 +1,38 @@
+ \documentclass[12pt,titlepage]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage[english]{babel}
+ \usepackage{color,graphicx}
+%\usepackage{subfig}
+\newcommand{\Andr}[1]{\textcolor{blue}{#1}}
+\newcommand{\Elisa}[1]{\textcolor{red}{#1}}
+\newcommand{\Jacopo}[1]{\textcolor{orange}{#1}}
+
+%xy-pic
+\usepackage[all]{xy}
+
+%opening
+\title{Brain-storming}
+\author{Corso Di fisica ... Rambaldi... }
+
+
+\begin{document}
+%\maketitle
+%\Andr{ To contribute:  $backslash +$ nome $\{ ... \} $, il testo che inserisci tra le parentesi diventa colorato.}
+
+
+\section*{Intergenerational evolution of attitudes towards integration}
+
+
+- Agents, $i = 1, 2, ..., m, m+1, ..., N$\\
+- Two types $U = \{a,b\}$. \\
+- Society evolves along $t=0,1,..., T$ interactions.\\
+- Each agent $i$ has individual preferences towards people types. After t interactions, those are summarized by $(p_t^i, q_t^i)$. \\
+- the value $p_t^i$ ($q_t^i$) is the probability a given individual $i$ has to meet every other individuals of type $a$ ($b$).\\
+- we say that a link between an individual $i$ and an other $j$ is estabilished when both agents have met during the time of one interaction. It happens with a probability $p_t^i p_t^j$ ($q_t^i q_t^j$) when both are of $a$ ($b$) type, or with $p_t^i q_t^j$ ($q_t^i p_t^j$) when their types are different.\\  
+- agent connections have a life-span of one interaction only. After a link has been eventually estabilished, it is used to compute the new individual preferences and then it is removed. This feature should capture the idea of intergenerational transmission of values. So that an agent $i$ at time $t$ can be interpreted as the parent of the same $i$ agent at the next interaction $t+1$\\
+- as a consequence of each interaction, individual preferences modify under the following deterministic rule: $p_i^{t+1}$ ($q_i^{t+1}$) equals the $fraction$ of agents of type $a$ ($b$) who are connected at distance $d$ from an agent $i$ over the total number of agents connected at the same distance.    \\
+- 
+ 
+ 
+ 
+\end{document}
