@@ -1,7 +1,7 @@
 GPPFLAGS= -Wall -Wunused -pedantic -ggdb
 LINKERFLAGS= -lm
 
-all:  elanja
+all:  elanja matrices
 
 elanja: elanja.o 
 	g++ -o elanja ${GPPFLAGS} ${LINKERFLAGS} elanja.o 
@@ -9,7 +9,14 @@ elanja: elanja.o
 elanja.o: src/elanja.cc
 	g++ -c ${GPPFLAGS} src/elanja.cc
 
+matrices: matrices.o
+	g++ -o matrices ${GPPFLAGS} ${LINKERFLAGS} matrices.o
+
+matrices.o: src/matrices.cc
+	g++ -c ${GPPFLAGS} src/matrices.cc
+
 clean:	
 	rm -f *.o
 	rm -f elanja
+	rm -f matrices
 	rm -f *~
