@@ -128,7 +128,7 @@ int main() {
 	   printf("\n");
         }
 /* Print degrees */
-printf("Degree, A-degree, B-degree:\n");
+printf("    Degree, A-degree, B-degree:\n");
         for(i=0; i<ROW; i++)
         {
 	   	printf("\t", degree[i]);
