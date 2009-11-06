@@ -9,33 +9,18 @@
 
 using namespace std;
 
-int main() {
-	int i, j = 0;
-	double R[ROW][COLUMN];
-	int A[ROW][COLUMN];
-	int degree[ROW];
-	int A_degree[ROW], B_degree[ROW];
-	double p[ROW], q[ROW];
- 
+void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_degree, int *B_degree) {
+
+	int i, j;
+	
 /* Initialize matrices */
 	for(i=0; i<ROW; i++)
         {
 	   for(j=0; j<COLUMN; j++)
 	   {
-	        R[i][j] = 0; // R random matrix
 	        A[i][j] = 0; // adjacency matrix
 	   }
         }
-/* Initialize individual preference vectors */
-	for(i=0; i<ROW; i++)
-     {
-		p[i] = .5; // vector of pref. towards a-type agents
-		q[i] = .5; // vector of pref. towards b-type agents	
-		degree[i] = 0;	
-		A_degree[i] = 0;	
-		B_degree[i] = 0;	
-     } 
-
 
 /* Link formation*/
 /* R has random Upper-triangle and zeros on diagonal */
@@ -112,34 +97,23 @@ int main() {
 			B_degree[i] += A[i][j];
 	   	}
      }
-
-
-/*Print results:*/
-
-/* Print Adjacency matrix*/
-       printf("Adjacency Matrix:\n");
-        for(i=0; i<ROW; i++)
-        {
-	   for(j=0; j<COLUMN; j++)
-	   {
-	      printf("\t", A[i][j]);
-	      cout << A[i][j];
-	   }
-	   printf("\n");
-        }
-/* Print degrees */
-printf("    Degree, A-degree, B-degree:\n");
-        for(i=0; i<ROW; i++)
-        {
-	   	printf("\t", degree[i]);
-	     cout << degree[i];
-		cout << "\t";
-	     cout << A_degree[i];
-		cout << "\t";
-	     cout << B_degree[i];
-		printf("\n");
-	   }
 }
 
+void update((double) *p, (double) *q, (int) *degree, (int) *A_degree, (int) *B_degree){
 
+	int i, j;
+
+	for(i=0; i<ROW; i++)
+     	{
+		if(degree[i] != 0)
+		{
+			p[i] = A_degree[i] / degree[i];
+			q[i] = B_degree[i] / degree[i];
+		}
+		else
+		{
+			printf("Coglioni state dividendo per 0!!!!!\t");
+		}
+     	}
+}
 
