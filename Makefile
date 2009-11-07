@@ -1,22 +1,32 @@
 GPPFLAGS= -Wall -Wunused -pedantic -ggdb
 LINKERFLAGS= -lm
 
-all:  elanja 
+all: elanja.exe
 
-elanja: elanja.o matrices.o ../h/matrices.h
-	g++ -o elanja ${GPPFLAGS} ${LINKERFLAGS} elanja.o 
+prova: test.exe
 
-elanja.o: src/elanja.cc
-	g++ -c ${GPPFLAGS} src/elanja.cc
+elanja.exe: elanja.o matrices.o 
+	g++ -o elanja.exe ${GPPFLAGS} ${LINKERFLAGS} elanja.o matrices.o
 
-matrices: matrices.o
-	g++ -o matrices ${GPPFLAGS} ${LINKERFLAGS} matrices.o
+elanja.o: src/elanja.c h/matrices.h
+	g++ -c ${GPPFLAGS} src/elanja.c
 
-matrices.o: src/matrices.cc
-	g++ -c ${GPPFLAGS} src/matrices.cc
+matrices.o: src/matrices.c
+	g++ -c ${GPPFLAGS} src/matrices.c
+
+test.exe: test.o util.o
+	g++ -o test ${GPPFLAGS} ${LINKERFLAGS} test.o util.o
+
+test.o: src/test.c h/util.h
+	g++ -c ${GPPFLAGS} src/test.c
+
+util.o: src/util.c
+	g++ -c ${GPPFLAGS} src/util.c
+
+
 
 clean:	
 	rm -f *.o
 	rm -f elanja
-	rm -f matrices
+	rm -f test
 	rm -f *~
