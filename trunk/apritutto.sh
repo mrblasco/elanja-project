@@ -1,4 +1,4 @@
 #!/bin/bash
 
-find . -type f -iname "*.sh" -o -iname "*.cc" -o -iname "*.h" | rev | sort -r | rev | xargs  gedit Makefile &
+find . -type f -iname "*.h" -o -iname "*.c" | rev | sort -r | rev | xargs  gedit Makefile &
 
