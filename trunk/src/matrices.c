@@ -1,19 +1,18 @@
-#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <cstdlib>
 #include "../h/const.h"
 
 void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_degree, int *B_degree) {
 
 	int i, j;
+	double link;
 	
 	/* Initialize matrices */
 	for(i=0; i<ROW; i++)
         {
 	   for(j=0; j<COLUMN; j++)
 	   {
-	        *(A+i+(j*sizeof(int))) = 0; // adjacency matrix
+	        *(A+(i*COLUMN)+j) = 0; /* adjacency matrix */
 	   }
         }
 
@@ -25,9 +24,10 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 	   	{
 			if(i==j) 
 			{
-				*(R+i+(j*sizeof(double))) = 0;
+				*(R+(i*COLUMN)+j) = -2.0;
+			
 			} else {
-				*(R+i+(j*sizeof(double))) = (rand() %10001) / (double) 10000;
+				*(R+(i*COLUMN)+j) = (rand() %10001) / (double) 10000;
 			}
 	   	}
 	}
@@ -36,29 +36,31 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
      	{
 		for(i=j; i<ROW; i++)
 		{
-			*(R+i+(j*sizeof(double))) = *(R+j+(i*sizeof(double)));
+			*(R+(i*COLUMN)+j) = *(R+(j*COLUMN)+i);
 		}
      	}
 
 	/* Adjacency Matrix */ 
-	double link;
         for(i=0; i<ROW; i++)
         {
 		for(j=i; j<COLUMN; j++)
 		{
-	   		if(j <= M && i <= M ) 
+	   		if(j < M && i < M ) 
 			{	
-				link = (double) *(R+i+(j*sizeof(double))) - *(p+i) * *(p+j);
-			} else if (j > M  && i <= M ) 
+				link = (double) *(R+(i*COLUMN)+j) - *(p+i) * *(p+j);
+				/*printf("Posizione %d %d = %f; dato da %f %f \n", i, j, link, *(p+i), *(p+j));*/
+			} else if (j >= M  && i < M ) 
 			{
-				link = (double) *(R+i+(j*sizeof(double))) - *(q+i)* *(p+j);
-			} else if (j > M && i > M) 
+				link = (double) *(R+(i*COLUMN)+j) - *(q+i)* *(p+j);
+				/*printf("Posizione %d %d = %f; dato da %f %f \n", i, j, link, *(q+i), *(p+j));*/
+			} else if (j >= M && i >= M) 
 			{
-				link = (double) *(R+i+(j*sizeof(double))) - *(q+i) * *(q+j);	
+				link = (double) *(R+(i*COLUMN)+j) - *(q+i) * *(q+j);	
+				/*printf("Posizione %d %d = %f; dato da %f %f \n", i, j, link, *(q+i), *(q+j));*/
 			}
 			if (link < 0) 
 			{
-				*(A+i+(j*sizeof(int))) = 1; 		 
+				*(A+(i*COLUMN)+j) = 1; 		 
 			}	 
 		}
 	  }
@@ -67,16 +69,24 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
     	{
 		for(i=j; i<ROW; i++)
 		{
-			*(A+i+(j*sizeof(int))) = *(A+j+(i*sizeof(int)));
+			*(A+(i*COLUMN)+j) = *(A+(j*COLUMN)+i);
 	   	}
      	}
+
+	/* Initialize degree, A_degree, B_degree vectors to 0 at each iteraction */
+	for(i=0; i<COLUMN; i++)
+	{
+		*(degree+i) = 0;
+		*(A_degree+i) = 0;
+		*(B_degree+i) = 0;
+	}
 
 	/* Degree vector*/ 
 	for(i=0; i<ROW; i++)
      	{
 		for(j=0; j<COLUMN; j++)
 		{
-			*(degree+i) += *(A+i+(j*sizeof(int)));
+			*(degree+i) += *(A+(i*COLUMN)+j);
 	   	}
      	}
 
@@ -85,11 +95,11 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
      	{
 		for(j=0; j<M; j++)
 		{
-			*(A_degree+i) += *(A+i+(j*sizeof(int)));
+			*(A_degree+i) += *(A+(i*COLUMN)+j);
 	   	}
 		for(j=M; j<COLUMN; j++)
 		{
-			*(B_degree+i) += *(A+i+(j*sizeof(int)));
+			*(B_degree+i) += *(A+(i*COLUMN)+j);
 	   	}
      	}
 }
@@ -98,7 +108,8 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 
 	int i;
 
-	for(i=0; i<ROW; i++)
+	/* Calculate the new p and q probabilities */
+	for(i=0; i<COLUMN; i++)
      	{
 		if(*(degree+i) != 0)
 		{
@@ -107,7 +118,7 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 		}
 		else
 		{
-			printf("Coglioni state dividendo per 0!!!!!\t");
+			printf("Divided by zero!!!!\t");
 		}
      	}
 }
