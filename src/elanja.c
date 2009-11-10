@@ -1,13 +1,12 @@
-#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <cstdlib>
 #include "../h/const.h"
 #include "../h/matrices.h"
 
 int main()
 {
         int i, j = 0;
+	double k,v;
 	double p[COLUMN];
 	double q[COLUMN];
         double R[ROW][COLUMN];
@@ -19,14 +18,16 @@ int main()
 	FILE *out;	
 	out = fopen("pippo.txt", "w");
 
-
 	/* Initialize meeting probability vectors */
 	for(i=0; i<COLUMN; i++)
         {
 	        p[i] = 0.5; 
 		q[i] = 0.5;
         }
-
+	for(i=0; i<COLUMN; i++)
+        {
+	        printf("p %d = %f; q %d = %f; \n", i, p[i], i, q[i]);
+        }
 
 	/* Number of cicles of the system */
  	for(i=0; i<NITER; i++)
@@ -34,7 +35,20 @@ int main()
 		interaction(p, q, *A, *R, degree, A_degree, B_degree);
 		update(p, q, degree, A_degree, B_degree);
 	}
+	
+	for(i=0; i<COLUMN; i++)
+	{
+		if(p[i]==1)
+			k += 1.0;
+		if(q[i]==0)
+			v += 1.0;
+	}
 
+	printf("Degree\n");
+	for(i=0; i<COLUMN; i++)
+	{
+		printf("%d\n", degree[i]);
+	}
 
 	/* Print matrices */
 	fprintf(out, "Adjacency Matrix\n");
@@ -42,9 +56,9 @@ int main()
 	{
 		for(j=0; j<COLUMN; j++)
 		{
-			fprintf(out, "%d\t\t", A[i][j]);
+			fprintf(out, "%d\t", A[i][j]);
 		}
-		fprintf(out, "\n");
+		fprintf(out, "\n\n");
 	}
 
 	fprintf(out, "\n");
@@ -58,5 +72,8 @@ int main()
 		}
 		fprintf(out, "\n");
 	}
+
+	printf("Intragroup Meeting Probability %f\n", k);
+	printf("Extragroup Meeting Probability %f\n", v);
 }
 

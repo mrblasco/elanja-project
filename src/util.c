@@ -1,28 +1,23 @@
-#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <cstdlib>
 #include "../h/const.h"
 
-void intraction(double *p, double *q, double *A, double *R, int *degree, int *A_degree, int *B_degree) {
+void intraction(int *p, int *q, int *A, int *R, int *degree, int *A_degree, int *B_degree) {
 
 	int i, j;
 
-	printf("Pippo %d\n", sizeof(double));
-
-	for(i=0; i<COLUMN; i++)
-	{
-		*(p+i) = 2.5;
-	}
-
+	printf("arrivo qua!!!");
 	for(i=0; i<ROW; i++)
-	{
-		for(j=0; j<COLUMN; j++)
-		{
-			if(j<M)
-				*(A+i+(j*sizeof(int))) = 5;
-			else
-				*(A+i+(j*sizeof(int))) = 2;
-		}
+     	{
+	   	for(j=0; j<COLUMN; j++) 
+	   	{
+			if(i==j) 
+			{
+				*(R+(i*sizeof(int)*COLUMN)+(j*sizeof(int))) = 0;
+				
+			} else {
+				*(R+(i*sizeof(int)*COLUMN)+(j*sizeof(int))) = 2;/*rand() %10001) / (double) 10000;*/
+			}
+	   	}
 	}
 }

@@ -12,7 +12,7 @@ Lo script e' pensato per usare l'editor kate, se voi ne usate uno diverso, basta
 
 Ho aggiunto anche uno script per aprire i file .tex; eseguire:
 
-./aprituttoTex.sh
+./latex.sh
 
 automaticamente apre tutti i file .tex che stanno dentro la cartella doc.
 Utilizza il programma Kile, che riconosce ed ha un sacco di cose utili per manipolare i file .tex, se non lo avete ancora istallato e lo volete, fate:
@@ -27,11 +27,10 @@ Compilazione:
 
 andate nella cartella principale del progetto ed eseguite:
 
-1) make		compila entrambi i file
-2) make elanja		compila solo enalnja
-3) make matrices	compila solo matrices
+1) make		compila tutto il progetto
+3) make test	compila solo test
 
 Per eseguire il progetto dovete eseguire:
 
-./elanja
-./matrices
+./elanja.exe
+./test.exe
