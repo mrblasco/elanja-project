@@ -16,7 +16,7 @@ int main()
 
 	/* Text file for printing the matrices */
 	FILE *out;	
-	out = fopen("pippo.txt", "w");
+	out = fopen("matrix.dat", "w");
 
 	/* Initialize meeting probability vectors */
 	for(i=0; i<COLUMN; i++)	
@@ -55,7 +55,7 @@ int main()
 	} */
 
 	/* Print matrices */
-	fprintf(out, "Adjacency Matrix\n");
+	/*fprintf(out, "Adjacency Matrix\n"); */
 	for(i=0; i<ROW; i++)
 	{
 		for(j=0; j<COLUMN; j++)
@@ -67,7 +67,7 @@ int main()
 
 	fprintf(out, "\n");
 
-	fprintf(out, "Random Matrix\n");
+	/*fprintf(out, "Random Matrix\n");
 	for(i=0; i<ROW; i++)
 	{
 		for(j=0; j<COLUMN; j++)
@@ -75,7 +75,7 @@ int main()
 			fprintf(out, "%f\t\t", R[i][j]);
 		}
 		fprintf(out, "\n");
-	}
+	}*/
 return 0;
 }
 
