@@ -19,15 +19,11 @@ int main()
 	out = fopen("pippo.txt", "w");
 
 	/* Initialize meeting probability vectors */
-	for(i=0; i<COLUMN; i++)
-        {
-	        p[i] = 0.5; 
+	for(i=0; i<COLUMN; i++)	
+	{
+		p[i] = 0.5; 
 		q[i] = 0.5;
-        }
-	for(i=0; i<COLUMN; i++)
-        {
-	        printf("p %d = %f; q %d = %f; \n", i, p[i], i, q[i]);
-        }
+	}
 
 	/* Number of cicles of the system */
  	for(i=0; i<NITER; i++)
@@ -35,7 +31,12 @@ int main()
 		interaction(p, q, *A, *R, degree, A_degree, B_degree);
 		update(p, q, degree, A_degree, B_degree);
 	}
-	
+
+	for(i=0; i<COLUMN; i++)
+        {
+	        printf("p %d = %f; q %d = %f; \n", i, p[i], i, q[i]);
+        }	
+
 	for(i=0; i<COLUMN; i++)
 	{
 		if(p[i]==1)
@@ -44,11 +45,14 @@ int main()
 			v += 1.0;
 	}
 
-	printf("Degree\n");
+	printf("Intragroup Meeting Probability %f\n", (double) k / (double) COLUMN);
+	printf("Extragroup Meeting Probability %f\n", (double) v / (double) COLUMN);
+
+	/*printf("Degree\n");
 	for(i=0; i<COLUMN; i++)
 	{
 		printf("%d\n", degree[i]);
-	}
+	} */
 
 	/* Print matrices */
 	fprintf(out, "Adjacency Matrix\n");
@@ -72,8 +76,6 @@ int main()
 		}
 		fprintf(out, "\n");
 	}
-
-	printf("Intragroup Meeting Probability %f\n", k);
-	printf("Extragroup Meeting Probability %f\n", v);
+return 0;
 }
 
