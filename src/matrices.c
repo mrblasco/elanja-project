@@ -113,13 +113,15 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
      	{
 		if(*(degree+i) != 0)
 		{
-			*(p+i) = *(A_degree+i) / *(degree+i);
-			*(q+i) = *(B_degree+i) / *(degree+i);
+			*(p+i) = (double) *(A_degree+i) / (double) *(degree+i);
+			*(q+i) = (double) *(B_degree+i) / (double) *(degree+i);
 		}
 		else
 		{
 			printf("Divided by zero!!!!\t");
 		}
      	}
+
+
 }
 
