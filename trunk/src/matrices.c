@@ -125,7 +125,5 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 			printf("Divided by zero!!!!\t");
 		}
      	}
-
-
 }
 
