@@ -7,12 +7,21 @@ int main()
 {
         int i, j = 0;
 	double k,v;
-	double p[COLUMN];
+
+	double *p = malloc(sizeof(double)*COLUMN);
+	double *q = malloc(sizeof(double)*COLUMN);
+	double *R = malloc(sizeof(double)*ROW*COLUMN);
+	int *A = malloc(sizeof(int)*ROW*COLUMN);
+	int *degree = malloc(sizeof(int)*ROW);
+	int *A_degree = malloc(sizeof(int)*ROW);
+	int *B_degree = malloc(sizeof(int)*ROW);
+
+	/*double p[COLUMN];
 	double q[COLUMN];
         double R[ROW][COLUMN];
         int A[ROW][COLUMN];
 	int degree[ROW];
-	int A_degree[ROW], B_degree[ROW];
+	int A_degree[ROW], B_degree[ROW];*/
 
 	/* Text file for printing the matrices */
 	FILE *out;	
@@ -28,14 +37,14 @@ int main()
 	/* Number of cicles of the system */
  	for(i=0; i<NITER; i++)
 	{
-		interaction(p, q, *A, *R, degree, A_degree, B_degree);
+		interaction(p, q, A, R, degree, A_degree, B_degree);
 		update(p, q, degree, A_degree, B_degree);
 	}
 
-	for(i=0; i<COLUMN; i++)
+	/*for(i=0; i<COLUMN; i++)
         {
 	        printf("p %d = %f; q %d = %f; \n", i, p[i], i, q[i]);
-        }	
+        }*/	
 
 	for(i=0; i<COLUMN; i++)
 	{
@@ -60,7 +69,7 @@ int main()
 	{
 		for(j=0; j<COLUMN; j++)
 		{
-			fprintf(out, "%d\t", A[i][j]);
+			fprintf(out, "%d\t", *(A+(i*COLUMN)+j));
 		}
 		fprintf(out, "\n\n");
 	}
