@@ -34,3 +34,7 @@ Per eseguire il progetto dovete eseguire:
 
 ./elanja.exe
 ./test.exe
+
+#---------------------------------------------------------------------------------------------------------#
+Ho creato uno script R_script.sh che genera in automatico il grafico della simulazione eseguita.
+per invocarlo dovete fare: ./R_script.sh <numeroAgenti>

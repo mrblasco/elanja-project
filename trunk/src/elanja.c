@@ -85,6 +85,6 @@ int main()
 		}
 		fprintf(out, "\n");
 	}*/
-return 0;
+return COLUMN;
 }
 
