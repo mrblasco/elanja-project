@@ -115,6 +115,10 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 		{
 			*(p+i) = (double) *(A_degree+i) / (double) *(degree+i);
 			*(q+i) = (double) *(B_degree+i) / (double) *(degree+i);
+			if (*(p+i)==0) 
+				*(p+i) = 0.01;
+			if (*(q+i)==0)		
+				*(q+i) = 0.01;			
 		}
 		else
 		{
