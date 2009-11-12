@@ -1,0 +1,9 @@
+Suggerimenti di Rambaldi - 12/11/09
+
+- Aggiungere un'epsilon alle probabilità e vedere se il sistema si segrega comunque: (p-eps,q+eps)
+
+- Vedere se effettivamente nel nostro modello a d=1 abbiamo una legge di tipo esponenziale e se a d=2 vediamo un ciclo limite (d=3 non dovrebbe essere troppo interessante perchè semplicemente combinazione degli altri due casi)
+
+- Inserire un terzo tipo di agente che sia un controllore che costringe gli agenti che incontra a collaborare
+
+- Cosa succede se si inserisce un grande persuasore e un grande critico (a cosa potrebbe corrispondere quest'ultima figura)?
