@@ -7,3 +7,6 @@ Suggerimenti di Rambaldi - 12/11/09
 - Inserire un terzo tipo di agente che sia un controllore che costringe gli agenti che incontra a collaborare
 
 - Cosa succede se si inserisce un grande persuasore e un grande critico (a cosa potrebbe corrispondere quest'ultima figura)?
+
+
+- make 2 distance... 

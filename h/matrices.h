@@ -3,3 +3,6 @@ extern void interaction(double *p, double *q, int *A, double *R, int *degree, in
 
 /* Update function */
 extern void update(double *p, double *q, int *degree, int *A_degree, int *B_degree);
+
+/* multiply function */
+extern void multiply(int *A, int *B, int *C);

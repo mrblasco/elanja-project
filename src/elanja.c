@@ -1,17 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../h/const.h"
-#include "../h/matrices.h"
+#include "../h/matrices.h"   
+
 
 int main()
 {
         int i, j = 0;
 	double k,v;
-
+	double Bp_average,Bq_average;
 	double *p = malloc(sizeof(double)*COLUMN);
 	double *q = malloc(sizeof(double)*COLUMN);
 	double *R = malloc(sizeof(double)*ROW*COLUMN);
+
 	int *A = malloc(sizeof(int)*ROW*COLUMN);
+	int *B = malloc(sizeof(int)*ROW*COLUMN);
+
 	int *degree = malloc(sizeof(int)*ROW);
 	int *A_degree = malloc(sizeof(int)*ROW);
 	int *B_degree = malloc(sizeof(int)*ROW);
@@ -25,7 +29,9 @@ int main()
 
 	/* Text file for printing the matrices */
 	FILE *out;	
-	out = fopen("matrix.dat", "w");
+	out = fopen("matrix.dat", "w");	
+	/*out2 = fopen("pq.dat", "w");*/
+
 
 	/* Initialize meeting probability vectors */
 	for(i=0; i<COLUMN; i++)	
@@ -34,17 +40,30 @@ int main()
 		q[i] = 0.5;
 	}
 
+	Bp_average = 0;
+	Bq_average = 0;
 	/* Number of cicles of the system */
  	for(i=0; i<NITER; i++)
 	{
 		interaction(p, q, A, R, degree, A_degree, B_degree);
 		update(p, q, degree, A_degree, B_degree);
-	}
+		for(j=0; j<COLUMN; j++)
+		{ 
+		Bp_average += p[j];				
+		Bq_average += q[j];
+		}		
+		Bp_average = (double) Bp_average / (double) COLUMN; 
+		Bq_average = (double) Bq_average / (double) COLUMN; 
+		printf("p-Average %f\t", Bp_average);
+		printf("q-Average %f\t", Bq_average);
+		printf("\n");
+		
+	} 
+	/* Adjacency matrix of nodes at distance d <= 2 */
+	multiply(A, A, B);
 
-	/*for(i=0; i<COLUMN; i++)
-        {
-	        printf("p %d = %f; q %d = %f; \n", i, p[i], i, q[i]);
-        }*/	
+
+	/*	printf("Extragroup Meeting Probability %f\n", (double) v / (double) COLUMN);*/
 
 	for(i=0; i<COLUMN; i++)
 	{
@@ -54,8 +73,6 @@ int main()
 			v += 1.0;
 	}
 
-	printf("Intragroup Meeting Probability %f\n", (double) k / (double) COLUMN);
-	printf("Extragroup Meeting Probability %f\n", (double) v / (double) COLUMN);
 
 	/*printf("Degree\n");
 	for(i=0; i<COLUMN; i++)
