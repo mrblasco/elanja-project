@@ -1,8 +1,6 @@
 library(sna);
 a <- scan("matrix.dat");
-dim(a) <- c(1000,1000);
-color <- c(rep(3,500), rep(2,500));
-png("nomefigura.png");
-gplot(a, vertex.col=color);
-dev.off();
+dim(a) <- c(100,100);
+color <- c(rep(3,50), rep(2,50));
+gplot(a, gmode="graph", vertex.col=color);
 

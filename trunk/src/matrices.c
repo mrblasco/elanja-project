@@ -24,7 +24,8 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 	   	{
 			if(i==j) 
 			{
-				*(R+(i*COLUMN)+j) = -2.0;
+				/* -2 => zero on diagonal (+2 ones) */
+				*(R+(i*COLUMN)+j) = -2.0; 
 			
 			} else {
 				*(R+(i*COLUMN)+j) = (rand() %10001) / (double) 10000;
@@ -109,16 +110,19 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 	int i;
 
 	/* Calculate the new p and q probabilities */
+	/* It is a linear combination of "relative degree" and connection composition*/
+	/* Relative degree: degree / total nodes number */
+	
 	for(i=0; i<COLUMN; i++)
      	{
 		if(*(degree+i) != 0)
-		{
-			*(p+i) = (double) *(A_degree+i) / (double) *(degree+i);
-			*(q+i) = (double) *(B_degree+i) / (double) *(degree+i);
-			if (*(p+i)==0) 
-				*(p+i) = 0.01;
+		{	
+			*(p+i) = 0.01 + 0.3 * (double) *(degree+i) / (double) COLUMN +  (double) *(A_degree+i) / (double) COLUMN;
+			*(q+i) = 0.01 + 0.3 * (double) *(degree+i) / (double) COLUMN +  (double) *(B_degree+i) / (double) COLUMN;
+			/*if (*(p+i)==0) 
+				*(p+i) = 0.5;
 			if (*(q+i)==0)		
-				*(q+i) = 0.01;			
+				*(q+i) = 0.5;*/			
 		}
 		else
 		{
