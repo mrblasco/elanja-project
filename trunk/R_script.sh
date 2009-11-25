@@ -7,3 +7,5 @@ sed -e "s/dim(a) <- c([0-9][0-9]*,[0-9][0-9]*);/dim(a) <- c($1,$1);/g" -e "s/col
 
 R --no-save <commandsR.txt > /dev/null
 
+eog pippo.png
+

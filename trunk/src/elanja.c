@@ -9,6 +9,8 @@ int main()
         int i, j = 0;
 	double k,v;
 	double Bp_average,Bq_average;
+	double alfa;			/*Measure of the non-segregation of the system*/
+
 	double *p = malloc(sizeof(double)*COLUMN);
 	double *q = malloc(sizeof(double)*COLUMN);
 	double *R = malloc(sizeof(double)*ROW*COLUMN);
@@ -20,17 +22,12 @@ int main()
 	int *A_degree = malloc(sizeof(int)*ROW);
 	int *B_degree = malloc(sizeof(int)*ROW);
 
-	/*double p[COLUMN];
-	double q[COLUMN];
-        double R[ROW][COLUMN];
-        int A[ROW][COLUMN];
-	int degree[ROW];
-	int A_degree[ROW], B_degree[ROW];*/
-
 	/* Text file for printing the matrices */
 	FILE *out;	
+	FILE *out3;
 	out = fopen("matrix.dat", "w");	
 	/*out2 = fopen("pq.dat", "w");*/
+	out3 = fopen("alfa.dat", "w");
 
 
 	/* Initialize meeting probability vectors */
@@ -42,6 +39,7 @@ int main()
 
 	Bp_average = 0;
 	Bq_average = 0;
+
 	/* Number of cicles of the system */
  	for(i=0; i<NITER; i++)
 	{
@@ -51,14 +49,31 @@ int main()
 
 		for(j=0; j<COLUMN/2; j++)
 		{ 
-		Bp_average += p[j];				
-		Bq_average += q[j];
-		}		
+			Bp_average += p[j];				
+			Bq_average += q[j];
+		}
+		
 		Bp_average = (double) Bp_average / (double) COLUMN; 
 		Bq_average = (double) Bq_average / (double) COLUMN; 
 		printf("p-Average %f\t", Bp_average);
 		printf("q-Average %f\t", Bq_average);
 		printf("\n");
+
+		/* Computation of alfa at each time step */ 
+		alfa = 0;
+		for(j=0; j<(COLUMN/2); j++)
+		{
+			if(*(B_degree+j)>=T)
+				alfa++;
+		}
+		for(j=COLUMN/2; j<COLUMN; j++)
+		{	
+			if(*(A_degree+j)>=T)
+				alfa++;
+		}
+
+		/*alfa = alfa / ROW;	*/
+		fprintf(out3, "%f\t", alfa);
 		
 	} 
 	/* Adjacency matrix of nodes at distance d <= 2 */
