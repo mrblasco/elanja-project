@@ -28,7 +28,7 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 				*(R+(i*COLUMN)+j) = -2.0; 
 			
 			} else {
-				*(R+(i*COLUMN)+j) = (rand() %10001) / (double) 10000;
+				*(R+(i*COLUMN)+j) = (double) (rand() %10001) / 10000;
 			}
 	   	}
 	}
@@ -108,17 +108,17 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 
 	int i;
-
+	
 	/* Calculate the new p and q probabilities */
 	/* It is a linear combination of "relative degree" and connection composition*/
 	/* Relative degree: degree / total nodes number */
-	
+
 	for(i=0; i<COLUMN; i++)
-     	{
+	{	
 		if(*(degree+i) != 0)
 		{	
-			*(p+i) = 0.01 + 0.3 * (double) *(degree+i) / (double) COLUMN +  (double) *(A_degree+i) / (double) COLUMN;
-			*(q+i) = 0.01 + 0.3 * (double) *(degree+i) / (double) COLUMN +  (double) *(B_degree+i) / (double) COLUMN;
+			*(p+i) = 0.2 + 0.5 * (double) *(degree+i) / (double) COLUMN +  (double) *(A_degree+i) / (double) COLUMN;
+			*(q+i) = 0.2 + 0.5 * (double) *(degree+i) / (double) COLUMN +  (double) *(B_degree+i) / (double) COLUMN;
 			/*if (*(p+i)==0) 
 				*(p+i) = 0.5;
 			if (*(q+i)==0)		
@@ -128,6 +128,43 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 		{
 			printf("Divided by zero!!!!\t");
 		}
-     	}
+		
+	}	
+}
+
+void externalUpdate(int *A, double *p, double *q, double epsilon, int *degree){
+
+	double random;
+	int pos;
+	int tmp, i, j;
+
+	for(i=0; i<COLUMN; i++)
+	{
+
+		if(*(degree+i) != 1)		
+		{
+			random = (double) (rand() %1000) / 1000;
+
+			if(random <= epsilon)
+			{
+				pos = rand() %(*(degree+i)-1);
+				tmp = 0;
+				for (j=0; j<COLUMN; j++)
+				{
+					if(j != i)
+					{
+						if(*(A+(i*COLUMN)+j) == 1)
+							tmp++;
+						if(tmp == pos)
+						{
+							*(p+i) = *(p+j);
+							*(q+i) = *(q+j);
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
