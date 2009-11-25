@@ -47,7 +47,9 @@ int main()
 	{
 		interaction(p, q, A, R, degree, A_degree, B_degree);
 		update(p, q, degree, A_degree, B_degree);
-		for(j=0; j<COLUMN; j++)
+		externalUpdate(A, p, q, EPSILON, degree);
+
+		for(j=0; j<COLUMN/2; j++)
 		{ 
 		Bp_average += p[j];				
 		Bq_average += q[j];
