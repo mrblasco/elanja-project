@@ -7,16 +7,18 @@ out3 = fopen("alfa.dat", "w");
 /*The following part must be in the time cycle*/
 /*Computation of alfa at each time step*/ 
 alfa = 0;
-for(i=0;i<M;i++)
+for(i=0; i< COLUMN/2; i++)
 	{ 
-		if *(B_degree+i) >= T 
-			alfa++
+		if (*(B_degree+i) >= T) 
+			alfa++;
 	}
-for(i=M;i<N;i++)
+for(i=COLUMN/2;i<COLUMN;i++)
 	{	
-		if *(A_degree+i) >= T
-			alfa++
+		if (*(A_degree+i) >= T)
+			alfa++;
 	}
-alfa = alfa / N;	/*Normalization of alfa so that it does not depend on N. alfa now is a number betwen 0 and 1*/
+
+/*Normalization of alfa so that it does not depend on N. alfa now is a number betwen 0 and 1*/
+alfa = alfa / N;	
 fprintf(out3, "%f\t", alfa);
 
