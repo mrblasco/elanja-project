@@ -1,9 +1,10 @@
 GPPFLAGS= -Wall -Wunused -pedantic -ggdb
 LINKERFLAGS= -lm
 
-all: elanja
+graphic: 
+	g++ `fltk2-config --cxxflags` elanja-fltk/elanja-fltk.cxx `fltk2-config --ldflags` -o elanja
 
-prova: test
+model: elanja
 
 elanja: elanja.o matrices.o multiply.o
 	gcc -o elanja ${GPPFLAGS} ${LINKERFLAGS} elanja.o matrices.o multiply.o
@@ -17,6 +18,7 @@ matrices.o: src/matrices.c
 multiply.o: src/multiply.c
 	gcc -c ${GPPFLAGS} src/multiply.c
 
+prova: test
 
 test: test.o util.o
 	gcc -o test ${GPPFLAGS} ${LINKERFLAGS} test.o util.o
