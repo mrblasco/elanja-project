@@ -6,9 +6,9 @@ Per eseguire lo script:
 
 automaticamente apre tutti i file con il codice, le definizioni, tutte le cose utili.
 
-Lo script e' pensato per usare l'editor kate, se voi ne usate uno diverso, basta che sostituite la parola <kate> con quello che preferite:
+Lo script e' pensato per usare l'editor gedit, se voi ne usate uno diverso, basta che sostituite la parola <gedit> con quello che preferite:
 
-....... kate ......  -------> ...... gedit .......
+....... gedit ......  -------> ...... kate .......
 
 Ho aggiunto anche uno script per aprire i file .tex; eseguire:
 
@@ -27,14 +27,15 @@ Compilazione:
 
 andate nella cartella principale del progetto ed eseguite:
 
-1) make		compila tutto il progetto
+1) make	model	compila tutto il progetto in modalita' testuale
+2) make graphic	compila tutto il progetto in modalita' grafica
 3) make test	compila solo test
 
 Per eseguire il progetto dovete eseguire:
 
-./elanja.exe
-./test.exe
+./elanja
+./test
 
 #---------------------------------------------------------------------------------------------------------#
 Ho creato uno script R_script.sh che genera in automatico il grafico della simulazione eseguita.
-per invocarlo dovete fare: ./R_script.sh <numeroAgenti>
+Per invocarlo dovete fare: ./R_script.sh <numeroAgenti>
