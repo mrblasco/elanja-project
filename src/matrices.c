@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../h/const.h"
+#include "const.h"
 
 void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_degree, int *B_degree) {
 
@@ -116,8 +116,8 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 /*		if(*(degree+i) < COLUMN/10)
 		{	 
 		control++; */
-			*(p+i) = 0.1 + 0.4 * (double) *(A_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i) / COLUMN;*/ 		
-			*(q+i) = 0.1 + 0.4 * (double) *(B_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i)/ COLUMN;*/
+			*(p+i) = 0.5 + (double) 0.5 * *(A_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i) / COLUMN;*/ 		
+			*(q+i) = 0.5 + (double) 0.5 * *(B_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i)/ COLUMN;*/
 /*		}
 		else 
 		{
