@@ -39,8 +39,8 @@ int main()
 	/* Initialize meeting probability vectors */
 	for(i=0; i<COLUMN; i++)	
 	{
-		p[i] = 0.01; 
-		q[i] = 0.01;
+		p[i] = 0.5; 
+		q[i] = 0.5;
 	}
 
 	Bp_average = 0;
@@ -50,8 +50,8 @@ int main()
  	for(i=0; i<NITER; i++)
 	{
 		interaction(p, q, A, R, degree, A_degree, B_degree);
-		/* multiply(A, A, B); */
-		update(p, q, degree, A_degree, B_degree);
+		/*distance(A, A, B, degree, A_degree, B_degree); */
+ 		update(p, q, degree, A_degree, B_degree);
 		externalUpdate(A, p, q, EPSILON, degree);
 		for(j=0; j<COLUMN; j++)
 		{ 
