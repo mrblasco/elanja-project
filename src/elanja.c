@@ -7,7 +7,6 @@
 int main()
 {
         int i, j = 0;
-	double k,v;
 	double Bp_average,Bq_average;
 	double alfa;
 	double beta;
@@ -50,7 +49,7 @@ int main()
  	for(i=0; i<NITER; i++)
 	{
 		interaction(p, q, A, R, degree, A_degree, B_degree);
-		/*distance(A, A, B, degree, A_degree, B_degree); */
+		distance(A, A, B, degree, A_degree, B_degree, DISTANCE); 
  		update(p, q, degree, A_degree, B_degree);
 		externalUpdate(A, p, q, EPSILON, degree);
 		for(j=0; j<COLUMN; j++)
@@ -87,10 +86,11 @@ int main()
 				alfa++;
 		}
 
-/* Single node Behavior */
+	/* Single node Behavior */
 		fprintf(out2, "%d\t", *(A_degree + COLUMN/2));
 		fprintf(out2, "%d\n", *(A_degree));
-/* Integration measure */
+
+	/* Integration measure */
 		fprintf(out3, "%f\t", alfa);
 		fprintf(out3, "%f\n", beta);		
 	} 
@@ -125,6 +125,15 @@ int main()
 
 	fprintf(out, "\n");
 
-return COLUMN;
+	free(p);
+	free(q);
+	free(R);
+	free(A);
+	free(B);
+	free(degree);
+	free(A_degree);
+	free(B_degree);
+
+	return COLUMN;
 }
 

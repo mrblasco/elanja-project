@@ -78,28 +78,6 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 		*(A_degree+i) = 0;
 		*(B_degree+i) = 0;
 	}
-
-	/* Degree vector*/ 
-	for(i=0; i<ROW; i++)
-     	{
-			for(j=0; j<COLUMN; j++)
-			{
-				*(degree+i) += *(A+(i*COLUMN)+j);
-		   	}
-     	}
-
-	/* Degree of A-type agents vector*/ 
-	for(i=0; i<ROW; i++)
-     	{
-			for(j=0; j<M; j++)
-			{
-				*(A_degree+i) += *(A+(i*COLUMN)+j);
-		   	}
-			for(j=M; j<COLUMN; j++)
-			{
-				*(B_degree+i) += *(A+(i*COLUMN)+j);
-		   	}
-     	}
 }
 
 void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
@@ -116,8 +94,8 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 /*		if(*(degree+i) < COLUMN/10)
 		{	 
 		control++; */
-			*(p+i) = 0.1 + (double) 0.5 * *(A_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i) / COLUMN;*/ 		
-			*(q+i) = 0.1 + (double) 0.5 * *(B_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i)/ COLUMN;*/
+			*(p+i) =  0.001 + *(A_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i) / COLUMN;*/ 		
+			*(q+i) =  0.001 + *(B_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i)/ COLUMN;*/
 /*		}
 		else 
 		{
@@ -152,11 +130,11 @@ void externalUpdate(int *A, double *p, double *q, double epsilon, int *degree){
 				tmp = 0; 
 				for (j=0; j<COLUMN; j++)
 				{
-					if (tmp != -1 ) /* -1 controllo che rompe il "for" successivo*/
+					if (tmp != -1 && j != i && *(A+(i*COLUMN)+j) == 1) /* -1 controllo che rompe il "for" successivo*/
 					{	
-						if(j != i)
+						/*if(j != i)
 						{
-							if(*(A+(i*COLUMN)+j) == 1)
+							if(*(A+(i*COLUMN)+j) == 1)*/
 								tmp++;
 							if(tmp == pos)
 							{
@@ -164,7 +142,7 @@ void externalUpdate(int *A, double *p, double *q, double epsilon, int *degree){
 								*(q+i) = *(q+j);
 								tmp = -1;
 							}
-						}
+						/*}*/
 					}
 				}
 			}
