@@ -8,4 +8,4 @@ extern void update(double *p, double *q, int *degree, int *A_degree, int *B_degr
 extern void externalUpdate(int *A, double *p, double *q, double epsilon, int *degree);
 
 /* multiply function */
-extern void multiply(int *A, int *B, int *C);
+extern void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree);
