@@ -1,7 +1,7 @@
 library(sna);
 a <- scan("matrix.dat");
-dim(a) <- c(200,200);
-color <- c(rep(3,100), rep(2,100));
+dim(a) <- c(1000,1000);
+color <- c(rep(3,500), rep(2,500));
 png("pippo.png");
 gplot(a, gmode="graph", vertex.col=color);
 dev.off();

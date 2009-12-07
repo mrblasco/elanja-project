@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "../h/const.h"
 #include "../h/matrices.h"   
 
@@ -44,6 +45,9 @@ int main()
 
 	Bp_average = 0;
 	Bq_average = 0;
+
+	/* Initialize random number generator's seed to the current time */
+	srand(time(NULL));
 
 	/* Number of cicles of the system */
  	for(i=0; i<NITER; i++)
