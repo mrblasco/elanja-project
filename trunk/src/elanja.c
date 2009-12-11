@@ -11,18 +11,19 @@ int main()
 	double Bp_average,Bq_average;
 	double alfa;
 	double beta;
+	double measure;
 
 
 	double *p = malloc(sizeof(double)*COLUMN);
 	double *q = malloc(sizeof(double)*COLUMN);
-	double *R = malloc(sizeof(double)*ROW*COLUMN);
+	double *R = malloc(sizeof(double)*COLUMN*COLUMN);
 
-	int *A = malloc(sizeof(int)*ROW*COLUMN);
-	int *B = malloc(sizeof(int)*ROW*COLUMN);
+	int *A = malloc(sizeof(int)*COLUMN*COLUMN);
+	int *B = malloc(sizeof(int)*COLUMN*COLUMN);
 
-	int *degree = malloc(sizeof(int)*ROW);
-	int *A_degree = malloc(sizeof(int)*ROW);
-	int *B_degree = malloc(sizeof(int)*ROW);
+	int *degree = malloc(sizeof(int)*COLUMN);
+	int *A_degree = malloc(sizeof(int)*COLUMN);
+	int *B_degree = malloc(sizeof(int)*COLUMN);
 
 	/* Text file for printing the matrices */
 	FILE *out;
@@ -39,8 +40,8 @@ int main()
 	/* Initialize meeting probability vectors */
 	for(i=0; i<COLUMN; i++)	
 	{
-		p[i] = 0.5; 
-		q[i] = 0.5;
+		p[i] = 0.0; 
+		q[i] = 0.0;
 	}
 
 	Bp_average = 0;
@@ -53,14 +54,43 @@ int main()
  	for(i=0; i<NITER; i++)
 	{
 		interaction(p, q, A, R, degree, A_degree, B_degree);
-		distance(A, A, B, degree, A_degree, B_degree, DISTANCE); 
+ 		distance(A, A, B, degree, A_degree, B_degree, DISTANCE); 
  		update(p, q, degree, A_degree, B_degree);
 		externalUpdate(A, p, q, EPSILON, degree);
+	
+
+		/*****************************/
+	
+		/* printing */
+		
+		alfa = 0;
+		beta = 0;
+
 		for(j=0; j<COLUMN; j++)
 		{ 
+			/* Composition */
 			fprintf(out4,"%d\t",*(degree+j));
 			fprintf(out5,"%f\t", (double) *(A_degree+j) / *(degree +j));
+			
+			/* necessary for integration measure */
+			measure = *(degree+j) * T;	
+			if(*(B_degree+j) < measure)
+				beta++;
+
+			if(*(A_degree+j)< measure)
+				alfa++;
+
+			/* Record each node's behavior */
+			/*fprintf(out2, "%d\t", *(A_degree + j));*/
+			fprintf(out2, "%d\t", *(degree+j));
+
 		}
+		
+		/* Integration measure */
+		fprintf(out3, "%f\t", (2 * alfa / COLUMN));
+		fprintf(out3, "%f\n", (2 * beta / COLUMN));		
+
+		fprintf(out2,"\n");
 		fprintf(out4,"\n");
 		fprintf(out5,"\n");
 
@@ -71,54 +101,19 @@ int main()
 			Bq_average += q[j];
 		}
 
-		
+	
 		Bp_average = (double) Bp_average / COLUMN; 
 		Bq_average = (double) Bq_average / COLUMN; 
 		printf("p-Average %f\t", Bp_average);
 		printf("q-Average %f\t", Bq_average);
 		printf("\n");
 
-		/* Computation of alfa at each time step */ 
-		alfa = 0;
-		beta = 0;
-		for(j=0; j<COLUMN; j++)
-		{
-			if(*(B_degree+j)==0)
-				beta++;
-
-			if(*(A_degree+j)==0)
-				alfa++;
-		}
-
-	/* Single node Behavior */
-		fprintf(out2, "%d\t", *(A_degree + COLUMN/2));
-		fprintf(out2, "%d\n", *(A_degree));
-
-	/* Integration measure */
-		fprintf(out3, "%f\t", alfa);
-		fprintf(out3, "%f\n", beta);		
 	} 
 
-	/*	printf("Extragroup Meeting Probability %f\n", (double) v / (double) COLUMN);
-
-	for(i=0; i<COLUMN; i++)
-	{
-		if(p[i]==1)
-			k += 1.0;
-		if(q[i]==0)
-			v += 1.0;
-	} */
-
-
-	/*printf("Degree\n");
-	for(i=0; i<COLUMN; i++)
-	{
-		printf("%d\n", degree[i]);
-	}*/
 
 	/* Print matrices */
 	/*fprintf(out, "Adjacency Matrix\n"); */
-	for(i=0; i<ROW; i++)
+	for(i=0; i<COLUMN; i++)
 	{
 		for(j=0; j<COLUMN; j++)
 		{

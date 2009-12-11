@@ -11,7 +11,7 @@ void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree,
 	{
 
 		/*  Initialize AM */
-		for(i=0; i<ROW; i++) 
+		for(i=0; i<COLUMN; i++) 
 		{
 			for(j=0; j<COLUMN; j++)
 			{ 
@@ -20,16 +20,16 @@ void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree,
 		}
 
 		/* Product */
-		for(i=0; i<ROW; i++)
+		for(i=0; i<COLUMN; i++)
 		{	
 			for(j=0; j<COLUMN; j++)
 			{		
-				for (l=0; l<ROW;l++) 
-					*(C + i*COLUMN +j) += *(A + i*COLUMN +l) * *(B + j*COLUMN +l); 
+				for (l=0; l<COLUMN;l++) 
+					*(C + i*COLUMN +j) += (*(A + i*COLUMN +l) * *(B + j*COLUMN +l)); 
 			}	
 		} 
 		/* Normalize Adjacency matrix adding distance one*/
-		for(i=0; i<ROW; i++)
+		for(i=0; i<COLUMN; i++)
 		{	
 			for(j=0; j<COLUMN; j++)
 			{	
@@ -48,7 +48,7 @@ void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree,
 		}
 
 		/* Degree vector*/ 
-		for(i=0; i<ROW; i++)
+		for(i=0; i<COLUMN; i++)
 			{
 				for(j=0; j<COLUMN; j++)
 				{
@@ -57,7 +57,7 @@ void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree,
 			}
 
 		/* Degree of A-type agents vector*/ 
-		for(i=0; i<ROW; i++)
+		for(i=0; i<COLUMN; i++)
 			{
 				for(j=0; j<M; j++)
 				{
@@ -73,7 +73,7 @@ void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree,
 	else if (d==1)
 	{
 		/* Degree vector*/ 
-		for(i=0; i<ROW; i++)
+		for(i=0; i<COLUMN; i++)
 			{
 				for(j=0; j<COLUMN; j++)
 				{
@@ -82,7 +82,7 @@ void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree,
 			}
 
 		/* Degree of A-type agents vector*/ 
-		for(i=0; i<ROW; i++)
+		for(i=0; i<COLUMN; i++)
 			{
 				for(j=0; j<M; j++)
 				{

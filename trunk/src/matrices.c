@@ -8,7 +8,7 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 	double link;
 	
 	/* Initialize matrices */
-	for(i=0; i<ROW; i++)
+	for(i=0; i<COLUMN; i++)
         {
 	   for(j=0; j<COLUMN; j++)
 	   {
@@ -18,7 +18,7 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 
 	/* Link formation*/
 	/* R has random Upper-triangle and zeros on diagonal */
-	for(i=0; i<ROW; i++)
+	for(i=0; i<COLUMN; i++)
      	{
 	   	for(j=i; j<COLUMN; j++) 
 	   	{
@@ -35,26 +35,27 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 	/* R is symmmetric */
 	for(j=0; j<COLUMN; j++)
      	{
-		for(i=j; i<ROW; i++)
+		for(i=j; i<COLUMN; i++)
 		{
 			*(R+(i*COLUMN)+j) = *(R+(j*COLUMN)+i);
 		}
      	}
 
 	/* Adjacency Matrix */ 
-	for(i=0; i<ROW; i++)
+	for(i=0; i<COLUMN; i++)
 	{
 		for(j=i; j<COLUMN; j++)
 		{
 			if(j < M && i < M ) 
 			{	
-				link = (double) *(R+(i*COLUMN)+j) - *(p+i) * *(p+j);
+				link = (double) *(R+(i*COLUMN)+j) - (*(p+i) * *(p+j)); /* provare con il + */
 			} else if (j >= M  && i < M ) 
 			{
-				link = (double) *(R+(i*COLUMN)+j) - *(q+i) * *(p+j);
+				link = (double) *(R+(i*COLUMN)+j) - (*(q+i) * *(p+j) );  /*  provare con il + */
+
 			} else if (j >= M && i >= M) 
-			{
-				link = (double) *(R+(i*COLUMN)+j) - *(q+i) * *(q+j);	
+			{		
+				link = (double) *(R+(i*COLUMN)+j) - ( *(q+i) * *(q+j) );	
 			}
 			if (link < 0) 
 			{
@@ -65,7 +66,7 @@ void interaction(double *p, double *q, int *A, double *R, int *degree, int *A_de
 	/* AM is symmmetric */
 	for(j=0; j<COLUMN; j++)
     	{
-		for(i=j; i<ROW; i++)
+		for(i=j; i<COLUMN; i++)
 		{
 			*(A+(i*COLUMN)+j) = *(A+(j*COLUMN)+i);
 	   	}
@@ -91,13 +92,16 @@ void update(double *p, double *q, int *degree, int *A_degree, int *B_degree){
 	control = 0;
 	for(i=0; i<COLUMN; i++)
 	{	
-/*		if(*(degree+i) < COLUMN/10)
+		if(*(degree+i) > 0)
 		{	 
-		control++; */
-			*(p+i) =  0.001 + *(A_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i) / COLUMN;*/ 		
-			*(q+i) =  0.001 + *(B_degree + i) / *(degree + i); /*+ 0.5 * *(degree + i)/ COLUMN;*/
-/*		}
-		else 
+/*		control++; */
+ 			*(p+i) =  0.1 +  ( 0.1 * (double) *(A_degree + i) / *(degree + i)); 		
+			*(q+i) =  0.1 +  ( 0.1 * (double) *(B_degree + i) / *(degree + i));
+			/*printf("%f\t", *(p+i));
+			printf("%f\n", *(q+i));*/
+
+		}
+/*		else 
 		{
 
 			*(p+i) *=  0.9;	
