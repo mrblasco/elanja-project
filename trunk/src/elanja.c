@@ -25,13 +25,19 @@ int main()
 	int *A_degree = malloc(sizeof(int)*COLUMN);
 	int *B_degree = malloc(sizeof(int)*COLUMN);
 
+	int *degree2 = malloc(sizeof(int)*COLUMN);
+	int *A_degree2 = malloc(sizeof(int)*COLUMN);
+	int *B_degree2 = malloc(sizeof(int)*COLUMN);
+
 	/* Text file for printing the matrices */
 	FILE *out;
+	FILE *out_1;
 	FILE *out2;	
 	FILE *out3;
 	FILE *out4;	
 	FILE *out5;
 	out = fopen("matrix.dat", "w");	
+	out_1 = fopen("degree1.dat", "w");
 	out2 = fopen("single_node.dat", "w");
 	out3 = fopen("alfa.dat", "w");
 	out4 = fopen("degree.dat", "w");
@@ -54,7 +60,7 @@ int main()
  	for(i=0; i<NITER; i++)
 	{
 		interaction(p, q, A, R, degree, A_degree, B_degree);
- 		distance(A, A, B, degree, A_degree, B_degree, DISTANCE); 
+ 		distance(A, A, B, degree, A_degree, B_degree, DISTANCE, out_1); 
  		update(p, q, degree, A_degree, B_degree);
 		externalUpdate(A, p, q, EPSILON, degree);
 	
