@@ -1,7 +1,9 @@
+n <- 34;
+t <- 10;
 library(sna);
 a <- scan("matrix.dat");
-dim(a) <- c(200,200);
-color <- c(rep(3,100), rep(2,100));
+dim(a) <- c(n,n);
+color <- c(rep(3,(n/2)), rep(2,(n/2)));
 png("pippo.png");
 gplot(a, gmode="graph", vertex.col=color);
 dev.off();
