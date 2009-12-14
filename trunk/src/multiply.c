@@ -71,31 +71,52 @@ void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree,
 			}      
 		}
 
-		 
+		/* Degree vector distance 1 */ 
+		for(i=0; i<COLUMN; i++)
+		{
+			for(j=0; j<COLUMN; j++)
+			{
+				*(degree+i) += *(C+(i*COLUMN)+j);
+		   	}
+		}
+
+		/* Degree of A-type agents vector*/ 
+		for(i=0; i<COLUMN; i++)
+		{
+			for(j=0; j<M; j++)
+			{
+				*(A_degree+i) += *(C+(i*COLUMN)+j);
+		   	}
+			for(j=M; j<COLUMN; j++)
+			{
+				*(B_degree+i) += *(C+(i*COLUMN)+j);
+		   	}
+ 		}
+ 		 
 	}
 	else if (d==1)
 	{
 		/* Degree vector*/ 
 		for(i=0; i<COLUMN; i++)
+		{
+			for(j=0; j<COLUMN; j++)
 			{
-				for(j=0; j<COLUMN; j++)
-				{
-					*(degree+i) += *(A+(i*COLUMN)+j);
-			   	}
-			}
+				*(degree+i) += *(A+(i*COLUMN)+j);
+		   	}
+		}
 
 		/* Degree of A-type agents vector*/ 
 		for(i=0; i<COLUMN; i++)
+		{
+			for(j=0; j<M; j++)
 			{
-				for(j=0; j<M; j++)
-				{
-					*(A_degree+i) += *(A+(i*COLUMN)+j);
-			   	}
-				for(j=M; j<COLUMN; j++)
-				{
-					*(B_degree+i) += *(A+(i*COLUMN)+j);
-			   	}
-			}
+				*(A_degree+i) += *(A+(i*COLUMN)+j);
+		   	}
+			for(j=M; j<COLUMN; j++)
+			{
+				*(B_degree+i) += *(A+(i*COLUMN)+j);
+		   	}
+		}
 	}
 	else
 		printf("Distance error d = %d\n", d);

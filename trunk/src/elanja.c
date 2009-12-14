@@ -13,7 +13,6 @@ int main()
 	double beta;
 	double measure;
 
-
 	double *p = malloc(sizeof(double)*COLUMN);
 	double *q = malloc(sizeof(double)*COLUMN);
 	double *R = malloc(sizeof(double)*COLUMN*COLUMN);
@@ -62,7 +61,7 @@ int main()
 		interaction(p, q, A, R, degree, A_degree, B_degree);
  		distance(A, A, B, degree, A_degree, B_degree, DISTANCE, out_1); 
  		update(p, q, degree, A_degree, B_degree);
-		externalUpdate(A, p, q, EPSILON, degree);
+	   /*  externalUpdate(A, p, q, EPSILON, degree);*/
 	
 
 		/*****************************/
