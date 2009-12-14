@@ -1,0 +1,11 @@
+n <- 100;
+t <- 50;
+library(sna);
+degree <- scan("degree.dat");
+dim(degree) <- c(n,t);
+ones <- rep(1,t);
+degree_mean <- degree %*% ones; 
+png("degree.png");
+plot(degree_mean/100, col=2);
+dev.off();
+
