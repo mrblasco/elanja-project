@@ -1,0 +1,12 @@
+n <- 100;
+t <- 50;
+library(sna);
+comp <- scan("composition.dat");
+dim(comp) <- c(n,t);
+ones <- rep(1,t);
+comp_mean <- comp %*% ones;
+png("comp.png");
+plot(comp_mean, col=2);
+dev.off();
+
+
