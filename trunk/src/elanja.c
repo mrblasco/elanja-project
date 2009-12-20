@@ -5,7 +5,7 @@
 #include "../h/matrices.h"   
 
 
-int main()
+int main(int argc, char *argv[])
 {
         int i, j = 0;
 	double Bp_average,Bq_average;
@@ -13,20 +13,54 @@ int main()
 	double beta;
 	double measure;
 
-	double *p = malloc(sizeof(double)*COLUMN);
-	double *q = malloc(sizeof(double)*COLUMN);
-	double *R = malloc(sizeof(double)*COLUMN*COLUMN);
+	/* Default values */
 
-	int *A = malloc(sizeof(int)*COLUMN*COLUMN);
-	int *B = malloc(sizeof(int)*COLUMN*COLUMN);
+	int agents = 100; 	/* Number of agents of the system */
+	int n_iter = 50;		/* Number of iteractions */
+	int distance = 1;	/* Distance of Neighborhood */
+	int m = 50;		/* Number of agents of each type */
 
-	int *degree = malloc(sizeof(int)*COLUMN);
-	int *A_degree = malloc(sizeof(int)*COLUMN);
-	int *B_degree = malloc(sizeof(int)*COLUMN);
+	/* Set simulation variables */
 
-	int *degree2 = malloc(sizeof(int)*COLUMN);
-	int *A_degree2 = malloc(sizeof(int)*COLUMN);
-	int *B_degree2 = malloc(sizeof(int)*COLUMN);
+	if(argc == 1)
+	{
+		printf("Using default parameters: \n");
+		printf("	- agents 100\n");
+		printf("	- number of iteraction 50\n");
+		printf("	- distance of neighborhood 1\n");
+		printf("	- number of agents of each type 50\n");
+	}
+	else if (argc == 4)
+	{
+		agents = atoi(argv[1]);
+		n_iter = atoi(argv[2]);
+		distance = atoi(argv[3]);
+		m = agents/2;
+
+		printf("Using parameters: \n");
+		printf("	- agents %d\n", agents);
+		printf("	- number of iteraction %d\n", n_iter);
+		printf("	- distance of neighborhood %d\n", distance);
+		printf("	- number of agents of each type %d\n", m);
+	}
+	else
+	{
+		printf(">>>>>>>>>>>> E R R O R <<<<<<<<<<< \n");
+		printf("	- usage: ./elanja <n AGENTS> <n ITERACTION> <distance NEIGHBORHOOD>\n");
+		exit(0);
+	}
+	
+
+	double *p = malloc(sizeof(double)*agents);
+	double *q = malloc(sizeof(double)*agents);
+	double *R = malloc(sizeof(double)*agents*agents);
+
+	int *A = malloc(sizeof(int)*agents*agents);
+	int *B = malloc(sizeof(int)*agents*agents);
+
+	int *degree = malloc(sizeof(int)*agents);
+	int *A_degree = malloc(sizeof(int)*agents);
+	int *B_degree = malloc(sizeof(int)*agents);
 
 	/* Text file for printing the matrices */
 	FILE *out;
@@ -41,9 +75,9 @@ int main()
 	out3 = fopen("alfa.dat", "w");
 	out4 = fopen("degree.dat", "w");
 	out5 = fopen("composition.dat", "w");
-
+		
 	/* Initialize meeting probability vectors */
-	for(i=0; i<COLUMN; i++)	
+	for(i=0; i<agents; i++)	
 	{
 		p[i] = 0.0; 
 		q[i] = 0.0;
@@ -56,28 +90,23 @@ int main()
 	srand(time(NULL));
 
 	/* Number of cicles of the system */
- 	for(i=0; i<NITER; i++)
+ 	for(i=0; i<n_iter; i++)
 	{
-		interaction(p, q, A, R, degree, A_degree, B_degree);
- 		distance(A, A, B, degree, A_degree, B_degree, DISTANCE, out_1); 
- 		update(p, q, degree, A_degree, B_degree);
-	   /*  externalUpdate(A, p, q, EPSILON, degree);*/
-	
-
-		/*****************************/
-	
-		/* printing */
+		interaction(agents, m, distance, p, q, A, R, degree, A_degree, B_degree);
+ 		multiply(agents, m, distance, A, A, B, degree, A_degree, B_degree, distance, out_1); 
+ 		update(agents, p, q, degree, A_degree, B_degree);
+	    /*  externalUpdate(agents, A, p, q, EPSILON, degree);*/
 		
 		alfa = 0;
 		beta = 0;
 
-		for(j=0; j<COLUMN; j++)
+		for(j=0; j<agents; j++)
 		{ 
 			/* Composition */
 			fprintf(out4,"%d\t",*(degree+j));
 			fprintf(out5,"%f\t", (double) *(A_degree+j) / *(degree +j));
 			
-			/* necessary for integration measure */
+			/* Necessary for integration measure */
 			measure = *(degree+j) * T;	
 			if(*(B_degree+j) < measure)
 				beta++;
@@ -86,43 +115,40 @@ int main()
 				alfa++;
 
 			/* Record each node's behavior */
-			/*fprintf(out2, "%d\t", *(A_degree + j));*/
 			fprintf(out2, "%d\t", *(degree+j));
 
 		}
 		
 		/* Integration measure */
-		fprintf(out3, "%f\t", (2 * alfa / COLUMN));
-		fprintf(out3, "%f\n", (2 * beta / COLUMN));		
+		fprintf(out3, "%f\t", (2 * alfa / agents));
+		fprintf(out3, "%f\n", (2 * beta / agents));		
 
 		fprintf(out2,"\n");
 		fprintf(out4,"\n");
 		fprintf(out5,"\n");
 
 		
-		for(j=M/2; j<COLUMN; j++)
+		for(j=m/2; j<agents; j++)
 		{ 
 			Bp_average += p[j];				
 			Bq_average += q[j];
 		}
 
 	
-		Bp_average = (double) Bp_average / COLUMN; 
-		Bq_average = (double) Bq_average / COLUMN; 
+		Bp_average = (double) Bp_average / agents; 
+		Bq_average = (double) Bq_average / agents; 
 		printf("p-Average %f\t", Bp_average);
 		printf("q-Average %f\t", Bq_average);
 		printf("\n");
 
 	} 
 
-
 	/* Print matrices */
-	/*fprintf(out, "Adjacency Matrix\n"); */
-	for(i=0; i<COLUMN; i++)
+	for(i=0; i<agents; i++)
 	{
-		for(j=0; j<COLUMN; j++)
+		for(j=0; j<agents; j++)
 		{
-			fprintf(out, "%d\t", *(A+(i*COLUMN)+j));
+			fprintf(out, "%d\t", *(A+(i*agents)+j));
 		}
 		fprintf(out, "\n\n");
 	}
@@ -138,6 +164,6 @@ int main()
 	free(A_degree);
 	free(B_degree);
 
-	return COLUMN;
+	return agents;
 }
 
