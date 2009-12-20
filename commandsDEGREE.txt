@@ -1,5 +1,5 @@
-n <- 100;
-t <- 50;
+n <- 200;
+t <- 12;
 library(sna);
 degree <- scan("degree.dat");
 dim(degree) <- c(n,t);

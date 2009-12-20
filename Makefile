@@ -7,7 +7,7 @@ graphic:
 model: elanja
 
 elanja: elanja.o matrices.o multiply.o
-	gcc -o elanja ${GPPFLAGS} ${LINKERFLAGS} elanja.o matrices.o multiply.o
+	gcc -o main ${GPPFLAGS} ${LINKERFLAGS} elanja.o matrices.o multiply.o
 
 elanja.o: src/elanja.c h/matrices.h
 	gcc -c ${GPPFLAGS} src/elanja.c
@@ -33,6 +33,6 @@ util.o: src/util.c
 
 clean:	
 	rm -f *.o
-	rm -f elanja
+	rm -f main
 	rm -f test
 	rm -f *~

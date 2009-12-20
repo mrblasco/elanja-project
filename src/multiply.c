@@ -2,123 +2,117 @@
 #include <stdlib.h>
 #include "../h/const.h"
 
-/* Function to compute Adjacency Matrices at d<=2 */
-void distance(int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree, int d, FILE *out_1) {
+/* Function to compute Adjacency matrices at d<=2 */
+void multiply(int agents, int m, int distance, int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree, FILE *out_1) {
 
 	int i, j, l;
 	
-/*	FILE *out1_2;
-	FILE *out1_3;*/
-	
-	/*out1_2 = fopen("degreeA_1.dat", "w");
-	out1_3 = fopen("degreeB_1.dat", "w");	*/
-
-	if(d==2)
+	if(distance==2)
 	{
 
-		/*  Initialize AM */
-		for(i=0; i<COLUMN; i++) 
+		/*  Initialize Am */
+		for(i=0; i<agents; i++) 
 		{
-			for(j=0; j<COLUMN; j++)
+			for(j=0; j<agents; j++)
 			{ 
-				*(C + i*COLUMN + j) = 0;
+				*(C + i*agents + j) = 0;
 			}
 		}
 
 		/* Degree vector distance 1 */ 
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{
-			for(j=0; j<COLUMN; j++)
+			for(j=0; j<agents; j++)
 			{
-				*(degree+i) += *(A+(i*COLUMN)+j);
+				*(degree+i) += *(A+(i*agents)+j);
 		   	}
 			fprintf(out_1,"%d\t",*(degree+i));
 		}
 
 		/* Degree of A-type agents vector*/ 
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{
-			for(j=0; j<M; j++)
+			for(j=0; j<m; j++)
 			{
-				*(A_degree+i) += *(A+(i*COLUMN)+j);
+				*(A_degree+i) += *(A+(i*agents)+j);
 		   	}
 			fprintf(out_1,"%d\t",*(A_degree+i));
-			for(j=M; j<COLUMN; j++)
+			for(j=m; j<agents; j++)
 			{
-				*(B_degree+i) += *(A+(i*COLUMN)+j);
+				*(B_degree+i) += *(A+(i*agents)+j);
 		   	}
 			fprintf(out_1,"%d\t",*(B_degree+i));
 		}
 		fprintf(out_1,"\n");		
 
 		/* Product */
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{	
-			for(j=0; j<COLUMN; j++)
+			for(j=0; j<agents; j++)
 			{		
-				for (l=0; l<COLUMN;l++) 
-					*(C + i*COLUMN +j) += (*(A + i*COLUMN +l) * *(B + j*COLUMN +l)); 
+				for (l=0; l<agents;l++) 
+					*(C + i*agents +j) += (*(A + i*agents +l) * *(B + j*agents +l)); 
 			}	
 		} 
 		/* Normalize Adjacency matrix adding distance one*/
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{	
-			for(j=0; j<COLUMN; j++)
+			for(j=0; j<agents; j++)
 			{	
-				*(C + i*COLUMN +j) += *(A + i*COLUMN +j);
-				if (*(C + i*COLUMN +j) > 1 )
-						*(C + i*COLUMN +j) = 1;
+				*(C + i*agents +j) += *(A + i*agents +j);
+				if (*(C + i*agents +j) > 1 )
+						*(C + i*agents +j) = 1;
 			}      
 		}
 
 		/* Degree vector distance 1 */ 
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{
-			for(j=0; j<COLUMN; j++)
+			for(j=0; j<agents; j++)
 			{
-				*(degree+i) += *(C+(i*COLUMN)+j);
+				*(degree+i) += *(C+(i*agents)+j);
 		   	}
 		}
 
 		/* Degree of A-type agents vector*/ 
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{
-			for(j=0; j<M; j++)
+			for(j=0; j<m; j++)
 			{
-				*(A_degree+i) += *(C+(i*COLUMN)+j);
+				*(A_degree+i) += *(C+(i*agents)+j);
 		   	}
-			for(j=M; j<COLUMN; j++)
+			for(j=m; j<agents; j++)
 			{
-				*(B_degree+i) += *(C+(i*COLUMN)+j);
+				*(B_degree+i) += *(C+(i*agents)+j);
 		   	}
  		}
  		 
 	}
-	else if (d==1)
+	else if (distance==1)
 	{
 		/* Degree vector*/ 
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{
-			for(j=0; j<COLUMN; j++)
+			for(j=0; j<agents; j++)
 			{
-				*(degree+i) += *(A+(i*COLUMN)+j);
+				*(degree+i) += *(A+(i*agents)+j);
 		   	}
 		}
 
 		/* Degree of A-type agents vector*/ 
-		for(i=0; i<COLUMN; i++)
+		for(i=0; i<agents; i++)
 		{
-			for(j=0; j<M; j++)
+			for(j=0; j<m; j++)
 			{
-				*(A_degree+i) += *(A+(i*COLUMN)+j);
+				*(A_degree+i) += *(A+(i*agents)+j);
 		   	}
-			for(j=M; j<COLUMN; j++)
+			for(j=m; j<agents; j++)
 			{
-				*(B_degree+i) += *(A+(i*COLUMN)+j);
+				*(B_degree+i) += *(A+(i*agents)+j);
 		   	}
 		}
 	}
 	else
-		printf("Distance error d = %d\n", d);
+		printf("Distance error d = %d\n", distance);
 }
 

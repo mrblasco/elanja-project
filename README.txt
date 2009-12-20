@@ -31,11 +31,11 @@ andate nella cartella principale del progetto ed eseguite:
 2) make graphic	compila tutto il progetto in modalita' grafica
 3) make test	compila solo test
 
-Per eseguire il progetto dovete eseguire:
-
-./elanja
-./test
-
 #---------------------------------------------------------------------------------------------------------#
-Ho creato uno script R_script.sh che genera in automatico il grafico della simulazione eseguita.
-Per invocarlo dovete fare: ./R_script.sh <numeroAgenti>
+
+Ho fatto un po di pulizia delle cose inutili e ho modificato il progetto cosi' che prenda in input il numero di agenti, il numero di iterazioni e la distanza del vicinato da considerare.
+Ho inoltre modificato lo script che non si chiama piu' R_script.sh ma elanja.sh che serve per eseguire il progetto e visualizzare tutte le figure.
+Per usarlo dovete fare:
+	./elanja.sh <n agenti> <n iterazioni> <distanza> <opzione per le figure> <n sumulazioni>
+
+Per ora, anche se fate piu' di una simulazione non vengono salvati i risultati, dato che si usa sempre i soliti file per i risultati.
