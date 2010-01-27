@@ -2,11 +2,11 @@ n <- 100;
 t <- 10;
 library(sna);
 comp <- scan("composition.dat");
-dim(comp) <- c(n,t);
-ones <- rep(1,t);
+dim(comp) <- c(t,n);
+ones <- rep(1,n);
 comp_mean <- comp %*% ones;
 png("comp.png");
-plot(comp_mean, col=2);
+plot(comp_mean/n, col=2);
 dev.off();
 
 
