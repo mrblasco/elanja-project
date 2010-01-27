@@ -93,8 +93,8 @@ void update(int agents, double *p, double *q, int *degree, int *A_degree, int *B
 	{	
 		if(*(degree+i) > 0)
 		{	 
- 			*(p+i) = 0.1 + (0.0 * (double)  *(A_degree + i) / *(degree + i)); 
-			*(q+i) = 0.1 + (0.0 * (double) *(B_degree + i) / *(degree + i)); 
+ 			*(p+i) = 0.1 + (0.5 * (double)  *(A_degree + i) / *(degree + i)); 
+			*(q+i) = 0.1 + (0.5 * (double) *(B_degree + i) / *(degree + i)); 
 		}
 	}	
 }

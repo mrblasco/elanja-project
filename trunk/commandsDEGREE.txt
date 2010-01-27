@@ -2,10 +2,10 @@ n <- 200;
 t <- 12;
 library(sna);
 degree <- scan("degree.dat");
-dim(degree) <- c(n,t);
-ones <- rep(1,t);
+dim(degree) <- c(t,n);
+ones <- rep(1,n);
 degree_mean <- degree %*% ones; 
 png("degree.png");
-plot(degree_mean/100, col=2);
+plot(degree_mean/n, col=2);
 dev.off();
 
