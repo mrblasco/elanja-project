@@ -39,3 +39,9 @@ Per usarlo dovete fare:
 	./elanja.sh <n agenti> <n iterazioni> <distanza> <opzione per le figure> <n sumulazioni>
 
 Per ora, anche se fate piu' di una simulazione non vengono salvati i risultati, dato che si usa sempre i soliti file per i risultati.
+
+#---------------------------------------------------------------------------------------------------------#
+IMPORTANTE
+Abbiamo ufficialmente deciso di scrivere il codice in c++, dato che le fltk si possono usare solo in c++. Dobbiamo creare un mega IF nel main in modo da poter scegliere se fare una esecuzione grafica o testuale del progetto; le funzioni che abbiamo fatto andranno modificate per essere inserite in classi c++.
+Questo perchè altrimenti non possiamo modificare i parametri del modello mentre si fa la simulazione, ma una volta modificato un parametro dovremmo far rifare la simulazione testuale e poi leggere i file creati per farli vedere nell'interfaccia grafica.
+

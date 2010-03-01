@@ -5,6 +5,12 @@
 #include <fltk/math.h>
 #include <fltk/draw.h>
 #include <fltk/string.h> // for snprintf
+#include <fltk/gl.h>
+#include <fltk/compat/FL/Fl.H>
+#include <fltk/compat/FL/Fl_Gl_Window.H>
+#include <fltk/compat/FL/fl_draw.H>
+#include <fltk/math.h>
+#include "../h/const.h"
 
 using namespace fltk;
 
@@ -12,36 +18,20 @@ class ShapeWidget : public Widget {
   int sides_;
 
   void draw() {
-    setcolor(WHITE);
-    fillrect(0,0,w(),h());
-    push_matrix();
-    scale(w()/2.0f, h()/2.0f);
-    translate(1,1);
-    setcolor(0x8098b000);
-    int i; for (i=0; i<sides(); i++) {
-      double ang = i*2*M_PI/sides();
-      addvertex(cosf(ang),sinf(ang));
-    }
-    fillstrokepath(BLACK);
-    pop_matrix();
-    setfont(labelfont(), labelsize());
-    setcolor(BLACK);
-    char buf[200];
-    double ang = 2*M_PI/sides();
-    snprintf(buf, 200,
-         "%d sides\n"
-         "Angle between sides = %g'\n"
-         "Length of side = %g\n"
-         "Perimiter = %g\n"
-         "Area = %g",
-         i,
-         360.0/i,
-         sqrt(2-2*cos(ang)),
-         sides()*sqrt(2-2*cos(ang)),
-         sides()*sin(ang)/2);
-    drawtext(buf, Rectangle(w(),h()), ALIGN_WRAP);
-  }
+	int i, j;
 
+   setcolor(WHITE);
+   fillrect(0,0,w(),h());
+
+	for(i=1; i<=sides_; i++){
+		for(j=1; j<=sides_; j++){
+			setcolor(BLACK);
+			fl_arc(31*i, 31*j, 7, 0, 360);
+ 			fillstrokepath(WHITE);
+		}
+	}
+	
+  }
 
 public:
 
@@ -62,10 +52,10 @@ static void slider_callback(Widget* widget, void* data) {
 
 int main(int argc, char **argv) {
 
-  Window window(300, 330);
+  Window window(500, 500);
   window.begin();
 
-  ShapeWidget sw(10, 10, 280, 280);
+  ShapeWidget sw(10, 10, 480, 480);
   window.resizable(&sw);
 
   Slider slider(50, 295, window.w()-60, 30, "Sides:");
