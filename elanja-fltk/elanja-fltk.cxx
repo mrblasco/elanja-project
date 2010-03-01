@@ -66,6 +66,8 @@ int main(int argc, char **argv) {
   slider.step(1);
   slider.range(3,40);
 
+
+
   window.end();
   window.show(argc,argv);
     
