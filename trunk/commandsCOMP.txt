@@ -1,5 +1,5 @@
 n <- 100;
-t <- 10;
+t <- 20;
 library(sna);
 comp <- scan("composition.dat");
 dim(comp) <- c(t,n);

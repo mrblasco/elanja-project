@@ -1,5 +1,5 @@
-n <- 200;
-t <- 12;
+n <- 100;
+t <- 20;
 library(sna);
 a <- scan("matrix.dat");
 dim(a) <- c(n,n);
