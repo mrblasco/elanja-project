@@ -3,7 +3,7 @@
 #include "../h/const.h"
 
 /* Function to compute Adjacency matrices at d<=2 */
-void multiply(int agents, int m, int distance, int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree, FILE *out_1) {
+void multiplyer(int agents, int m, int distance, int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree, int d, FILE *out_1) {
 
 	int i, j, l;
 	
