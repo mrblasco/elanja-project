@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "../h/multiply.h"
 #include "../h/const.h"
 #include "../h/matrices.h"   
 
+using namespace std;
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
         int i, j = 0;
 	double Bp_average,Bq_average;
@@ -19,6 +21,7 @@ int main(int argc, char *argv[])
 	int n_iter = 50;		/* Number of iteractions */
 	int distance = 1;	/* Distance of Neighborhood */
 	int m = 50;		/* Number of agents of each type */
+	int graphic = 0;	/* Graphic flag */
 
 	/* Set simulation variables */
 
@@ -51,16 +54,16 @@ int main(int argc, char *argv[])
 	}
 	
 
-	double *p = malloc(sizeof(double)*agents);
-	double *q = malloc(sizeof(double)*agents);
-	double *R = malloc(sizeof(double)*agents*agents);
+	double *p = (double*) malloc ((sizeof(double))*agents);
+	double *q = (double*) malloc(sizeof(double)*agents);
+	double *R = (double*) malloc(sizeof(double)*agents*agents);
 
-	int *A = malloc(sizeof(int)*agents*agents);
-	int *B = malloc(sizeof(int)*agents*agents);
+	int *A = (int*) malloc(sizeof(int)*agents*agents);
+	int *B = (int*) malloc(sizeof(int)*agents*agents);
 
-	int *degree = malloc(sizeof(int)*agents);
-	int *A_degree = malloc(sizeof(int)*agents);
-	int *B_degree = malloc(sizeof(int)*agents);
+	int *degree = (int*) malloc(sizeof(int)*agents);
+	int *A_degree = (int*) malloc(sizeof(int)*agents);
+	int *B_degree = (int*) malloc(sizeof(int)*agents);
 
 	/* Text file for printing the matrices */
 	FILE *out;
@@ -93,7 +96,7 @@ int main(int argc, char *argv[])
  	for(i=0; i<n_iter; i++)
 	{
 		interaction(agents, m, distance, p, q, A, R, degree, A_degree, B_degree);
- 		multiply(agents, m, distance, A, A, B, degree, A_degree, B_degree, distance, out_1); 
+ 		multiplyer(agents, m, distance, A, A, B, degree, A_degree, B_degree, distance, out_1); 
  		update(agents, p, q, degree, A_degree, B_degree);
 	    /*  externalUpdate(agents, A, p, q, EPSILON, degree);*/
 		
