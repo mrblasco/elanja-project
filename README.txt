@@ -1,3 +1,8 @@
+*************************IMPORTANTE********************************
+Ora la parte grfica inizia a funzionare decentemente, manca ancora il disegno delle palline ma l'interfaccia funziona e ci sono tutte le cose che ci devono essere. Ho cambiato elggermente la disposizione delle scroll bar dato che erano veramente identiche a quelle precedenti dell' altro progetto.
+Per eseguire il progetto grafico, andare dentro la cartella elanja-fltk e digitare il comando make, poi eseguire ./elaja per visualizzare l'interfaccia.
+*******************************************************************
+
 Ho aggiunto un file con i comandi della SVN e uno script bash.
 
 Per eseguire lo script:
@@ -28,8 +33,7 @@ Compilazione:
 andate nella cartella principale del progetto ed eseguite:
 
 1) make	model	compila tutto il progetto in modalita' testuale
-2) make graphic	compila tutto il progetto in modalita' grafica
-3) make test	compila solo test
+2) make test	compila solo test
 
 #---------------------------------------------------------------------------------------------------------#
 
@@ -41,7 +45,4 @@ Per usarlo dovete fare:
 Per ora, anche se fate piu' di una simulazione non vengono salvati i risultati, dato che si usa sempre i soliti file per i risultati.
 
 #---------------------------------------------------------------------------------------------------------#
-IMPORTANTE
-Abbiamo ufficialmente deciso di scrivere il codice in c++, dato che le fltk si possono usare solo in c++. Dobbiamo creare un mega IF nel main in modo da poter scegliere se fare una esecuzione grafica o testuale del progetto; le funzioni che abbiamo fatto andranno modificate per essere inserite in classi c++.
-Questo perchè altrimenti non possiamo modificare i parametri del modello mentre si fa la simulazione, ma una volta modificato un parametro dovremmo far rifare la simulazione testuale e poi leggere i file creati per farli vedere nell'interfaccia grafica.
 
