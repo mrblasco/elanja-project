@@ -27,19 +27,7 @@ protected:
 };
 
 void timer_cb(void *p);
-void circle(double x, double y, double w, double h, double radius);
-int min2(int a, int b);
-double distance(int x1, int y1, int x2, int y2, int w, int h);
-int get_movx(int i, int w, int h);
-int get_movy(int i, int w, int h);
-void get_mov(int i, int w, int h, int *mov);
-void vector(int i, int j, int w, int h, int *vec);
-void versor(int *vect, double *vers);
-void moveAgent(int i);
-void drawAgent(int i);
-void drawTrust(int i, int j);
-double hue(int i);
-int segno (double n);
-void hsl2rgb(float h, float s, float l, GLfloat *color);
-float h2v(float v1, float v2, float vH);
+void circle(double x, double y, double radius);
+void drawAgents(int i);
+
 #endif
