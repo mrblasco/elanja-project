@@ -67,13 +67,11 @@ int main(int argc, char **argv)
 
 	/* Text file for printing the matrices */
 	FILE *out;
-	FILE *out_1;
 	FILE *out2;	
 	FILE *out3;
 	FILE *out4;	
 	FILE *out5;
 	out = fopen("matrix.dat", "w");	
-	out_1 = fopen("degree1.dat", "w");
 	out2 = fopen("single_node.dat", "w");
 	out3 = fopen("alfa.dat", "w");
 	out4 = fopen("degree.dat", "w");
@@ -96,7 +94,7 @@ int main(int argc, char **argv)
  	for(i=0; i<n_iter; i++)
 	{
 		interaction(agents, m, distance, p, q, A, R, degree, A_degree, B_degree);
- 		multiplyer(agents, m, distance, A, A, B, degree, A_degree, B_degree, distance, out_1); 
+ 		multiplyer(agents, m, distance, A, A, B, degree, A_degree, B_degree, distance); 
  		update(agents, p, q, degree, A_degree, B_degree);
 	    /*  externalUpdate(agents, A, p, q, EPSILON, degree);*/
 		

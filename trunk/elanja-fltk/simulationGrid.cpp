@@ -41,7 +41,7 @@ void simulationGrid::init(){
 	simSpeed = SIM_SPEED_INIT;
 	
 	if(initModel){
-		m.init(LAMBDA_INIT, G_COEF_INIT, C_EXP_INIT, NUM_AGENTS_INIT);
+		m.init(10, 1, 50.0, 0.5, 1);
 		initModel=false;
 	}else{		
 		restart = true;
@@ -59,34 +59,40 @@ void simulationGrid::draw() {
 		m.reinit(gui_agents, gui_population, gui_epsilon, gui_friendship);
 	
 	// passa al modello i parametri presi dalla gui
+	if(m.agents != gui_agents || m.m != gui_population)
+		m.reinit(gui_agents, gui_population, gui_epsilon, gui_friendship);
+
 	m.agents = gui_agents;
 	m.population = gui_population;
 	m.epsilon = gui_epsilon;
-
-	
-	drawAgent(1);
-	
 
 	// svuota il display
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 	// passo di simulazione
 	m.step();
-	restart = false;
+
+	for(i=0; i<m.agents; i++)
+	{		
+		drawAgents(i);	
+	}
 }
 
-void drawAgent(int i){
-	double x,y, size;
-	GLfloat col[4];
-	int j;
-	size = 3;
+void drawAgents(int i){
+	int k, j;		 	
 
-	x = 45;
-	y = 45;
+	if (i<m.m)
+	{
+		glColor4d(1.0,m.composition[i],0.0,0.7);/* La quarta componente e' l'opacita' */
+		circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+	}
+	if (i>=m.m)
+	{
+		glColor4f(m.composition[i],0.0,1.0,0.7);/* La quarta componente e' l'opacita' */
+		circle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+	}
 
-	col[3]=0.3;
-	glColor4fv(col);
-	circle(x,y,W,H,size);
+	restart = false;
 }
 
 void timer_cb(void *p) 
@@ -100,7 +106,7 @@ void timer_cb(void *p)
 	}
 }
 
-void circle(double x, double y, double w, double h, double radius){
+void circle(double x, double y, double radius){
 	double a, da;
 	
 	da = 2.0 * asin(1.0/radius);

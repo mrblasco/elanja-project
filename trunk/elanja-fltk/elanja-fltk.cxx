@@ -83,9 +83,10 @@ int main(int argc, char **argv)
         			agentsSlider->selection_color((Fl_Color)136);/* Cursor color */
         			agentsSlider->labelfont(1);
         			agentsSlider->labelsize(12);
-        			agentsSlider->maximum(0.1);
-        			agentsSlider->step(0.001);
-        			agentsSlider->value(0.05);
+				agentsSlider->minimum(1);
+        			agentsSlider->maximum(100);
+        			agentsSlider->step(2);
+        			agentsSlider->value(10);
         			agentsSlider->callback((Fl_Callback*)agentsSliderCallback);
         			agentsSlider->align(FL_ALIGN_TOP_LEFT);/* Label align*/
       			}
@@ -95,9 +96,12 @@ int main(int argc, char **argv)
         			//populationSlider->box(FL_THIN_DOWN_BOX);
         			populationSlider->color((Fl_Color)124);
         			populationSlider->selection_color((Fl_Color)136);
+				populationSlider->minimum(10);
+        			populationSlider->maximum(100);
         			populationSlider->labelfont(1);
         			populationSlider->labelsize(12);
-        			populationSlider->value(1);
+        			populationSlider->value(50);
+				populationSlider->step(10);
         			populationSlider->callback((Fl_Callback*)populationSliderCallback);
         			populationSlider->align(FL_ALIGN_TOP_LEFT);
       			}
