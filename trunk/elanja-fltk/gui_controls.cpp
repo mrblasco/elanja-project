@@ -4,11 +4,12 @@
 #define MINDELAY	(0.001)
 #define MAX(a,b)	(a>b?a:b)
 
-double gui_agents;
+int gui_agents;
+int gui_distance;
+
 double gui_population;
 double gui_epsilon;
-
-int gui_friendship;
+double gui_friendship;
 
 bool doNextSimulationStep;
 bool restart;

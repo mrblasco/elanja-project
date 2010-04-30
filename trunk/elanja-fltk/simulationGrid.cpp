@@ -1,30 +1,31 @@
 #include "simulationGrid.h"
+#include "const.h"
 
-extern double gui_agents;
+extern int gui_agents; /* graphical user interface ... gui => agenti modificati dalla barra */
+extern int gui_distance;
 extern double gui_population;
 extern double gui_epsilon;
 
-extern int gui_friendship;
-
+extern double gui_friendship;
 extern bool restart;
 extern double simSpeed;
-
-extern model m;
+extern model m; /* chiami clase model -> m */
 
 bool initModel=true;
 int W,H;
 
-simulationGrid::simulationGrid(int x,int y,int w,int h, const char *l):Fl_Gl_Window(x,y,w,h,l) 
+simulationGrid::simulationGrid(int x,int y,int w,int h, const char *l):Fl_Gl_Window(x,y,w,h,l)  /*invoca costruttore FLGLWINDOW*/
 {
-	grow = true;
-	restart = true;
+/*	grow = true; */
+	restart = true; 
 	W=w;
 	H=h;
 }
 
 void simulationGrid::init(){ 
-	valid(1);
-	glLoadIdentity();
+     /* initializza la simulation grid */ 
+	valid(1); /*valido?*/
+	glLoadIdentity(); 
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glMatrixMode (GL_PROJECTION);     
@@ -32,44 +33,45 @@ void simulationGrid::init(){
 	glOrtho(0, w(), 0, h(), -100, 100);                
 	glMatrixMode (GL_MODELVIEW);
 	
-	// parametri iniziali
-	gui_agents = LAMBDA_INIT;
-	gui_population = G_COEF_INIT;
-	gui_epsilon = C_EXP_INIT;
-	gui_friendship = NUM_AGENTS_INIT;
+	/* parametri iniziali */
+	gui_agents = AGENTS_INIT;  
+	gui_distance = DISTANCE_INIT;
+	gui_population = (AGENTS_INIT / 2);
+	gui_epsilon = EPSILON_INIT;
+	gui_friendship = SAMPLE_INIT;
 	
 	simSpeed = SIM_SPEED_INIT;
 	
-	if(initModel){
-		m.init(10, 1, 50.0, 0.5, 1);
-		initModel=false;
+if(initModel){ 
+		m.init(AGENTS_INIT, DISTANCE_INIT, FRACTION_INIT, EPSILON_INIT, SAMPLE_INIT);  /* chiama la classe model , metodo init()*/ 
+		initModel=false; 
 	}else{		
 		restart = true;
 	}
 }
 
-void simulationGrid::draw() {	
-	int i,j;
+void simulationGrid::draw() {	 /*metodo draw ... per disegnare le palline*/
+	int i, j;
 	
-	//inizializzazione grafica
+	/*inizializzazione grafica */
 	if (!valid())
-		init();
+		init(); 
 	
-	if (restart)
-		m.reinit(gui_agents, gui_population, gui_epsilon, gui_friendship);
+   if (restart)
+		m.reinit(gui_agents,gui_distance, gui_population, gui_epsilon, gui_friendship);   
 	
-	// passa al modello i parametri presi dalla gui
-	if(m.agents != gui_agents || m.m != gui_population)
-		m.reinit(gui_agents, gui_population, gui_epsilon, gui_friendship);
+	/* passa al modello i parametri presi dalla gui  e reiinit  */
+	if(m.agents != gui_agents || m.population != gui_population || m.epsilon != gui_epsilon)
+		m.reinit(gui_agents,gui_distance, gui_population, gui_epsilon, gui_friendship); 
 
-	m.agents = gui_agents;
+	/*m.agents = gui_agents;
 	m.population = gui_population;
-	m.epsilon = gui_epsilon;
+	m.epsilon = gui_epsilon;*/
 
-	// svuota il display
+	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-	// passo di simulazione
+	/* passo di simulazione */
 	m.step();
 
 	for(i=0; i<m.agents; i++)
@@ -81,23 +83,26 @@ void simulationGrid::draw() {
 void drawAgents(int i){
 	int k, j;		 	
 
-	if (i<m.m)
+	if ( i < m.m ) /*modello. m = perc tipo ... */
 	{
-		glColor4d(1.0,m.composition[i],0.0,0.7);/* La quarta componente e' l'opacita' */
-		circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+          /* rosso, green, blue, opacity */
+		glColor4d(1 - m.composition[i], 0, m.composition[i],0.7);
+          /* position_x, position_ y, size */
+		//circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 	}
 	if (i>=m.m)
 	{
-		glColor4f(m.composition[i],0.0,1.0,0.7);/* La quarta componente e' l'opacita' */
+          /* rosso, green, blue, opacity */
+		glColor4f(m.composition[i],0,(1-m.composition[i]),0.7);
 		circle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 	}
 
 	restart = false;
 }
 
-void timer_cb(void *p) 
+void timer_cb(void *p) /*delay tra step e altro*/
 {
-	simulationGrid *glf = (simulationGrid*)p;
+	simulationGrid *glf = (simulationGrid*)p; 
 
 	if(doNextSimulationStep){
 		glf->redraw();

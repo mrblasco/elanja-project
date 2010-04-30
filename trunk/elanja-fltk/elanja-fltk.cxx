@@ -4,7 +4,7 @@
 #include "gui_controls.h"
 #include "widgetWindow.h"
 
-static simulationGrid glf(10,30,745,500); 
+static simulationGrid glf(10,30,745,500);  /* classe grafica  */
 
 /************* Main Window *****************************************/
 Fl_Double_Window *elanjaWindow=(Fl_Double_Window *)0;
@@ -46,10 +46,12 @@ Fl_Menu_Item menu_Visualizza[] = {
  {0,0,0,0,0,0,0,0,0}
 };
 
+
 int main(int argc, char **argv) 
 {
-	glf.mode(FL_DOUBLE);
-	{	/* Main Window */
+	glf.mode(FL_DOUBLE); /* glf è la nostra classe */
+	{	
+          /* Main Window */
 	 	elanjaWindow = new Fl_Double_Window(765, 730, "Elanja");
 		elanjaWindow->color(FL_LIGHT3);
 		elanjaWindow->selection_color((Fl_Color)53);
@@ -113,24 +115,24 @@ int main(int argc, char **argv)
         			epsilonSlider->selection_color((Fl_Color)136);
         			epsilonSlider->labelfont(1);
         			epsilonSlider->labelsize(12);
-        			epsilonSlider->minimum(1);
-        			epsilonSlider->maximum(10);
-        			epsilonSlider->step(0.1);
+        			epsilonSlider->minimum(0.0);
+        			epsilonSlider->maximum(1.0);
+        			epsilonSlider->step(0.05);
         			epsilonSlider->value(5);
         			epsilonSlider->callback((Fl_Callback*)epsilonSliderCallback);
         			epsilonSlider->align(FL_ALIGN_TOP_LEFT);
       			}
       			{	/* Friendship Slider */
-				friendshipSlider = new Fl_Value_Slider(290, 625, 260, 35, "Frienship");
+				friendshipSlider = new Fl_Value_Slider(290, 625, 260, 35, "Friendship");
         			friendshipSlider->type(5);
 			        friendshipSlider->box(FL_THIN_DOWN_BOX);
 			        friendshipSlider->color((Fl_Color)124);
 			        friendshipSlider->selection_color((Fl_Color)136);
 			        friendshipSlider->labelfont(1);
 			        friendshipSlider->labelsize(12);
-        			friendshipSlider->minimum(1);
-			        friendshipSlider->maximum(100);
-			        friendshipSlider->step(1);
+        			friendshipSlider->minimum(0.0);
+			        friendshipSlider->maximum(1.0);
+			        friendshipSlider->step(0.05);
 			        friendshipSlider->value(10);
 			        friendshipSlider->callback((Fl_Callback*)friendshipSliderCallback);
 			        friendshipSlider->align(FL_ALIGN_TOP_LEFT);
@@ -143,7 +145,7 @@ int main(int argc, char **argv)
 			        simSpeedSlider->selection_color((Fl_Color)136);
 			        simSpeedSlider->labelfont(1);
 			        simSpeedSlider->labelsize(12);
-			        simSpeedSlider->minimum(0.001);
+			        simSpeedSlider->minimum(0.0001);
 			        simSpeedSlider->step(0.001);
 			        simSpeedSlider->value(0.001);
 			        simSpeedSlider->callback((Fl_Callback*)simSpeedSliderCallback);
@@ -169,7 +171,7 @@ int main(int argc, char **argv)
     		elanjaWindow->resizable(&glf);
     		elanjaWindow->end();
 	}
-	elanjaWindow->show(argc, argv);
-	return Fl::run();
+	elanjaWindow->show(argc, argv); /*fammela vedere*/
+	return Fl::run(); /* se modifica qualcosa ridisegna...  */
 }
-static int x; 
+static int x; /* ? */

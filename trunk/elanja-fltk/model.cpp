@@ -2,13 +2,14 @@
 
 model m; // istanza del modello
 int t; // counter delle iterazioni
+
 extern bool externAgentOn;
 extern bool dinamicProductsOn;
 extern int W,H;
 
-void model::init(int agents, int distance, double population, double epsilon, int friendship){
+void model::init(int agents, int distance, double population, double epsilon, double friendship){
 	int i;
-	
+	/* "this" field of the class model */
 	this->agents = agents;
 	this->distance = distance;
 	this->population = population;
@@ -30,22 +31,29 @@ void model::init(int agents, int distance, double population, double epsilon, in
 
 	this->composition = (double*) malloc(sizeof(double)*agents);	
 
-	for(i=0; i<agents;i++)
-	{
-		degree[i] = rand() % 100 + 1;
-		composition[i] = (double) (rand() % 10)/10;
-		p[i] = 0.0; 
-		q[i] = 0.0;
 
+	for(i=0; i<agents; i++)	
+	{
+		p[i] = agents/2; 
+		q[i] = 0.5;
 	}
 
-	t = 0;
+     /* inizializza*/
+/*	for(i=0; i<agents;i++)
+	{
+		degree[i] = 10; 
+		composition[i] = (double) 0;
+		p[i] = 0.0; 
+		q[i] = 0.0;
+     }*/
+	t = 0; /* etichetta che si visualizza ... gli step di simulazione */
 }
 
-void model::reinit(double agents, double population, double epsilon, int friendship){
+void model::reinit(int agents, int distance, double population, double epsilon, double friendship){
 	int i;
 	
 	this->agents = agents;
+	this->distance = distance;     
 	this->population = population;
 	this->epsilon = epsilon;
 	this->friendship = friendship;
@@ -64,229 +72,131 @@ void model::reinit(double agents, double population, double epsilon, int friends
 	this->B_degree = (int*) malloc(sizeof(int)*agents);
 
 	this->composition = (double*) malloc(sizeof(double)*agents);
-
-	for(i=0; i<agents;i++)
-	{
-		degree[i] = rand() % 100 + 1;
-		composition[i] = (double) (rand() % 10)/10;
-		p[i] = 0.0; 
-		q[i] = 0.0;
-
-	}
-
-	t = 0;
+ 	t = 0;
 }
 
 void model::step(){
-	//interaction(agents, m, distance, p, q, A, R, degree, A_degree, B_degree);
-	//multiplyer(agents, m, distance, A, A, B, degree, A_degree, B_degree, distance); 
-	//update(agents, p, q, degree, A_degree, B_degree);
 
-	//printf("Faccio un passo\n");
-    /*  externalUpdate(agents, A, p, q, EPSILON, degree);*/
-}
+     int i, j;
+/* "interactions" creates adjacency matrix */
+	interaction(agents, m,  p, q, A, epsilon, friendship); 
 
-double urand(){
-	return (double)(rand()%RAND_MAX)/(double)RAND_MAX;
-}
-
-/* Function to compute Adjacency matrices at d<=2 */
-void multiplyer(int agents, int m, int distance, int *A, int *B, int *C, int *degree, int *A_degree, int *B_degree, int d) {
-
-	int i, j, l;
-
-	FILE *out_1;
-
-	out_1 = fopen("degree1.dat", "w");
-	
-	if(distance==2)
-	{
-
-		/*  Initialize Am */
-		for(i=0; i<agents; i++) 
-		{
-			for(j=0; j<agents; j++)
-			{ 
-				*(C + i*agents + j) = 0;
-			}
-		}
-
-		/* Degree vector distance 1 */ 
-		for(i=0; i<agents; i++)
-		{
-			for(j=0; j<agents; j++)
-			{
-				*(degree+i) += *(A+(i*agents)+j);
-		   	}
-			fprintf(out_1,"%d\t",*(degree+i));
-		}
-
-		/* Degree of A-type agents vector*/ 
-		for(i=0; i<agents; i++)
-		{
-			for(j=0; j<m; j++)
-			{
-				*(A_degree+i) += *(A+(i*agents)+j);
-		   	}
-			fprintf(out_1,"%d\t",*(A_degree+i));
-			for(j=m; j<agents; j++)
-			{
-				*(B_degree+i) += *(A+(i*agents)+j);
-		   	}
-			fprintf(out_1,"%d\t",*(B_degree+i));
-		}
-		fprintf(out_1,"\n");		
-
-		/* Product */
-		for(i=0; i<agents; i++)
-		{	
-			for(j=0; j<agents; j++)
-			{		
-				for (l=0; l<agents;l++) 
-					*(C + i*agents +j) += (*(A + i*agents +l) * *(B + j*agents +l)); 
-			}	
-		} 
-		/* Normalize Adjacency matrix adding distance one*/
-		for(i=0; i<agents; i++)
-		{	
-			for(j=0; j<agents; j++)
-			{	
-				*(C + i*agents +j) += *(A + i*agents +j);
-				if (*(C + i*agents +j) > 1 )
-						*(C + i*agents +j) = 1;
-			}      
-		}
-
-		/* Degree vector distance 1 */ 
-		for(i=0; i<agents; i++)
-		{
-			for(j=0; j<agents; j++)
-			{
-				*(degree+i) += *(C+(i*agents)+j);
-		   	}
-		}
-
-		/* Degree of A-type agents vector*/ 
-		for(i=0; i<agents; i++)
-		{
-			for(j=0; j<m; j++)
-			{
-				*(A_degree+i) += *(C+(i*agents)+j);
-		   	}
-			for(j=m; j<agents; j++)
-			{
-				*(B_degree+i) += *(C+(i*agents)+j);
-		   	}
- 		}
- 		 
-	}
-	else if (distance==1)
-	{
-		/* Degree vector*/ 
-		for(i=0; i<agents; i++)
-		{
-			for(j=0; j<agents; j++)
-			{
-				*(degree+i) += *(A+(i*agents)+j);
-		   	}
-		}
-
-		/* Degree of A-type agents vector*/ 
-		for(i=0; i<agents; i++)
-		{
-			for(j=0; j<m; j++)
-			{
-				*(A_degree+i) += *(A+(i*agents)+j);
-		   	}
-			for(j=m; j<agents; j++)
-			{
-				*(B_degree+i) += *(A+(i*agents)+j);
-		   	}
-		}
-	}
-	else
-		printf("Distance error d = %d\n", distance);
-}
-
-void interaction(int agents, int m, int distance, double *p, double *q, int *A, double *R, int *degree, int *A_degree, int *B_degree) {
-
-	int i, j;
-	double link;
-	
-	/* Initialize matrices */
-	for(i=0; i<agents; i++)
-        {
-	   for(j=0; j<agents; j++)
-	   {
-	        *(A+(i*agents)+j) = 0; /* adjacency matrix */
-	   }
-        }
-
-	/* Link formation*/
-	/* R has random Upper-triangle and zeros on diagonal */
-	for(i=0; i<agents; i++)
-     	{
-	   	for(j=i; j<agents; j++) 
-	   	{
-			if(i==j) 
-			{
-				/* -2 => zero on diagonal (+2 ones) */
-				*(R+(i*agents)+j) = -2.0; 
-			
-			} else {
-				*(R+(i*agents)+j) = (double) (rand() %10001) / 10000;
-			}
-	   	}
-	}
-	/* R is symmmetric */
-	for(j=0; j<agents; j++)
-     	{
-		for(i=j; i<agents; i++)
-		{
-			*(R+(i*agents)+j) = *(R+(j*agents)+i);
-		}
-     	}
-
-	/* Adjacency matrix */ 
-	for(i=0; i<agents; i++)
-	{
-		for(j=i; j<agents; j++)
-		{
-			if(j < m && i < m ) 
-			{	
-				link = (double) *(R+(i*agents)+j) - (*(p+i) * *(p+j)); /* provare con il + */
-			} else if (j >= m  && i < m ) 
-			{
-				link = (double) *(R+(i*agents)+j) - (*(q+i) * *(p+j) );  /*  provare con il + */
-
-			} else if (j >= m && i >= m) 
-			{		
-				link = (double) *(R+(i*agents)+j) - ( *(q+i) * *(q+j) );	
-			}
-			if (link < 0) 
-			{
-				*(A+(i*agents)+j) = 1; 		 
-			}	 
-		}
-	}
-	/* Am is symmmetric */
-	for(j=0; j<agents; j++)
-    	{
-		for(i=j; i<agents; i++)
-		{
-			*(A+(i*agents)+j) = *(A+(j*agents)+i);
-	   	}
-     	}
-
-	/* Initialize degree, A_degree, B_degree vectors to 0 at each iteraction */
+	/* Degree, Deg. A-type, B-type */ 
 	for(i=0; i<agents; i++)
 	{
 		*(degree+i) = 0;
 		*(A_degree+i) = 0;
 		*(B_degree+i) = 0;
+
+		for(j=0; j<m; j++)
+		{
+			*(A_degree+i) += *(A+(i*agents)+j);
+			*(degree+i) += *(A+(i*agents)+j);
+	   	}
+		for(j=m; j<agents; j++)
+		{
+			*(B_degree+i) += *(A+(i*agents)+j);
+			*(degree+i) += *(A+(i*agents)+j);
+	   	}
+	}
+     /* Composition and p & q vectors */
+	for(i=0; i<agents; i++)
+	{
+          if( degree[i] > 0)
+          {	 
+		     if(i<m)
+		     {
+                    composition[i]  = (double) A_degree[i] / (double) degree[i];
+	        	} else {
+                    composition[i]  = (double) B_degree[i] / (double) degree[i];
+	        	}
+
+ 			*(p+i) = 0.2+ (0.5 * (double)  *(A_degree + i) / *(degree + i)); 
+               *(q+i) = 0.2 + (0.5 * (double) *(B_degree + i) / *(degree + i)); 
+          }
+     }
+
+	multiplyer(agents, A, B);  
+//	update(agents, p, q, degree, A_degree, B_degree);
+
+	//printf("Faccio un passo\n");
+    /*  externalUpdate(agents, A, p, q, EPSILON, degree);*/
+}
+
+void interaction(int agents, int m, double *p, double *q, int *A, double epsilon, double friendship) {
+
+	int i, j;
+	int link;
+     double random;
+ 	
+	/* Adjacency matrix */ 
+	for(i=0; i<agents; i++)
+	{
+		for(j=i; j<agents; j++)
+		{
+               link = 0;
+		     random  = (rand() %1000) / 1000;
+
+			if( *(A+(i*agents)+j) == 1 && (random < epsilon) ) /* mantiene le passate connessioni */ 
+			{
+                    link = 1;
+ 			} else { 
+
+			     if(  ( (j < m) && (i < m) ) && ( random < *(p+i) * *(p+j))  )   
+			     {	
+				     link =  1; 
+                    } else  if(  ( (j >= m) && (i < m) ) && ( random< *(q+i) * *(p+j))  )   
+                    {
+				     link = 1; 
+                    } else  if(  ( (j >= m) && (i >= m) ) && ( random < *(q+i) * *(q+j))  )   
+			     {		
+				     link = 1; 	
+			     }
+ 			}
+              random = ((double) (rand() %10000) / 10000);
+			if (  ( (link ==1)  && (random < friendship) ) || (j==i))  
+			{
+				*(A+(i*agents)+j) = 1; 
+				*(A+(j*agents)+i) = 1; /*AM is symmetric*/		 
+			} else {
+				*(A+(i*agents)+j) = 0; 
+				*(A+(j*agents)+i) = 0; /*AM is symmetric*/		 
+			}
+		}
 	}
 }
 
+/* Function to compute Adjacency matrices at d<=2 */
+void multiplyer(int agents,  int *A, int *C) {
+
+	int i, j, l;
+	int temp;
+
+	/* Product of matrices */
+	for(i=0; i<agents; i++)
+	{	
+		for(j=0; j<agents; j++)
+		{		
+			*(C + i*agents + j) = 0;
+			for (l=0; l<agents;l++) 
+				*(C + i*agents +j) += (*(A + i*agents +l) * *(A + j*agents +l)); 
+		}	
+	} 
+	
+	/* Normalize to Adjacency  matrix at distance d=2*/
+	for(i=0; i<agents; i++)
+	{	
+		for(j=0; j<agents; j++)
+		{	
+			*(C + i*agents +j) += *(A + i*agents +j);
+			if (*(C + i*agents +j) > 1 )
+					*(C + i*agents +j) = 1;
+		}      
+	}  
+}
+
+ 
+ 
 void update(int agents, double *p, double *q, int *degree, int *A_degree, int *B_degree){
 
 	int i;
@@ -299,8 +209,8 @@ void update(int agents, double *p, double *q, int *degree, int *A_degree, int *B
 	{	
 		if(*(degree+i) > 0)
 		{	 
- 			*(p+i) = 0.1 + (0.5 * (double)  *(A_degree + i) / *(degree + i)); 
-			*(q+i) = 0.1 + (0.5 * (double) *(B_degree + i) / *(degree + i)); 
+ 			*(p+i) = 0.2+ (0.5 * (double)  *(A_degree + i) / *(degree + i)); 
+			*(q+i) = 0.2 + (0.5 * (double) *(B_degree + i) / *(degree + i)); 
 		}
 	}	
 }
