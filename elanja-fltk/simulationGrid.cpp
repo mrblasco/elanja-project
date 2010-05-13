@@ -15,7 +15,7 @@ extern model m;   /* object of class 'model' is called 'm' */
 bool initModel=true;
 int W,H;
 
-/*invoca costruttore FLGLWINDOW*/
+/*invoca costruttore FL_GL_WINDOW*/
 simulationGrid::simulationGrid(int x,int y,int w,int h, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
 /*	grow = true; */
@@ -43,10 +43,13 @@ void simulationGrid::init(){
 	gui_friendship = SAMPLE_INIT;
 	simSpeed = SIM_SPEED_INIT;
 	
-if(initModel){ 
+	if(initModel)
+	{ 
 		m.init(AGENTS_INIT, DISTANCE_INIT, AGROUP_INIT , EPSILON_INIT, SAMPLE_INIT);   
 		initModel=false; 
-	}else{		
+	}
+	else
+	{		
 		restart = true;
 	}
 }
@@ -58,16 +61,9 @@ void simulationGrid::draw() {
 	if (!valid())
 		init(); 
 	
-   if (restart)
-		m.reinit(gui_agents,gui_distance, gui_Agroup, gui_epsilon, gui_friendship);   
-	
-	/* passa al modello i parametri presi dalla gui  e reiinit  */
+	/* passa al modello i parametri presi dalla gui  e reinit  */
 	if(m.agents != gui_agents || m.Agroup != gui_Agroup || m.epsilon != gui_epsilon)
-     	m.reinit(gui_agents,gui_distance, gui_Agroup, gui_epsilon, gui_friendship);         
-
-	/* m.agents = gui_agents;
-	m.population = gui_population;
-	m.epsilon = gui_epsilon;*/
+     		m.reinit(gui_agents,gui_distance, gui_Agroup, gui_epsilon, gui_friendship);         
 
 	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -79,7 +75,8 @@ void simulationGrid::draw() {
 	{		
 		drawAgents(i);	
 	}
-     restart=false;
+	
+	//restart=false;
 }
 
 void drawAgents(int i){
