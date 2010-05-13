@@ -19,7 +19,7 @@ public:
 	int agents;
 	int distance;
 	int m;
-	double Agroup;
+	double rho;
 	double epsilon;
 	double friendship;
 

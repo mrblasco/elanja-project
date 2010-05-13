@@ -93,7 +93,7 @@ int main(int argc, char **argv)
         			agentsSlider->align(FL_ALIGN_TOP_LEFT);/* Label align*/
       			}
       			{ 	/* Population Slider */
-				populationSlider = new Fl_Value_Slider(15, 625, 240, 35, "A-type percentage");
+				populationSlider = new Fl_Value_Slider(15, 625, 240, 35, "Rho");
         			populationSlider->type(5);
         			//populationSlider->box(FL_THIN_DOWN_BOX);
         			populationSlider->color((Fl_Color)124);
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
         			populationSlider->maximum(0.95);
         			populationSlider->labelfont(1);
         			populationSlider->labelsize(12);
-        			populationSlider->value(AGROUP_INIT);
+        			populationSlider->value(RHO_INIT);
 				populationSlider->step(0.05);
         			populationSlider->callback((Fl_Callback*)populationSliderCallback);
         			populationSlider->align(FL_ALIGN_TOP_LEFT);
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
       			{	/* Friendship Slider */
 				friendshipSlider = new Fl_Value_Slider(290, 625, 260, 35, "Friendship");
         			friendshipSlider->type(5);
-			        friendshipSlider->box(FL_THIN_DOWN_BOX);
+			        //friendshipSlider->box(FL_THIN_DOWN_BOX);
 			        friendshipSlider->color((Fl_Color)124);
 			        friendshipSlider->selection_color((Fl_Color)136);
 			        friendshipSlider->labelfont(1);
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
       			{	/* Simulation Speed Slider */
 				simSpeedSlider = new Fl_Value_Slider(160, 685, 240, 35, "Simulation Speed");
         			simSpeedSlider->type(5);
-			        simSpeedSlider->box(FL_THIN_DOWN_BOX);
+			        //simSpeedSlider->box(FL_THIN_DOWN_BOX);
 			        simSpeedSlider->color((Fl_Color)124);
 			        simSpeedSlider->selection_color((Fl_Color)136);
 			        simSpeedSlider->labelfont(1);
