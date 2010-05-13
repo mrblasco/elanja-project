@@ -154,7 +154,7 @@ int main(int argc, char **argv)
       			{	/* Perturbation Button */
 	     			perturbationButton = new Fl_Check_Button(585, 565, 165, 15, "Perturbation");
         	     		perturbationButton->down_box(FL_DOWN_BOX);
-                         perturbationButton->callback((Fl_Callback*)perturbationCallback, (void*)(numProductsSlider));
+                         	perturbationButton->callback((Fl_Callback*)perturbationCallback, (void*)(numProductsSlider));
       			}
       			{	/* Hubs Button */
 				hubsButton = new Fl_Check_Button(585, 590, 170, 15, "Hubs");

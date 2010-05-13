@@ -9,6 +9,9 @@ extern int W,H;
 
 void model::init(int agents, int distance, double Agroup, double epsilon, double friendship){
 	int i;
+
+	printf("Initializing Model ... \n");	
+
 	/* "this" field of the class model */
 	this->agents = agents;
 	this->distance = distance;
@@ -50,24 +53,33 @@ void model::init(int agents, int distance, double Agroup, double epsilon, double
 void model::reinit(int agents, int distance, double Agroup, double epsilon, double friendship){
 	int i;
 	
+	printf("Reinitializing Model ... \n");
+
 	this->agents = agents;
 	this->distance = distance;     
 	this->m = Agroup * agents;
 	this->epsilon = epsilon;
 	this->friendship = friendship;
-
-
+	
+	if(p) free(p);
 	this->p = (double*) malloc ((sizeof(double))*agents);
+	if(q) free(q);
 	this->q = (double*) malloc(sizeof(double)*agents);
+	if(R) free(R);
 	this->R = (double*) malloc(sizeof(double)*agents*agents);
-
+	if(A) free(A);
 	this->A = (int*) malloc(sizeof(int)*agents*agents);
+	if(B) free(B);
 	this->B = (int*) malloc(sizeof(int)*agents*agents);
 
+	if(degree) free(degree);
 	this->degree = (int*) malloc(sizeof(int)*agents);
+	if(A_degree) free(A_degree);
 	this->A_degree = (int*) malloc(sizeof(int)*agents);
+	if(B_degree) free(B_degree);
 	this->B_degree = (int*) malloc(sizeof(int)*agents);
 
+	if(composition) free(composition);
 	this->composition = (double*) malloc(sizeof(double)*agents);
  	t = 0;
 } 
@@ -121,6 +133,8 @@ void model::step(){
 
 	//printf("Faccio un passo\n");
     /*  externalUpdate(agents, A, p, q, EPSILON, degree);*/
+
+	t += 1;
 }
 
 void interaction(int agents, int m, double *p, double *q, int *A, double epsilon, double friendship) {
