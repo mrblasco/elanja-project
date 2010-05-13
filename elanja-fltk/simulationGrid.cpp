@@ -4,7 +4,7 @@
 /* Graphical User Interface */
 extern int gui_agents;  
 extern int gui_distance; 
-extern double gui_Agroup; /* fraction of a-type people over population*/
+extern double gui_rho; /* fraction of a-type people over population*/
 extern double gui_epsilon; /* inherited fracion of links  */
 extern double gui_friendship; /*  fraction of population met in one iteration */
 
@@ -38,14 +38,14 @@ void simulationGrid::init(){
 	/* parametri iniziali */
 	gui_agents = AGENTS_INIT;  
 	gui_distance = DISTANCE_INIT;
-	gui_Agroup = AGROUP_INIT;
+	gui_rho = RHO_INIT;
 	gui_epsilon = EPSILON_INIT;
 	gui_friendship = SAMPLE_INIT;
 	simSpeed = SIM_SPEED_INIT;
 	
 	if(initModel)
 	{ 
-		m.init(AGENTS_INIT, DISTANCE_INIT, AGROUP_INIT , EPSILON_INIT, SAMPLE_INIT);   
+		m.init(AGENTS_INIT, DISTANCE_INIT, RHO_INIT , EPSILON_INIT, SAMPLE_INIT);   
 		initModel=false; 
 	}
 	else
@@ -62,34 +62,33 @@ void simulationGrid::draw() {
 		init(); 
 	
 	/* passa al modello i parametri presi dalla gui  e reinit  */
-	if(m.agents != gui_agents || m.Agroup != gui_Agroup || m.epsilon != gui_epsilon)
-     		m.reinit(gui_agents,gui_distance, gui_Agroup, gui_epsilon, gui_friendship);         
+	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.epsilon != gui_epsilon))
+     		m.reinit(gui_agents,gui_distance, gui_rho, gui_epsilon, gui_friendship);         
 
 	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
 	
-	/* passo di simulazione */
-	m.step();
-
 	for(i=0; i<m.agents; i++)
 	{		
 		drawAgents(i);	
 	}
-	
-	//restart=false;
+
+	/* passo di simulazione */
+	m.step();
+
 }
 
 void drawAgents(int i){
 	int k, j;		 	
 
-	if ( i < m.m ) 
+	if (i < m.m ) 
 	{
           /* rosso, green, blue, opacity */
 		glColor4d(1 - m.composition[i], 0, m.composition[i],0.7);
           /* position_x, position_ y, size */
 		circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 	}
-	if (i>=m.m)
+	if (i >= m.m)
 	{
           /* rosso, green, blue, opacity */
 		glColor4f(m.composition[i],0,(1-m.composition[i]),0.7);

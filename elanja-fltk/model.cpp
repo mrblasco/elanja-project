@@ -7,18 +7,18 @@ extern bool externAgentOn;
 extern bool dinamicProductsOn;
 extern int W,H;
 
-void model::init(int agents, int distance, double Agroup, double epsilon, double friendship){
-	int i;
+void model::init(int agents, int distance, double rho, double epsilon, double friendship){
+	int i, j;
 
 	printf("Initializing Model ... \n");	
 
 	/* "this" field of the class model */
 	this->agents = agents;
 	this->distance = distance;
-	this->m = Agroup * agents;
+	this->rho = rho;
+	this->m = rho * agents;
 	this->epsilon = epsilon;
 	this->friendship = friendship;
-	//this->m = (Agroup*agents)/100;
 
 	this->p = (double*) malloc ((sizeof(double))*agents);
 	this->q = (double*) malloc(sizeof(double)*agents);
@@ -38,26 +38,26 @@ void model::init(int agents, int distance, double Agroup, double epsilon, double
 	{
 		p[i] = 0.5; 
 		q[i] = 0.5;
+		degree[i] = 1;
+		composition[i] = 1;
+
+		for(j=0; j<agents; j++)
+		{
+			A[i*agents + j] = 0;		
+		}
 	}
-     /* inizializza*/
-/*	for(i=0; i<agents;i++)
-	{
-		degree[i] = 10; 
-		composition[i] = (double) 0;
-		p[i] = 0.0; 
-		q[i] = 0.0;
-     }*/
 	t = 0; /* etichetta che si visualizza ... gli step di simulazione */
 }
 
-void model::reinit(int agents, int distance, double Agroup, double epsilon, double friendship){
-	int i;
+void model::reinit(int agents, int distance, double rho, double epsilon, double friendship){
+	int i, j;
 	
 	printf("Reinitializing Model ... \n");
 
 	this->agents = agents;
-	this->distance = distance;     
-	this->m = Agroup * agents;
+	this->distance = distance;  
+	this->rho = rho;
+	this->m = rho * agents;
 	this->epsilon = epsilon;
 	this->friendship = friendship;
 	
@@ -81,6 +81,19 @@ void model::reinit(int agents, int distance, double Agroup, double epsilon, doub
 
 	if(composition) free(composition);
 	this->composition = (double*) malloc(sizeof(double)*agents);
+
+	for(i=0; i<agents; i++)	
+	{
+		p[i] = 0.5; 
+		q[i] = 0.5;
+		degree[i] = 1;
+		composition[i] = 1;
+
+		for(j=0; j<agents; j++)
+		{
+			A[i*agents + j] = 0;		
+		}
+	}
  	t = 0;
 } 
 
@@ -107,6 +120,8 @@ void model::step(){
 			B_degree[i] += A[i*agents +j];
 			degree[i] += A[i*agents +j];
 	   	}
+	//printf(" degree %d = %d\n", i, degree[i]);
+
 	}
 
      /* Composition and p & q vectors*/
@@ -119,16 +134,15 @@ void model::step(){
                     composition[i]  = (double) A_degree[i] / (double) degree[i];
 
 	        	} else {
-
                     composition[i]  = (double) B_degree[i] / (double) degree[i];
 	        	}
 
- 			p[i] = 0.2 + (0.5 * (double) A_degree[i] / degree[i] ); 
-               q[i] = 0.2 + (0.5 * (double) B_degree[i] / degree[i] ); 
+ 		p[i] = 0.05 + (0.25 * (double) A_degree[i] / degree[i] ); 
+                q[i] = 0.05 + (0.25 * (double) B_degree[i] / degree[i] ); 
           }
-     } 
+     }
 
-	multiplyer(agents, A, B);  
+//	multiplyer(agents, A, B);  
 //	update(agents, p, q, degree, A_degree, B_degree);
 
 	//printf("Faccio un passo\n");
@@ -137,42 +151,82 @@ void model::step(){
 	t += 1;
 }
 
-void interaction(int agents, int m, double *p, double *q, int *A, double epsilon, double friendship) {
+void interaction(int agents, int m, double *p, double *q, int *A, double epsilon, double friendship) 
+{
 
-	int i, j;
-	int link;
-     double random;
+	int i, j, count;
+     	double random;
+	int outDegree[agents];
+
+	/* Initialize outDegree vector */
+	for (i=0; i<agents; i++)
+	{
+		outDegree[i] = 0;
+	}
 
 	/* Adjacency matrix */ 
 	for(i=0; i<agents; i++)
 	{
-		for(j=0; j<agents; j++)
+		for(j=i; j<agents; j++)
 		{
-               link = 0;
- 		     random  = (double) (rand() %1000) / (double) 1000;
-     		if( (random < epsilon) )   
-               {
-                    A[i*agents + j] = 1;
-               } else {  
-                    A[i*agents +j] = 0;
-               }
+	 		random  = (double) (rand() %1000) / (double) 1000;
+	     		if( ((random < epsilon) && (A[i*agents + j] == 1)) || (j == i))   
+		       	{
+				A[i*agents + j] = 1;
+				A[j*agents + i] = 1;
+				outDegree[i]++;
+				outDegree[j]++;
+		       	} 
+			else 
+			{
+		 		random  = (double) (rand() %1000) / (double) 1000;
+		     		if( (random < p[i] * p[j] ) && ( (j < m) && (i < m) )  )   
+			       	{
+				    	A[i*agents + j] = 1;
+					A[j*agents + i] = 1;
+					outDegree[i]++;
+					outDegree[j]++;
+			       	} 
+		     		if( (random < q[i] * p[j] ) &&  ( (j >= m) && (i < m) )  )   
+			       	{
+				    	A[i*agents + j] = 1;
+					A[j*agents + i] = 1;
+					outDegree[i]++;
+					outDegree[j]++;
+			       	} 
 
- 		     random  = (double) (rand() %1000) / (double) 1000;
-     		if( (random < p[i] * p[j] ) && ( (j < m) && (i < m) )  )   
-               {
-                    A[i*agents + j] = 1;
-               } 
-
-     		if( (random < q[i] * p[j] ) &&  ( (j >= m) && (i < m) )  )   
-               {
-                    A[i*agents + j] = 1;
-               } 
-
-     		if( (random < q[i] * q[j] ) &&  ( (j >= m) && (i >= m) )  )   
-               {
-                    A[i*agents + j] = 1;
-               } 
+		     		if( (random < q[i] * q[j] ) &&  ( (j >= m) && (i >= m) )  )   
+			       	{
+				    	A[i*agents + j] = 1;
+					A[j*agents + i] = 1;
+					outDegree[i]++;
+					outDegree[j]++;
+			       	} 
+			}
 		}
+	}
+
+	/*for(i=0; i<agents; i++)
+	{
+		printf(" outdegree %d = %d\n", i, outDegree[i]);
+	}*/
+
+	for(i=0; i<agents; i++)
+	{
+		count = 0;
+		while(outDegree[i] > OUTDEGREE_INIT && count < 2*agents)
+		{
+			j = rand()%agents;
+			if(i != j && A[i*agents + j] == 1 && outDegree[j] > OUTDEGREE_INIT)
+			{
+				A[i*agents + j] = 0;
+				A[j*agents + i] = 0;
+				outDegree[i] = outDegree[i] -1;
+				outDegree[j] = outDegree[j] -1;
+			}	
+			count++;
+		}
+
 	}
 }
 

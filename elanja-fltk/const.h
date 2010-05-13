@@ -6,7 +6,7 @@
 
 #define FRIEND_INIT		0.5  
 #define FRACTION_INIT		0.5  
-#define AGROUP_INIT		0.5  
-#define SIM_SPEED_INIT			0.1 /*simulation speed*/
-
+#define RHO_INIT		0.5  
+#define SIM_SPEED_INIT		1.0 /*simulation speed*/
+#define OUTDEGREE_INIT		10
 

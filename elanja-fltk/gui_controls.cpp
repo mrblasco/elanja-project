@@ -6,7 +6,7 @@
 
 int gui_agents;
 int gui_distance;
-double gui_Agroup;
+double gui_rho;
 double gui_epsilon;
 double gui_friendship;
 
@@ -50,7 +50,7 @@ void agentsSliderCallback(Fl_Value_Slider* s, void*){
 }
 void populationSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
-  	gui_Agroup = slider->value();
+  	gui_rho = slider->value();
 }
 void epsilonSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
