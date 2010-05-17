@@ -3,8 +3,11 @@
 #include "elanja-fltk.h"
 #include "gui_controls.h"
 #include "widgetWindow.h"
+#include "priceGenetics.h"
 
-static simulationGrid glf(10,30,745,500);  /* classe grafica  */
+static priceGenetics graphic1(300, 230);
+static widgetWindow priceGenetics(300, 230, &graphic1, "Prova");
+static simulationGrid glf(10,30,745,500, &graphic1);  /* classe grafica  */
 
 /************* Main Window *****************************************/
 Fl_Double_Window *elanjaWindow=(Fl_Double_Window *)0;
@@ -42,6 +45,7 @@ Fl_Menu_Item menu_Visualizza[] = {
  {"@|> Restart", 0,  (Fl_Callback*)stopCallback, (void*)(&glf), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Prova", 0, (Fl_Callback*)priceGeneticsCallback, (void*)(&priceGenetics), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };

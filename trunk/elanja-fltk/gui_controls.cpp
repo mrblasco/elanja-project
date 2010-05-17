@@ -85,3 +85,15 @@ void perturbationCallback(Fl_Check_Button *,void *data){
 void hubsCallback(Fl_Check_Button *,void * data){
 	hubsOn=!hubsOn;
 }
+
+/************************* STATISTICS ********************************/
+void priceGeneticsCallback(Fl_Widget*, void* data)
+{
+	widgetWindow * w;
+	
+	w = (widgetWindow *)data;
+	w->set_visible();
+	w->show();
+
+}
+

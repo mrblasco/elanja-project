@@ -10,8 +10,14 @@ widgetWindow:
 guiControls: simulationGrid
 	$(CC) -c gui_controls.cpp
 
-simulationGrid: model
+simulationGrid: graphic1 model
 	$(CC) -c simulationGrid.cpp
+
+graphic1: glStats
+	$(CC) -c priceGenetics.cpp
+
+glStats: 
+	$(CC) -c glStats.cpp
 	
 model:
 	$(CC) -c model.cpp

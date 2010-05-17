@@ -8,6 +8,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H> 
 
+#include "priceGenetics.h"
 #include "model.h"
 #include "elanja-fltk.h"
 
@@ -18,9 +19,10 @@ extern int t;
 class simulationGrid : public Fl_Gl_Window
 {
 public:
-	simulationGrid(int x, int y, int w, int h, const char *l=0);
+	simulationGrid(int x, int y, int w, int h, priceGenetics *graphic1, const char *l=0);
 	/*bool grow;
 	model m; */
+	priceGenetics *graphic1;
 protected: /* non puoi cancellalro */
 	void draw();
 	void init();
@@ -28,6 +30,8 @@ protected: /* non puoi cancellalro */
 
 void timer_cb(void *p);  /*  delay tra uno step e l'altro della simulazione */
 void circle(double x, double y, double radius); /* disegna i pallini */
+void rectangle(double x, double y, double edge); /* disegna quadrati */
+void triangle(double x, double y, double edge); /* disegna triangoli */
 void drawAgents(int i); /* per gli agenti */
 
 #endif
