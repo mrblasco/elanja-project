@@ -16,10 +16,11 @@ bool initModel=true;
 int W,H;
 
 /*invoca costruttore FL_GL_WINDOW*/
-simulationGrid::simulationGrid(int x,int y,int w,int h, const char *l):Fl_Gl_Window(x,y,w,h,l)  
+simulationGrid::simulationGrid(int x,int y,int w,int h, priceGenetics *graphic1, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
 /*	grow = true; */
 	restart = false; 
+	this->graphic1 = graphic1;
 	W=w;
 	H=h;
 }
@@ -86,13 +87,15 @@ void drawAgents(int i){
           /* rosso, green, blue, opacity */
 		glColor4d(1 - m.composition[i], 0, m.composition[i],0.7);
           /* position_x, position_ y, size */
-		circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		//circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		rectangle(rand() % (745/2 - 10) +10,  rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 	}
 	if (i >= m.m)
 	{
           /* rosso, green, blue, opacity */
 		glColor4f(m.composition[i],0,(1-m.composition[i]),0.7);
-		circle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		//circle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		triangle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 	}
 }
 
@@ -118,6 +121,25 @@ void circle(double x, double y, double radius){
 	}
 
 	glVertex2d(x + radius, y);
+	glEnd();
+}
+
+void rectangle(double x, double y, double edge)
+{
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2d(x, y);
+	glVertex2d(x + edge, y);
+	glVertex2d(x + edge, y + edge);
+	glVertex2d(x, y + edge);
+	glEnd();
+}
+
+void triangle(double x, double y, double edge)
+{
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2d(x + (edge/2), y);
+	glVertex2d(x, y + edge);
+	glVertex2d(x + edge, y + edge);	
 	glEnd();
 }
 
