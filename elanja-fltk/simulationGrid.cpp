@@ -85,17 +85,19 @@ void drawAgents(int i){
 	if (i < m.m ) 
 	{
           /* rosso, green, blue, opacity */
-		glColor4d(1 - m.composition[i], 0, m.composition[i],0.7);
+		//glColor4d(1 - m.composition[i], 0, m.composition[i],0.7);
+		glColor4d(m.features[i * m.agents + 0],m.features[i * m.agents + 1],m.features[i * m.agents + 2],0.7);
           /* position_x, position_ y, size */
-		//circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-		rectangle(rand() % (745/2 - 10) +10,  rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		//rectangle(rand() % (745/2 - 10) +10,  rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 	}
 	if (i >= m.m)
 	{
           /* rosso, green, blue, opacity */
-		glColor4f(m.composition[i],0,(1-m.composition[i]),0.7);
-		//circle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-		triangle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		//glColor4f(m.composition[i],0,(1-m.composition[i]),0.7);
+		glColor4d(m.features[i * m.agents + 0],m.features[i * m.agents + 1],m.features[i * m.agents + 2],0.7);
+		circle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		//triangle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 	}
 }
 

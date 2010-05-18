@@ -11,7 +11,7 @@
 
 class model{
 public: 
-     /* initialize functions and variables */
+     	/* initialize functions and variables */
 	void init(int agents, int distance, double Agroup, double epsilon, double friendship); 
 	void reinit(int agents, int distance, double Agroup, double epsilon, double friendship); 
 	void step(); 
@@ -22,12 +22,15 @@ public:
 	double rho;
 	double epsilon;
 	double friendship;
+	double threshold;
+
+	double *features;
 
 	double *p;
 	double *q;
 	double *R;
 
-	int *A;
+	double *A;
 	int *B;
 
 	int *degree;
@@ -38,8 +41,8 @@ public:
 	
 };
 
-void interaction(int agents, int m,  double *p, double *q, int *A, double epsilon, double friendship);
-
+void interaction(int agents, int m,  double *p, double *q, double *A, double epsilon, double friendship);
+void newInteraction(double *features, double thershold, double *A);
 void multiplyer(int agents, int *A, int *C);
 
 /*void update(int agents, double *p, double *q, int *degree, int *A_degree, int *B_degree);
