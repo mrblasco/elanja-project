@@ -19,12 +19,15 @@ void model::init(int agents, int distance, double rho, double epsilon, double fr
 	this->m = rho * agents;
 	this->epsilon = epsilon;
 	this->friendship = friendship;
+	this->threshold = 0.8;
 
-	this->p = (double*) malloc ((sizeof(double))*agents);
-	this->q = (double*) malloc(sizeof(double)*agents);
-	this->R = (double*) malloc(sizeof(double)*agents*agents);
+	this->p = (double*) malloc (sizeof(double)*agents);
+	this->q = (double*) malloc (sizeof(double)*agents);
+	this->R = (double*) malloc (sizeof(double)*agents*agents);
 
-	this->A = (int*) malloc(sizeof(int)*agents*agents);
+	this->features = (double*) malloc (sizeof(double)*agents);
+
+	this->A = (double*) malloc(sizeof(double)*agents*agents);
 	this->B = (int*) malloc(sizeof(int)*agents*agents);
 
 	this->degree = (int*) malloc(sizeof(int)*agents);
@@ -40,6 +43,10 @@ void model::init(int agents, int distance, double rho, double epsilon, double fr
 		q[i] = 0.5;
 		degree[i] = 1;
 		composition[i] = 1;
+		for(j=0; j<3; j++)
+		{
+			features[i*agents + j] = (double) (rand()%1000) / 1000;
+		}
 
 		for(j=0; j<agents; j++)
 		{
@@ -68,9 +75,12 @@ void model::reinit(int agents, int distance, double rho, double epsilon, double 
 	if(R) free(R);
 	this->R = (double*) malloc(sizeof(double)*agents*agents);
 	if(A) free(A);
-	this->A = (int*) malloc(sizeof(int)*agents*agents);
+	this->A = (double*) malloc(sizeof(double)*agents*agents);
 	if(B) free(B);
 	this->B = (int*) malloc(sizeof(int)*agents*agents);
+
+	if(features) free(features);
+	this->features = (double*) malloc (sizeof(double)*agents*3);
 
 	if(degree) free(degree);
 	this->degree = (int*) malloc(sizeof(int)*agents);
@@ -101,7 +111,13 @@ void model::step(){
 
      int i, j;
      /* "interactions" creates adjacency matrix */
-	interaction(agents, m,  p, q, A, epsilon, friendship); 
+	//interaction(agents, m,  p, q, A, epsilon, friendship); 
+
+	printf("Faccio la nuova interaction\n");
+	
+	newInteraction(features, threshold, A);
+
+	printf("Finita la nuova interaction\n");
       
 	/* Degree, A-type, B-type */ 
 	for(i=0; i<agents; i++)
@@ -137,8 +153,8 @@ void model::step(){
                     composition[i]  = (double) B_degree[i] / (double) degree[i];
 	        	}
 
- 		p[i] = 0.05 + (0.25 * (double) A_degree[i] / degree[i] ); 
-                q[i] = 0.05 + (0.25 * (double) B_degree[i] / degree[i] ); 
+ 		p[i] = 0.05 + (0.5 * (double) A_degree[i] / degree[i] ); 
+                q[i] = 0.05 + (0.5 * (double) B_degree[i] / degree[i] ); 
           }
      }
 
@@ -151,7 +167,7 @@ void model::step(){
 	t += 1;
 }
 
-void interaction(int agents, int m, double *p, double *q, int *A, double epsilon, double friendship) 
+void interaction(int agents, int m, double *p, double *q, double *A, double epsilon, double friendship) 
 {
 
 	int i, j, count;
@@ -229,6 +245,66 @@ void interaction(int agents, int m, double *p, double *q, int *A, double epsilon
 
 	}
 }
+
+void newInteraction(double *features, double thershold, double *A)
+{
+	int i, j, l;
+	double mou = 0.5;
+
+	printf("Alloco memoria \n");
+
+	double featuresTmp2[m.agents][m.agents];
+	double featuresTmp[m.agents][3];
+
+	printf("HO Allocato memoria \n");
+
+	for(i=0; i<m.agents; i++)
+	{	
+		for(j=0; j<3; j++)
+		{
+			featuresTmp[i][j] = features[i*m.agents + j] - 0.5;	
+				
+		}
+	}	
+	for(i=0; i<m.agents; i++)
+	{	
+		for(j=0; j<m.agents; j++)
+		{
+			featuresTmp2[i][j] = 0;	
+		}
+	}
+
+	printf("Arrivo qua dopo il mou !!\n");
+	/* Product of matrices */
+	for(i=0; i<m.agents; i++)
+	{	
+		for(j=0; j<3; j++)
+		{		
+			for (l=0; l<3;l++) 
+				featuresTmp2[i][j] += (featuresTmp[i][l] * featuresTmp[j][l]); 
+		}	
+	}
+
+	printf("Fatta la trasposta\n");
+
+	for(i=0; i<m.agents; i++)
+	{	
+		for(j=0; j<m.agents; j++)
+		{
+			if(featuresTmp2[i][j] / (double)sqrt(featuresTmp2[i][i] * featuresTmp2[j][j]) >= thershold )
+				A[i*m.agents+j] = 1;
+			else
+				A[i*m.agents+j] = 0;
+		}
+	}
+
+	printf("Calcolata la nuova A\n");
+
+
+	printf(" Fatta la free \n");
+}
+
+
 
 /* Function to compute Adjacency matrices at d<=2 */
 void multiplyer(int agents,  int *A, int *C) {
