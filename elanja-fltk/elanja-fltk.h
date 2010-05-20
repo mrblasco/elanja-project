@@ -34,12 +34,8 @@ extern Fl_Value_Slider *friendshipSlider;
 extern void simSpeedSliderCallback(Fl_Value_Slider*, void*);
 extern Fl_Value_Slider *simSpeedSlider;
 
-#include <FL/Fl_Check_Button.H>
-extern void perturbationCallback(Fl_Check_Button*, void*);
-extern Fl_Check_Button *perturbationButton;
-
-extern void hubsCallback(Fl_Check_Button*, void*);
-extern Fl_Check_Button *hubsButton;
+extern void thresholdSliderCallback(Fl_Value_Slider*, void*);
+extern Fl_Value_Slider *thresholdSlider;
 
 #include <FL/Fl_Menu_Bar.H>
 extern void exitCallback(Fl_Menu_*, void*);
