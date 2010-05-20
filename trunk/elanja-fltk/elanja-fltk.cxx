@@ -30,11 +30,9 @@ Fl_Value_Slider *friendshipSlider=(Fl_Value_Slider *)0;
 
 Fl_Value_Slider *numProductsSlider=(Fl_Value_Slider *)0;
 
-Fl_Value_Slider *simSpeedSlider=(Fl_Value_Slider *)0;
-/************* Check Buttons ***************************************/
-Fl_Check_Button *perturbationButton=(Fl_Check_Button *)0;
+Fl_Value_Slider *thresholdSlider=(Fl_Value_Slider *)0;
 
-Fl_Check_Button *hubsButton=(Fl_Check_Button *)0;
+Fl_Value_Slider *simSpeedSlider=(Fl_Value_Slider *)0;
 /************* Menu ************************************************/
 Fl_Menu_Item menu_Visualizza[] = {
  {"File", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
@@ -82,10 +80,10 @@ int main(int argc, char **argv)
       			parametersGroup->color(FL_FOREGROUND_COLOR);
       			parametersGroup->align(FL_ALIGN_TOP_LEFT|FL_ALIGN_INSIDE);
 			{ 	/* Agent Slider */
-				agentsSlider = new Fl_Value_Slider(15, 570, 240, 35, "Agents");
+				agentsSlider = new Fl_Value_Slider(15, 570, 250, 35, "Agents");
         			agentsSlider->type(5);
         			//agentsSlider->box(FL_THIN_DOWN_BOX);/* Borders dimension */
-        			agentsSlider->color((Fl_Color)124);/* Slider color */
+        			agentsSlider->color((Fl_Color)10);/* Slider color */
         			agentsSlider->selection_color((Fl_Color)136);/* Cursor color */
         			agentsSlider->labelfont(1);
         			agentsSlider->labelsize(12);
@@ -97,10 +95,10 @@ int main(int argc, char **argv)
         			agentsSlider->align(FL_ALIGN_TOP_LEFT);/* Label align*/
       			}
       			{ 	/* Population Slider */
-				populationSlider = new Fl_Value_Slider(15, 625, 240, 35, "Rho");
+				populationSlider = new Fl_Value_Slider(15, 625, 250, 35, "Rho");
         			populationSlider->type(5);
         			//populationSlider->box(FL_THIN_DOWN_BOX);
-        			populationSlider->color((Fl_Color)124);
+        			populationSlider->color((Fl_Color)10);
         			populationSlider->selection_color((Fl_Color)136);
 				populationSlider->minimum(0.05);
         			populationSlider->maximum(0.95);
@@ -112,10 +110,10 @@ int main(int argc, char **argv)
         			populationSlider->align(FL_ALIGN_TOP_LEFT);
       			}
       			{	/* Epsilon Slider */
-		 		epsilonSlider = new Fl_Value_Slider(290, 570, 260, 35, "Epsilon");
+		 		epsilonSlider = new Fl_Value_Slider(290, 570, 250, 35, "Epsilon");
         			epsilonSlider->type(5);
         			//epsilonSlider->box(FL_THIN_DOWN_BOX);
-        			epsilonSlider->color((Fl_Color)124);
+        			epsilonSlider->color((Fl_Color)10);
         			epsilonSlider->selection_color((Fl_Color)136);
         			epsilonSlider->labelfont(1);
         			epsilonSlider->labelsize(12);
@@ -127,10 +125,10 @@ int main(int argc, char **argv)
         			epsilonSlider->align(FL_ALIGN_TOP_LEFT);
       			}
       			{	/* Friendship Slider */
-				friendshipSlider = new Fl_Value_Slider(290, 625, 260, 35, "Friendship");
+				friendshipSlider = new Fl_Value_Slider(290, 625, 250, 35, "Friendship");
         			friendshipSlider->type(5);
 			        //friendshipSlider->box(FL_THIN_DOWN_BOX);
-			        friendshipSlider->color((Fl_Color)124);
+			        friendshipSlider->color((Fl_Color)10);
 			        friendshipSlider->selection_color((Fl_Color)136);
 			        friendshipSlider->labelfont(1);
 			        friendshipSlider->labelsize(12);
@@ -142,29 +140,35 @@ int main(int argc, char **argv)
 			        friendshipSlider->align(FL_ALIGN_TOP_LEFT);
 			}
       			{	/* Simulation Speed Slider */
-				simSpeedSlider = new Fl_Value_Slider(160, 685, 240, 35, "Simulation Speed");
+				simSpeedSlider = new Fl_Value_Slider(290, 685, 250, 35, "Simulation Speed");
         			simSpeedSlider->type(5);
 			        //simSpeedSlider->box(FL_THIN_DOWN_BOX);
-			        simSpeedSlider->color((Fl_Color)124);
+			        simSpeedSlider->color((Fl_Color)10);
 			        simSpeedSlider->selection_color((Fl_Color)136);
 			        simSpeedSlider->labelfont(1);
 			        simSpeedSlider->labelsize(12);
-			        simSpeedSlider->minimum(0.0001);
+			        simSpeedSlider->minimum(0.001);
+				simSpeedSlider->maximum(1.000);
 			        simSpeedSlider->step(0.001);
 			        simSpeedSlider->value(SIM_SPEED_INIT);
 			        simSpeedSlider->callback((Fl_Callback*)simSpeedSliderCallback);
 			        simSpeedSlider->align(FL_ALIGN_TOP_LEFT);      
 			}
-      			{	/* Perturbation Button */
-	     			perturbationButton = new Fl_Check_Button(585, 565, 165, 15, "Perturbation");
-        	     		perturbationButton->down_box(FL_DOWN_BOX);
-                         	perturbationButton->callback((Fl_Callback*)perturbationCallback, (void*)(numProductsSlider));
-      			}
-      			{	/* Hubs Button */
-				hubsButton = new Fl_Check_Button(585, 590, 170, 15, "Hubs");
-			        hubsButton->down_box(FL_DOWN_BOX);
-			        hubsButton->callback((Fl_Callback*)hubsCallback, (void*)(&glf));
-      			}
+			{	/* Threshold Slider */
+				thresholdSlider = new Fl_Value_Slider(15, 685, 250, 35, "Threshold");
+        			thresholdSlider->type(5);
+			        //thresholdSlider->box(FL_THIN_DOWN_BOX);
+			        thresholdSlider->color((Fl_Color)10);
+			        thresholdSlider->selection_color((Fl_Color)136);
+			        thresholdSlider->labelfont(1);
+			        thresholdSlider->labelsize(12);
+			        thresholdSlider->minimum(0.0);
+				thresholdSlider->maximum(1.0);
+			        thresholdSlider->step(0.1);
+			        thresholdSlider->value(THRESHOLD_INIT);
+			        thresholdSlider->callback((Fl_Callback*)thresholdSliderCallback);
+			        thresholdSlider->align(FL_ALIGN_TOP_LEFT);     
+			}
       			parametersGroup->end();
 		}
 		{	/* Menu */

@@ -1,6 +1,6 @@
 #include "gui_controls.h"
 
-#define MAXDELAY	(0.1)
+#define MAXDELAY	(0.5)
 #define MINDELAY	(0.001)
 #define MAX(a,b)	(a>b?a:b)
 
@@ -9,6 +9,7 @@ int gui_distance;
 double gui_rho;
 double gui_epsilon;
 double gui_friendship;
+double gui_threshold;
 
 bool doNextSimulationStep;
 bool restart;
@@ -62,28 +63,16 @@ void friendshipSliderCallback(Fl_Value_Slider* s, void*){
   	gui_friendship = slider->value();
   	restart = true;
 }
+void thresholdSliderCallback(Fl_Value_Slider* s, void*){
+	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
+  	gui_threshold = slider->value();
+}
+
 
 void simSpeedSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
 // 	slider->value(slider->value());
   	simSpeed = MAX(MAXDELAY*(1-slider->value()),MINDELAY);
-}
-
-void perturbationCallback(Fl_Check_Button *,void *data){
-	Fl_Value_Slider * slider;
-
-	slider=(Fl_Value_Slider *)data;
-	perturbationOn=!perturbationOn;
-	if(slider->active()){
-		slider->deactivate();
-	}else{
-		slider->activate();
-	}
-	
-}
-
-void hubsCallback(Fl_Check_Button *,void * data){
-	hubsOn=!hubsOn;
 }
 
 /************************* STATISTICS ********************************/

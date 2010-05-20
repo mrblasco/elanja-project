@@ -7,6 +7,7 @@ extern int gui_distance;
 extern double gui_rho; /* fraction of a-type people over population*/
 extern double gui_epsilon; /* inherited fracion of links  */
 extern double gui_friendship; /*  fraction of population met in one iteration */
+extern double gui_threshold; 
 
 extern bool restart; 
 extern double simSpeed;
@@ -42,11 +43,12 @@ void simulationGrid::init(){
 	gui_rho = RHO_INIT;
 	gui_epsilon = EPSILON_INIT;
 	gui_friendship = SAMPLE_INIT;
+	gui_threshold = THRESHOLD_INIT;
 	simSpeed = SIM_SPEED_INIT;
 	
 	if(initModel)
 	{ 
-		m.init(AGENTS_INIT, DISTANCE_INIT, RHO_INIT , EPSILON_INIT, SAMPLE_INIT);   
+		m.init(AGENTS_INIT, DISTANCE_INIT, RHO_INIT , EPSILON_INIT, SAMPLE_INIT, NFEATURES_INIT, THRESHOLD_INIT);   
 		initModel=false; 
 	}
 	else
@@ -63,8 +65,8 @@ void simulationGrid::draw() {
 		init(); 
 	
 	/* passa al modello i parametri presi dalla gui  e reinit  */
-	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.epsilon != gui_epsilon))
-     		m.reinit(gui_agents,gui_distance, gui_rho, gui_epsilon, gui_friendship);         
+	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.epsilon != gui_epsilon) || (m.threshold != gui_threshold))
+     		m.reinit(gui_agents,gui_distance, gui_rho, gui_epsilon, gui_friendship, gui_threshold);         
 
 	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -82,23 +84,11 @@ void simulationGrid::draw() {
 void drawAgents(int i){
 	int k, j;		 	
 
-	if (i < m.m ) 
-	{
-          /* rosso, green, blue, opacity */
-		//glColor4d(1 - m.composition[i], 0, m.composition[i],0.7);
-		glColor4d(m.features[i * m.agents + 0],m.features[i * m.agents + 1],m.features[i * m.agents + 2],0.7);
-          /* position_x, position_ y, size */
-		circle(rand() % (745/2 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-		//rectangle(rand() % (745/2 - 10) +10,  rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-	}
-	if (i >= m.m)
-	{
-          /* rosso, green, blue, opacity */
-		//glColor4f(m.composition[i],0,(1-m.composition[i]),0.7);
-		glColor4d(m.features[i * m.agents + 0],m.features[i * m.agents + 1],m.features[i * m.agents + 2],0.7);
-		circle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-		//triangle((745/2 +10) + (rand() % (745/2 - 20)), rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-	}
+        	/* rosso, green, blue, opacity */
+		glColor4d(m.features[i*m.agents + 0],m.features[i*m.agents + 1],m.features[i*m.agents + 2],0.7);
+        	
+		/* position_x, position_ y, size */
+		circle(rand() % (745 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
 }
 
 void timer_cb(void *p) /*delay tra step e altro*/

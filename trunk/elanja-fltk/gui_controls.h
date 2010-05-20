@@ -14,19 +14,15 @@ void playCallback(Fl_Widget*, void*);
 void stopCallback(Fl_Widget*, void*);
 void pauseCallback(Fl_Widget*, void*);
 void exitCallback(Fl_Widget*, void*);
-void lambdaSliderCallback(Fl_Value_Slider*, void* data);
-void gCoefSliderCallback(Fl_Value_Slider*, void* data);
-void cExpSliderCallback(Fl_Value_Slider*, void* data);
-void numAgentsSliderCallback(Fl_Value_Slider*, void*);
-void numProductsSliderCallback(Fl_Value_Slider*, void*);
-void initialCapitalSliderCallback(Fl_Value_Slider*, void*);
-void velocitySliderCallback(Fl_Value_Slider*, void*);
+
+/*void agentsSliderCallback(Fl_Widget*, void* data);
+void populationSliderCallback(Fl_Widget*, void*);
+void epsilonSliderCallback(Fl_Widget*, void*);
+void friendshipSliderCallback(Fl_Widget*, void*);
+void thresholdSliderCallback(Fl_Widget*, void*);
+void simSpeedSliderCallback(Fl_Widget*, void*);*/
+
 void priceGeneticsCallback(Fl_Widget*, void*);
-void capitalDistributionCallback(Fl_Widget*, void*);
-void needGeneticsCallback(Fl_Widget*, void*);
-void capitalVariationCallback(Fl_Widget*, void*);
-void trustMatrixCallback(Fl_Widget*, void*);
-void dinamicProductsCallback(Fl_Check_Button * button,void * data);
-void externAgentCallback(Fl_Check_Button * button,void * data);
+
 
 #endif
