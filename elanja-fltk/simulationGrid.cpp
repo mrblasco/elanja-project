@@ -73,7 +73,7 @@ void simulationGrid::draw() {
 	
 	for(i=0; i<m.agents; i++)
 	{		
-		drawAgents(i);	
+		drawAgents(i);
 	}
 
 	/* passo di simulazione */
