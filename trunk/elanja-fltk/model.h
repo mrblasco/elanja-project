@@ -36,8 +36,8 @@ public:
 };
 
 void interaction(int agents, int m,  double *p, double *q, double *A, double epsilon, double friendship);
-void newInteraction(double threshold, double *A, int agents);
+double newInteraction(double L, double *A, int agents);
 void multiplyer(int agents, int *A, int *C);
-void update(int *degree, int *A_degree, int *B_degree);
+void update(int *degree, double *A, double threshold, double *features);
 
 #endif
