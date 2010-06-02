@@ -110,17 +110,17 @@ int main(int argc, char **argv)
         			populationSlider->align(FL_ALIGN_TOP_LEFT);
       			}
       			{	/* Epsilon Slider */
-		 		epsilonSlider = new Fl_Value_Slider(290, 570, 250, 35, "Epsilon");
+		 		epsilonSlider = new Fl_Value_Slider(290, 570, 250, 35, "Features");
         			epsilonSlider->type(5);
         			//epsilonSlider->box(FL_THIN_DOWN_BOX);
         			epsilonSlider->color((Fl_Color)10);
         			epsilonSlider->selection_color((Fl_Color)136);
         			epsilonSlider->labelfont(1);
         			epsilonSlider->labelsize(12);
-        			epsilonSlider->minimum(0.0);
-        			epsilonSlider->maximum(1.0);
-        			epsilonSlider->step(0.05);
-        			epsilonSlider->value(EPSILON_INIT);
+        			epsilonSlider->minimum(2.0);
+        			epsilonSlider->maximum(20.0);
+        			epsilonSlider->step(1.0);
+        			epsilonSlider->value(FEATURES_INIT);
         			epsilonSlider->callback((Fl_Callback*)epsilonSliderCallback);
         			epsilonSlider->align(FL_ALIGN_TOP_LEFT);
       			}
