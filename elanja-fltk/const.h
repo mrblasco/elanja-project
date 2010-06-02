@@ -1,5 +1,5 @@
-#define MAX_AGENTS			100
-#define AGENTS_INIT		    100
+#define AGENTS_MAX			400
+#define AGENTS_INIT		    200
 #define DISTANCE_INIT         1 
 #define EPSILON_INIT		0.5  /*  mantiene vecchi links */
 #define SAMPLE_INIT			1.0  /* 1 = tutto il netw, 0 uguole nessuno  */
