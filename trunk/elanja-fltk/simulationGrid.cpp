@@ -85,10 +85,12 @@ void drawAgents(int i){
 	int k, j;		 	
 
         	/* rosso, green, blue, opacity */
-		glColor4d(m.features[i*m.agents + 0],m.features[i*m.agents + 1],m.features[i*m.agents + 2],0.7);
+		glColor4d(1- m.features[0*m.agents + i],m.features[1*m.agents + i],m.features[2*m.agents + i],0.8);
         	
 		/* position_x, position_ y, size */
-		circle(rand() % (745 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		//circle(rand() % (745 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+		circle( (i %20) *20+20,  (i/20)*20 +40, 4.0 * (double) m.degree[i]);
+
 }
 
 void timer_cb(void *p) /*delay tra step e altro*/

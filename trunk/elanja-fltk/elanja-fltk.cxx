@@ -88,7 +88,7 @@ int main(int argc, char **argv)
         			agentsSlider->labelfont(1);
         			agentsSlider->labelsize(12);
 				agentsSlider->minimum(2);
-        			agentsSlider->maximum(200);
+        			agentsSlider->maximum(AGENTS_MAX);
         			agentsSlider->step(2);
         			agentsSlider->value(AGENTS_INIT);
         			agentsSlider->callback((Fl_Callback*)agentsSliderCallback);

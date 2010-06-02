@@ -22,7 +22,6 @@ void model::init(int agents, int distance, double rho, double epsilon, double fr
 	this->threshold = threshold;
 	this->nFeatures = nFeatures;
 
-	/* Here we have a problem and this is the best solution I could find right now, please dont change this malloc */
 	this->features = (double*) malloc(sizeof(double)*agents*nFeatures);
 	
 	this->degree = (int*) malloc(sizeof(int)*agents);
@@ -37,17 +36,14 @@ void model::init(int agents, int distance, double rho, double epsilon, double fr
 		for(j=0; j<nFeatures; j++)
 		{
 			features[j*agents + i] = (double) (rand() %1000) / (double) 1000;
-			//printf("%f\t", features[j*agents + i]);
 		}
 
 		for(j=0; j<agents; j++)
 		{
 			A[i*agents + j] = 0;		
 		}
-		//printf("\n");
 	}
 
-	/* etichetta che si visualizza ... gli step di simulazione */
 	t = 0; 
 }
 
@@ -57,18 +53,20 @@ void model::reinit(int agents, int distance, double rho, double epsilon, double 
 	printf("Reinitializing Model ... \n");
 
 	this->agents = agents;
-	this->distance = distance;  
+	this->distance = distance;
 	this->rho = rho;
 	this->m = rho * agents;
 	this->epsilon = epsilon;
 	this->friendship = friendship;
 	this->threshold = threshold;
+	this->nFeatures = nFeatures;
+
 	
 	if(A) free(A);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
 
 	if(features) free(features);
-	this->features = (double*) malloc (sizeof(double)*agents*agents);
+	this->features = (double*) malloc(sizeof(double)*agents*nFeatures);
 
 	if(degree) free(degree);
 	this->degree = (int*) malloc(sizeof(int)*agents);
@@ -82,7 +80,7 @@ void model::reinit(int agents, int distance, double rho, double epsilon, double 
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
 		{
-			features[i*agents + j] = (double) (rand() %10) / (double) 10;
+			features[j*agents + i] = (double) (rand() %1000) / (double) 1000;
 		}
 
 		for(j=0; j<agents; j++)
@@ -91,7 +89,6 @@ void model::reinit(int agents, int distance, double rho, double epsilon, double 
 		}
 	}
 	
-	/* etichetta che si visualizza ... gli step di simulazione */
  	t = 0;
 } 
 
@@ -99,27 +96,27 @@ void model::step(){
 
 	int i, j; 
 	double threshold;
+     double L;
+     L = 0.2 * agents;
 	
-	threshold = newInteraction(10.0, A, agents);
+	threshold = newInteraction(L, A, agents);
 	update(degree, A, threshold, features);
 	
 	t += 1;
 }
 
-void interaction(int agents, int m, double *p, double *q, double *A, double epsilon, double friendship) 
+/* void interaction(int agents, int m, double *p, double *q, double *A, double epsilon, double friendship) 
 {
 
 	int i, j, count;
      	double random;
 	int outDegree[agents];
 
-	/* Initialize outDegree vector */
 	for (i=0; i<agents; i++)
 	{
 		outDegree[i] = 0;
 	}
 
-	/* Adjacency matrix */ 
 	for(i=0; i<agents; i++)
 	{
 		for(j=i; j<agents; j++)
@@ -161,11 +158,7 @@ void interaction(int agents, int m, double *p, double *q, double *A, double epsi
 		}
 	}
 
-	/*for(i=0; i<agents; i++)
-	{
-		printf(" outdegree %d = %d\n", i, outDegree[i]);
-	}*/
-
+ 
 	for(i=0; i<agents; i++)
 	{
 		count = 0;
@@ -183,8 +176,10 @@ void interaction(int agents, int m, double *p, double *q, double *A, double epsi
 		}
 
 	}
-}
+} */
 
+
+/* compute correlation matrix and finds a threshold */
 double newInteraction(double L, double *A, int agents)
 {
 	int i, j, l, counter, test;
@@ -193,16 +188,15 @@ double newInteraction(double L, double *A, int agents)
 	double featuresTmp2[agents][agents];
 	double featuresTmp[agents][m.nFeatures];
 
+     /* features de-meaned */
 	for(i=0; i<m.agents; i++)
 	{	
 		for(j=0; j<m.nFeatures; j++)
 		{
 			featuresTmp[i][j] = m.features[j*agents + i] - mou;
-			//printf("%f\t", featuresTmp[i][j]);
-				
 		}
-		//printf("\n");
 	}	
+     /*initialize matrix*/
 	for(i=0; i<m.agents; i++)
 	{	
 		for(j=0; j<m.agents; j++)
@@ -219,31 +213,26 @@ double newInteraction(double L, double *A, int agents)
 			for (l=0; l<m.nFeatures;l++) 
 			{
 				featuresTmp2[i][j] = featuresTmp2[i][j] + (featuresTmp[i][l] * featuresTmp[j][l]); 
-				//printf("%f\t", featuresTmp[i][l] * featuresTmp[j][l]);
 			}
-			//printf("%f\t", featuresTmp2[i][j]);	
-			//printf("\n");		
 		}	
-		//printf("\n");
 	}
-
+     /*correlation matrix */
 	for(i=0; i<m.agents; i++)
 	{	
 		for(j=0; j<m.agents; j++)
 		{
 			A[i*m.agents+j] = (double) (featuresTmp2[i][j] / (double)sqrt(featuresTmp2[i][i] * featuresTmp2[j][j])); 
-			//printf("%f\t", A[i*m.agents+j]);
 		}
-		//printf("\n");
 	}
+
+     /*New interaction*/
 	test = 0;
 	upthreshold = 1;
 	downthreshold = 0;
-	//printf("Prima del while\n");
+
 	while (test == 0) 
 	{
 		threshold = (double) ((upthreshold + downthreshold )/ 2);
-		//printf("threshold = %f  ", threshold);
 		counter = 0;
 		for(i=0; i<m.agents; i++)
 		{    
@@ -253,28 +242,25 @@ double newInteraction(double L, double *A, int agents)
 				    counter++;
 			}
 	    	}
-		//printf("counter = %d", counter);
-		if(counter <= (12) &&  counter >= (8) ) 
+		if(counter <= (L*1.05) &&  counter >= (L*0.95) ) 
 		{
 		  test = 1;
 		}
-		if(counter > 12)
+		if(counter >(L*1.05))
 			downthreshold = threshold; 
-		if(counter < 8)
+		if(counter < (L*1.05))
 			upthreshold = threshold;    
 	}
-	//printf("Dopo del while\n");
 	printf("%f\n", threshold);
 	return threshold;
 }
 
-/* Function to compute Adjacency matrices at d<=2 */
+/* Function to compute Adjacency matrices at d<=2 
 void multiplyer(int agents,  int *A, int *C) {
 
 	int i, j, l;
 	int temp;
 
-	/* Product of matrices */
 	for(i=0; i<agents; i++)
 	{	
 		for(j=0; j<agents; j++)
@@ -285,7 +271,6 @@ void multiplyer(int agents,  int *A, int *C) {
 		}	
 	} 
 	
-	/* Normalize to Adjacency  matrix at distance d=2*/
 	for(i=0; i<agents; i++)
 	{	
 		for(j=0; j<agents; j++)
@@ -295,14 +280,13 @@ void multiplyer(int agents,  int *A, int *C) {
 					C[i*agents + j] = 1;
 		}      
 	}  
-}
-
+} */
  
  
+/* for a given threshold, computes the degree and  if degree==0 reinitilize features */
 void update(int *degree, double *A, double threshold, double *features){
 
 	int i, j, k;
-
 
 	/* Generates degree vectors */ 
 	for(i=0; i<m.agents; i++)
@@ -316,14 +300,20 @@ void update(int *degree, double *A, double threshold, double *features){
 				degree[i]++;
 			}
 	   	}
-		//printf("degree[%d] = %d\n", i, degree[i]);
-		if(degree[i] == 0)
+          /* if degree == 0 reinitizlize all features 
+		if(degree[i] <1)
 		{
 			for(k=0; k<m.nFeatures; k++)
 			{
 				features[k*m.agents + i] = (double) (rand() %1000) / (double) 1000;
-				//printf("%f\t", features[j*agents + i]);
 			}
+		}*/
+          /* if degree == 0 reinitizlize one feature only */
+		if(degree[i] <1)
+		{
+                    k= rand()%(m.nFeatures);
+				features[k*m.agents + i] = (double) (rand() %1000) / (double) 1000;
 		}
+
 	}
 }
