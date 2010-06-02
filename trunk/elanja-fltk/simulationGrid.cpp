@@ -5,7 +5,7 @@
 extern int gui_agents;  
 extern int gui_distance; 
 extern double gui_rho; /* fraction of a-type people over population*/
-extern double gui_epsilon; /* inherited fracion of links  */
+extern int gui_nFeatures; /* inherited fracion of links  */
 extern double gui_friendship; /*  fraction of population met in one iteration */
 extern double gui_threshold; 
 
@@ -41,14 +41,14 @@ void simulationGrid::init(){
 	gui_agents = AGENTS_INIT;  
 	gui_distance = DISTANCE_INIT;
 	gui_rho = RHO_INIT;
-	gui_epsilon = EPSILON_INIT;
+	gui_nFeatures = FEATURES_INIT;
 	gui_friendship = SAMPLE_INIT;
 	gui_threshold = THRESHOLD_INIT;
 	simSpeed = SIM_SPEED_INIT;
 	
 	if(initModel)
 	{ 
-		m.init(AGENTS_INIT, DISTANCE_INIT, RHO_INIT , EPSILON_INIT, SAMPLE_INIT, NFEATURES_INIT, THRESHOLD_INIT);   
+		m.init(AGENTS_INIT,  RHO_INIT , FEATURES_INIT );   
 		initModel=false; 
 	}
 	else
@@ -65,8 +65,8 @@ void simulationGrid::draw() {
 		init(); 
 	
 	/* passa al modello i parametri presi dalla gui  e reinit  */
-	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.epsilon != gui_epsilon) || (m.threshold != gui_threshold))
-     		m.reinit(gui_agents,gui_distance, gui_rho, gui_epsilon, gui_friendship, gui_threshold);         
+	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.nFeatures != gui_nFeatures) )
+     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures);         
 
 	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -89,7 +89,7 @@ void drawAgents(int i){
         	
 		/* position_x, position_ y, size */
 		//circle(rand() % (745 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-		circle( (i %20) *20+20,  (i/20)*20 +40, 4.0 * (double) m.degree[i]);
+		circle( (i %40) *16+20,  (i/40)*16 +40, 1.0 * (double) m.degree[i]);
 
 }
 
