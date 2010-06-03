@@ -23,11 +23,7 @@ void model::init(int agents,  double rho, int nFeatures){
 
 
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
-	
 	this->degree = (int*) malloc(sizeof(int)*agents);
-	this->A_degree = (int*) malloc(sizeof(int)*agents);
-	this->B_degree = (int*) malloc(sizeof(int*)*agents);
-
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
 
 	for(i=0; i<agents; i++)	
@@ -70,10 +66,6 @@ void model::reinit(int agents, double rho,  int nFeatures){
 
 	if(degree) free(degree);
 	this->degree = (int*) malloc(sizeof(int)*agents);
-	if(A_degree) free(A_degree);
-	this->A_degree = (int*) malloc(sizeof(int)*agents);
-	if(B_degree) free(B_degree);
-	this->B_degree = (int*) malloc(sizeof(int)*agents);
 
 	for(i=0; i<agents; i++)	
 	{
@@ -112,7 +104,7 @@ double newInteraction(double L, double *A, int agents)
 	int i, j, l, counter, test;
 	double upthreshold, downthreshold, threshold;
 	double mou = 0.5;
-     double Lmax, Lmin;
+     	double Lmax, Lmin;
 	double featuresTmp2[agents][agents];
 	double featuresTmp[agents][m.nFeatures];
 
@@ -231,6 +223,7 @@ void update(double L, int *degree, double *A, double threshold, double *features
 
 		for(j=0; j<m.agents; j++)
 		{
+			printf("A[%d][%d] = %f\n",i,j,m.A[i*m.agents +j]);
 			if(m.A[i*m.agents +j] >= threshold &&( j != i) )
 			{
 				degree[i]++;
