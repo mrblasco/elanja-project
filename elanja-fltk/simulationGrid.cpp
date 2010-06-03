@@ -58,7 +58,9 @@ void simulationGrid::init(){
 }
 
 void simulationGrid::draw() {	
-	int i, j;
+	int i, j, k;
+	int nAgentsColumn, nAgentsRow;
+	int count;
 	
 	/*inizializzazione grafica */
 	if (!valid())
@@ -70,27 +72,67 @@ void simulationGrid::draw() {
 
 	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	nAgentsColumn = (745 - 20)/40;
+	//printf("Colonne = %d\n", nAgentsColumn);
+
+	nAgentsRow = m.agents/nAgentsColumn + 1;
+	//printf("Righe = %d\n",nAgentsRow);
 	
-	for(i=0; i<m.agents; i++)
-	{		
-		drawAgents(i);
+	/* Draw all Agents */
+	i = 0;
+	while(i<m.agents)
+	{
+			
+		for(k=0; k<nAgentsRow; k++)
+		{
+			for(j=0; j<nAgentsColumn; j++)
+			{
+				if(i<m.agents)
+				{
+					//printf("Agente %d, pos = %d %d\n", i, j, k);
+					drawAgents(i, j, k);
+					i++;
+				}
+				else
+					break;
+			}
+		}		
 	}
+
+	printf("threshold = %f\n", m.threshold);
+	/* Draw Friendship links */
+	for (i=0; i<m.agents; i++)
+	{
+		for(j=i; j<m.agents; j++)
+		{
+			
+			if(m.A[i*m.agents + j] >= m.threshold)
+			{
+				drawFriendship(i, j);
+				count++;
+			}
+		}
+	}
+	printf("Disegnati %d archi\n", count);
 
 	/* passo di simulazione */
 	m.step();
 
 }
 
-void drawAgents(int i){
-	int k, j;		 	
+void drawAgents(int i, int column, int row){
+	int k, x;		 	
+	
 
-        	/* rosso, green, blue, opacity */
-		glColor4d(1- m.features[0*m.agents + i],m.features[1*m.agents + i],m.features[2*m.agents + i],0.8);
-        	
-		/* position_x, position_ y, size */
-		//circle(rand() % (745 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-		circle( (i %40) *16+20,  (i/40)*16 +40, 1.0 * (double) m.degree[i]);
+	/* rosso, green, blue, opacity */
+	glColor4d(1- m.features[0*m.agents + i],m.features[1*m.agents + i],m.features[2*m.agents + i],0.8);
+	
+	/* position_x, position_ y, size */
+	//circle(rand() % (745 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
+	//circle( (i%40) *16+20,  (j%40)*16 +40, 1.0 * (double) m.degree[i]);
 
+	circle(20 + (10 + 20)*column, 20 + (10 + 20)*row, sqrt(m.degree[i]));
 }
 
 void timer_cb(void *p) /*delay tra step e altro*/
@@ -118,22 +160,12 @@ void circle(double x, double y, double radius){
 	glEnd();
 }
 
-void rectangle(double x, double y, double edge)
+void drawFriendship(int f1, int f2)
 {
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex2d(x, y);
-	glVertex2d(x + edge, y);
-	glVertex2d(x + edge, y + edge);
-	glVertex2d(x, y + edge);
-	glEnd();
-}
-
-void triangle(double x, double y, double edge)
-{
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex2d(x + (edge/2), y);
-	glVertex2d(x, y + edge);
-	glVertex2d(x + edge, y + edge);	
+	glColor4d(170.0, 170.0, 170.0, 0.4);
+	glBegin(GL_LINES);
+		glVertex2d(30, 100);
+		glVertex2d(100, 30);
 	glEnd();
 }
 
