@@ -25,9 +25,15 @@ void model::init(int agents,  double rho, int nFeatures){
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
 	this->degree = (int*) malloc(sizeof(int)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
+	this->x = (double*) malloc(sizeof(int)*agents);
+	this->y = (double*) malloc(sizeof(int)*agents);
 
 	for(i=0; i<agents; i++)	
 	{
+
+		x[i] = (double) ((rand() %1000) / (double) 1000) * 700;		
+		y[i] = (double) ((rand() %1000) / (double) 1000) * 700;
+
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
 		{
@@ -67,8 +73,17 @@ void model::reinit(int agents, double rho,  int nFeatures){
 	if(degree) free(degree);
 	this->degree = (int*) malloc(sizeof(int)*agents);
 
+	if(x) free(x);
+	this->x = (double*) malloc(sizeof(int)*agents);
+	if(y) free(y);
+	this->y = (double*) malloc(sizeof(int)*agents);
+
 	for(i=0; i<agents; i++)	
 	{
+
+		x[i] = (double) ((rand() %1000) / (double) 1000) * 700;		
+		y[i] = (double) ((rand() %1000) / (double) 1000) * 700;
+
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
 		{
@@ -94,6 +109,7 @@ void model::step(){
 
 	threshold = newInteraction(L, A, agents);
 	update(L, degree, A, threshold, features);
+	coordinates(A,x,y);
 	
 	t += 1;
 }
@@ -247,4 +263,40 @@ void update(double L, int *degree, double *A, double threshold, double *features
 	}
      printf("Fraction - new features : %2.2f\n",cc/m.agents);
 
+}
+
+void coordinates(double *A, double *x, double *y)
+{
+	int k,i,j;
+	int K = 10;
+	double c1, c2, l, delta;
+	c1 = c2 = 1;
+	l = 10;
+	delta = 0.1;
+	double norm, rep_x, rep_y, spring_x, spring_y, F_x[m.agents], F_y[m.agents];
+
+	for(k=0; k<=K; k++)
+	{
+		for(i=0; i<m.agents; i++)
+		{
+			for(j=0; j<m.agents; j++)
+			{
+				norm = sqrt( (x[i] - x[j])*(x[i] - x[j]) + (y[i] - y[j])*(y[i] - y[j]) );
+				if(A[i*m.agents+j] == 0)
+				{
+					rep_x += c1 * (x[i] - x[j]) / (norm*norm*norm);
+					rep_y += c1 * (y[i] - y[j]) / (norm*norm*norm);
+				}
+				else if (A[i*m.agents+j] == 1)
+				{
+					spring_x += c2 * log(norm/l) * (x[i] - x[j]) / norm;
+					spring_y += c2 * log(norm/l) * (y[i] - y[j]) / norm;
+				}
+			}
+			F_x[i] = rep_x + spring_x;
+			F_y[i] = rep_y + spring_y;
+			x[i] = x[i] + delta*F_x[i];			
+			y[i] = y[i] + delta*F_y[i];
+		}
+	}
 }
