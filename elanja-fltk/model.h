@@ -28,6 +28,9 @@ public:
 	double *features;
 
 	double *A;
+	
+	double *x;
+	double *y;
 
 	int *degree;
 	int *A_degree;
@@ -39,5 +42,6 @@ public:
 double newInteraction(double L, double *A, int agents);
 //void multiplyer(int agents, int *A, int *C);
 void update(double L,int *degree, double *A, double threshold, double *features);
+void coordinates(double *A, double *x, double *y);
 
 #endif
