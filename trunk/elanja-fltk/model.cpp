@@ -34,8 +34,10 @@ void model::init(int agents,  double rho, int nFeatures){
 	for(i=0; i<agents; i++)	
 	{
 
-		x[i] = (i %40) *18+20;		
-		y[i] =  (i/40)*50 +40;
+		//x[i] = (i %40) *18+20;		
+		//y[i] =  (i/40)*50 +40;
+		x[i] = (double) (rand() %650);		
+		y[i] = (double) (rand() %400);
 
 		degree[i] =4;
 
@@ -130,9 +132,9 @@ void coordinates(double *A, double threshold,double *x, double *y)
 	double c1, c2, l, delta;
 	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
 
-	c1 = c2 = 1;
+	c1 = c2 = 0.1;
 	l = 10;
-	delta = 0.1;
+	delta = 0.01;
 
 	for(k=0; k<K; k++)
 	{
