@@ -32,7 +32,7 @@ void timer_cb(void *p);  /*  delay tra uno step e l'altro della simulazione */
 void circle(double x, double y, double radius); /* disegna i pallini */
 void rectangle(double x, double y, double edge); /* disegna quadrati */
 void triangle(double x, double y, double edge); /* disegna triangoli */
-void drawAgents(int i, int column, int row); /* per gli agenti */
+void drawAgents(int agent); /* per gli agenti */
 void drawFriendship(int f1, int f2);/* per le amicizie */
 
 #endif

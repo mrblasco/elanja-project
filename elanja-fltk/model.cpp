@@ -25,14 +25,14 @@ void model::init(int agents,  double rho, int nFeatures){
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
 	this->degree = (int*) malloc(sizeof(int)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
-	this->x = (double*) malloc(sizeof(int)*agents);
-	this->y = (double*) malloc(sizeof(int)*agents);
+	this->x = (double*) malloc(sizeof(double)*agents);
+	this->y = (double*) malloc(sizeof(double)*agents);
 
 	for(i=0; i<agents; i++)	
 	{
 
-		x[i] = (double) (rand() %700);		
-		y[i] = (double) (rand() %700);
+		x[i] = (double) (rand() %650);		
+		y[i] = (double) (rand() %400);
 
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
@@ -74,9 +74,9 @@ void model::reinit(int agents, double rho,  int nFeatures){
 	this->degree = (int*) malloc(sizeof(int)*agents);
 
 	if(x) free(x);
-	this->x = (double*) malloc(sizeof(int)*agents);
+	this->x = (double*) malloc(sizeof(double)*agents);
 	if(y) free(y);
-	this->y = (double*) malloc(sizeof(int)*agents);
+	this->y = (double*) malloc(sizeof(double)*agents);
 
 	for(i=0; i<agents; i++)	
 	{
@@ -196,34 +196,6 @@ double newInteraction(double L, double *A, int agents)
 	printf("Threshold :%f\n", threshold);
 	return threshold;
 }
-
-/* Function to compute Adjacency matrices at d<=2 
-void multiplyer(int agents,  int *A, int *C) {
-
-	int i, j, l;
-	int temp;
-
-	for(i=0; i<agents; i++)
-	{	
-		for(j=0; j<agents; j++)
-		{		
-			C[i*agents + j] = 0;
-			for (l=0; l<agents;l++) 
-				C[i*agents + j] += ( A[i*agents + l] * A[j*agents + l]); 
-		}	
-	} 
-	
-	for(i=0; i<agents; i++)
-	{	
-		for(j=0; j<agents; j++)
-		{	
-			C[i*agents + j]  += A[i*agents + j] ;
-			if (C[i*agents + j]  > 1 )
-					C[i*agents + j] = 1;
-		}      
-	}  
-} */
- 
  
 /* for a given threshold, computes the degree and  if degree==0 reinitilize features */
 void update(double L, int *degree, double *A, double threshold, double *features){
@@ -239,7 +211,7 @@ void update(double L, int *degree, double *A, double threshold, double *features
 
 		for(j=0; j<m.agents; j++)
 		{
-			printf("A[%d][%d] = %f\n",i,j,m.A[i*m.agents +j]);
+			//printf("A[%d][%d] = %f\n",i,j,m.A[i*m.agents +j]);
 			if(m.A[i*m.agents +j] >= threshold &&( j != i) )
 			{
 				degree[i]++;
@@ -261,12 +233,13 @@ void update(double L, int *degree, double *A, double threshold, double *features
 				features[k*m.agents + i] = (double) (rand() %1000) / (double) 1000;
 		}*/
 	}
-     printf("Fraction - new features : %2.2f\n",cc/m.agents);
+     //printf("Fraction - new features : %2.2f\n",cc/m.agents);
 
 }
 
 void coordinates(double *A, double *x, double *y)
 {
+
 	int k,i,j;
 	int K = 10;
 	double c1, c2, l, delta;
@@ -300,4 +273,10 @@ void coordinates(double *A, double *x, double *y)
 			y[i] = y[i] + delta*F_y;
 		}
 	}
+	for(i=0;i<m.agents;i++)
+	{
+		printf("Posizione agente %d = %f %f\n", i, x[i], y[j]);	
+	}
+
+	printf("Computed new Layout\n");
 }
