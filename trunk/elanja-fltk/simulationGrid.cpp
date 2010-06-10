@@ -79,6 +79,17 @@ void simulationGrid::draw() {
 	nAgentsRow = m.agents/nAgentsColumn + 1;
 	//printf("Righe = %d\n",nAgentsRow);
 	
+     for (i=0;i<m.agents;i++)
+     {
+          for (j=i+1;j<m.agents;j++)
+          {
+               if(m.A[i*m.agents +j]>m.threshold)
+               {               
+                    link(m.x[i],m.y[i],m.x[j],m.y[j]);
+               }
+          }
+     }
+
 	/* Draw all Agents */
 	for(i=0; i<m.agents;i++)
 	{
@@ -134,12 +145,14 @@ void circle(double x, double y, double radius){
 	glEnd();
 }
 
-void drawFriendship(int f1, int f2)
-{
-	glColor4d(170.0, 170.0, 170.0, 0.4);
-	glBegin(GL_LINES);
-		glVertex2d(30, 100);
-		glVertex2d(100, 30);
+void link(double x, double y, double xx, double yy)
+{	
+
+	glColor4d(0.2,0,1,0.2); 	
+
+     glBegin(GL_LINES);
+	glVertex2d(x, y);
+	glVertex2d(xx,yy);	
 	glEnd();
 }
 
