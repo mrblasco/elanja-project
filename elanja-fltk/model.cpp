@@ -66,7 +66,6 @@ void model::reinit(int agents, double rho,  int nFeatures){
 //	this->m = rho * agents;
 //	this->epsilon = epsilon;
 //	this->friendship = friendship;
-//	this->threshold = threshold;
 
 	this->nFeatures = nFeatures;
 
@@ -115,7 +114,9 @@ void model::step(){
      L = ( rho * agents * (agents - 1) )/ 2;
 
 	threshold = newInteraction(L, A, agents);
+	this-> threshold = threshold;
 	update(L, degree, A, threshold, features);
+
 
 	coordinates(A, threshold, x, y);
 	
@@ -127,7 +128,7 @@ void coordinates(double *A, double threshold,double *x, double *y)
 {
 
 	int k, i, j;
-	int K = 50;
+	int K = 1;
 
 	double c1, c2, l, delta;
 	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
@@ -147,20 +148,23 @@ void coordinates(double *A, double threshold,double *x, double *y)
                 
 				if(A[i*m.agents+j] < threshold )
 				{
-					rep_x += c1 * (x[i] - x[j]) / (norm*norm*norm);
-					rep_y += c1 * (y[i] - y[j]) / (norm*norm*norm);
-				}
-				else if (A[i*m.agents+j] >= threshold)
-				{
-					spring_x += c2 * log(norm/l) * (x[i] - x[j]) / norm;
+					rep_x +=  1 / norm;  //(x[i] - x[j]) / (norm*norm);
+					rep_y +=     (y[i] - y[j]) / (norm*norm);
+				} else {
+					spring_x +=  c2 * log(norm/l) * (x[i] - x[j]) / norm;
 					spring_y += c2 * log(norm/l) * (y[i] - y[j]) / norm;
 				}
 			}
 
 			F_x = rep_x + spring_x;
 			F_y = rep_y + spring_y;
-			x[i] = x[i] + delta*F_x;			
-			y[i] = y[i] + delta*F_y;
+			x[i] = x[i] + delta*F_x;	
+                    if(x[i]>650)
+                         x[i]=rand()%650;		
+			y[i] = MIN( y[i] + delta*F_y,450);
+                    if(y[i]>650 || y[i]<0)
+                         y[i]=rand()%450;		
+
 		}
 	}
 }

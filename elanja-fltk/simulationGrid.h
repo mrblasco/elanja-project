@@ -28,6 +28,7 @@ protected: /* non puoi cancellalro */
 	void init();
 };
 
+void link(double x, double y, double xx, double yy); /* disegna i pallini */
 void timer_cb(void *p);  /*  delay tra uno step e l'altro della simulazione */
 void circle(double x, double y, double radius); /* disegna i pallini */
 void rectangle(double x, double y, double edge); /* disegna quadrati */
