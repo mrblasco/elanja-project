@@ -31,8 +31,8 @@ void model::init(int agents,  double rho, int nFeatures){
 	for(i=0; i<agents; i++)	
 	{
 
-		x[i] = (double) ((rand() %1000) / (double) 1000) * 700;		
-		y[i] = (double) ((rand() %1000) / (double) 1000) * 700;
+		x[i] = (double) (rand() %700);		
+		y[i] = (double) (rand() %700);
 
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
@@ -81,8 +81,8 @@ void model::reinit(int agents, double rho,  int nFeatures){
 	for(i=0; i<agents; i++)	
 	{
 
-		x[i] = (double) ((rand() %1000) / (double) 1000) * 700;		
-		y[i] = (double) ((rand() %1000) / (double) 1000) * 700;
+		x[i] = (double) (rand() %700);		
+		y[i] = (double) (rand() %700);
 
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
@@ -273,10 +273,11 @@ void coordinates(double *A, double *x, double *y)
 	c1 = c2 = 1;
 	l = 10;
 	delta = 0.1;
-	double norm, rep_x, rep_y, spring_x, spring_y, F_x[m.agents], F_y[m.agents];
+	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
 
 	for(k=0; k<=K; k++)
 	{
+		rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
 		for(i=0; i<m.agents; i++)
 		{
 			for(j=0; j<m.agents; j++)
@@ -293,10 +294,10 @@ void coordinates(double *A, double *x, double *y)
 					spring_y += c2 * log(norm/l) * (y[i] - y[j]) / norm;
 				}
 			}
-			F_x[i] = rep_x + spring_x;
-			F_y[i] = rep_y + spring_y;
-			x[i] = x[i] + delta*F_x[i];			
-			y[i] = y[i] + delta*F_y[i];
+			F_x = rep_x + spring_x;
+			F_y = rep_y + spring_y;
+			x[i] = x[i] + delta*F_x;			
+			y[i] = y[i] + delta*F_y;
 		}
 	}
 }
