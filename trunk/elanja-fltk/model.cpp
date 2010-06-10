@@ -1,5 +1,8 @@
 #include "model.h"
 
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
 model m; // istanza del modello
 int t; // counter delle iterazioni
 
@@ -31,15 +34,17 @@ void model::init(int agents,  double rho, int nFeatures){
 	for(i=0; i<agents; i++)	
 	{
 
-		x[i] = (double) (rand() %650);		
-		y[i] = (double) (rand() %400);
+		x[i] = (i %40) *18+20;		
+		y[i] =  (i/40)*50 +40;
 
-		degree[i] = 1;
+		degree[i] =4;
+
 		for(j=0; j<nFeatures; j++)
 		{
 			features[j*agents + i] = (double) (rand() %1000) / (double) 1000;
 		}
 
+          /*Initialize corr matrix*/
 		for(j=0; j<agents; j++)
 		{
 			A[i*agents + j] = 0;		
@@ -81,8 +86,8 @@ void model::reinit(int agents, double rho,  int nFeatures){
 	for(i=0; i<agents; i++)	
 	{
 
-		x[i] = (double) (rand() %700);		
-		y[i] = (double) (rand() %700);
+		x[i] = (double) (rand() %650);		
+		y[i] = (double) (rand() %400);
 
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
@@ -109,9 +114,53 @@ void model::step(){
 
 	threshold = newInteraction(L, A, agents);
 	update(L, degree, A, threshold, features);
-	coordinates(A,x,y);
+
+	coordinates(A, threshold, x, y);
 	
 	t += 1;
+}
+
+/* produce le coordinate x[] , y[]*/
+void coordinates(double *A, double threshold,double *x, double *y)
+{
+
+	int k, i, j;
+	int K = 50;
+
+	double c1, c2, l, delta;
+	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
+
+	c1 = c2 = 1;
+	l = 10;
+	delta = 0.1;
+
+	for(k=0; k<K; k++)
+	{
+		rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
+		for(i=0; i<m.agents; i++)
+		{
+			for(j=i+1; j<m.agents; j++)
+			{
+				norm = sqrt(   pow( (x[i] - x[j]),2) + pow((y[i] - y[j]),2));
+                
+				if(A[i*m.agents+j] < threshold )
+				{
+					rep_x += c1 * (x[i] - x[j]) / (norm*norm*norm);
+					rep_y += c1 * (y[i] - y[j]) / (norm*norm*norm);
+				}
+				else if (A[i*m.agents+j] >= threshold)
+				{
+					spring_x += c2 * log(norm/l) * (x[i] - x[j]) / norm;
+					spring_y += c2 * log(norm/l) * (y[i] - y[j]) / norm;
+				}
+			}
+
+			F_x = rep_x + spring_x;
+			F_y = rep_y + spring_y;
+			x[i] = x[i] + delta*F_x;			
+			y[i] = y[i] + delta*F_y;
+		}
+	}
 }
 
  /* compute correlation matrix and finds a threshold */
@@ -237,46 +286,4 @@ void update(double L, int *degree, double *A, double threshold, double *features
 
 }
 
-void coordinates(double *A, double *x, double *y)
-{
 
-	int k,i,j;
-	int K = 10;
-	double c1, c2, l, delta;
-	c1 = c2 = 1;
-	l = 10;
-	delta = 0.1;
-	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
-
-	for(k=0; k<=K; k++)
-	{
-		rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
-		for(i=0; i<m.agents; i++)
-		{
-			for(j=0; j<m.agents; j++)
-			{
-				norm = sqrt( (x[i] - x[j])*(x[i] - x[j]) + (y[i] - y[j])*(y[i] - y[j]) );
-				if(A[i*m.agents+j] == 0)
-				{
-					rep_x += c1 * (x[i] - x[j]) / (norm*norm*norm);
-					rep_y += c1 * (y[i] - y[j]) / (norm*norm*norm);
-				}
-				else if (A[i*m.agents+j] == 1)
-				{
-					spring_x += c2 * log(norm/l) * (x[i] - x[j]) / norm;
-					spring_y += c2 * log(norm/l) * (y[i] - y[j]) / norm;
-				}
-			}
-			F_x = rep_x + spring_x;
-			F_y = rep_y + spring_y;
-			x[i] = x[i] + delta*F_x;			
-			y[i] = y[i] + delta*F_y;
-		}
-	}
-	for(i=0;i<m.agents;i++)
-	{
-		printf("Posizione agente %d = %f %f\n", i, x[i], y[j]);	
-	}
-
-	printf("Computed new Layout\n");
-}
