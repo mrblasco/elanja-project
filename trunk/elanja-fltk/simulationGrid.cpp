@@ -80,48 +80,20 @@ void simulationGrid::draw() {
 	//printf("Righe = %d\n",nAgentsRow);
 	
 	/* Draw all Agents */
-	i = 0;
-	while(i<m.agents)
+	for(i=0; i<m.agents;i++)
 	{
-			
-		for(k=0; k<nAgentsRow; k++)
-		{
-			for(j=0; j<nAgentsColumn; j++)
-			{
-				if(i<m.agents)
-				{
-					//printf("Agente %d, pos = %d %d\n", i, j, k);
-					drawAgents(i, j, k);
-					i++;
-				}
-				else
-					break;
-			}
-		}		
+		drawAgents(i);
 	}
 
-	printf("threshold = %f\n", m.threshold);
+	//printf("threshold = %f\n", m.threshold);
 	/* Draw Friendship links */
-	for (i=0; i<m.agents; i++)
-	{
-		for(j=i; j<m.agents; j++)
-		{
-			
-			if(m.A[i*m.agents + j] >= m.threshold)
-			{
-				drawFriendship(i, j);
-				count++;
-			}
-		}
-	}
-	printf("Disegnati %d archi\n", count);
 
 	/* passo di simulazione */
 	m.step();
 
 }
 
-void drawAgents(int i, int column, int row){
+void drawAgents(int i){
 	int k, x;		 	
 	
 
@@ -133,6 +105,7 @@ void drawAgents(int i, int column, int row){
 	//circle( (i%40) *16+20,  (j%40)*16 +40, 1.0 * (double) m.degree[i]);
 
 	//circle(20 + (10 + 20)*column, 20 + (10 + 20)*row, sqrt(m.degree[i]));
+	printf("Agent %d = %f %f, degree = %d\n", i, m.x[i],m.y[i], m.degree[i]);
 	circle(m.x[i], m.y[i], sqrt(m.degree[i]));
 }
 
