@@ -128,7 +128,7 @@ void coordinates(double *A, double threshold,double *x, double *y)
 {
 
 	int k, i, j;
-	int K = 1;
+	int K = 100;
 
 	double c1, c2, l, delta;
 	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
@@ -148,21 +148,21 @@ void coordinates(double *A, double threshold,double *x, double *y)
                 
 				if(A[i*m.agents+j] < threshold )
 				{
-					rep_x +=  1 / norm;  //(x[i] - x[j]) / (norm*norm);
-					rep_y +=     (y[i] - y[j]) / (norm*norm);
+					rep_x += (x[i] - x[j]) / (norm*norm);
+					rep_y +=  (y[i] - y[j]) / (norm*norm);
 				} else {
-					spring_x +=  c2 * log(norm/l) * (x[i] - x[j]) / norm;
-					spring_y += c2 * log(norm/l) * (y[i] - y[j]) / norm;
+					spring_x +=  0.01 * log(norm/l) * (x[i] - x[j]) / 650;
+					spring_y += 0.01 * log(norm/l) * (y[i] - y[j]) / 450;
 				}
 			}
 
 			F_x = rep_x + spring_x;
 			F_y = rep_y + spring_y;
 			x[i] = x[i] + delta*F_x;	
-                    if(x[i]>650)
+                    if(x[i]>650 || x[i]<0 )
                          x[i]=rand()%650;		
 			y[i] = MIN( y[i] + delta*F_y,450);
-                    if(y[i]>650 || y[i]<0)
+                    if(y[i]>450 || y[i]<0)
                          y[i]=rand()%450;		
 
 		}
