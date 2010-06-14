@@ -128,7 +128,7 @@ void coordinates(double *A, double threshold,double *x, double *y)
 {
 
 	int k, i, j;
-	int K = 100;
+	int K = 250;
 
 	double c1, c2, l, delta;
 	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
@@ -151,8 +151,8 @@ void coordinates(double *A, double threshold,double *x, double *y)
 					rep_x += (x[i] - x[j]) / (norm*norm);
 					rep_y +=  (y[i] - y[j]) / (norm*norm);
 				} else {
-					spring_x +=  0.01 * log(norm/l) * (x[i] - x[j]) / 650;
-					spring_y += 0.01 * log(norm/l) * (y[i] - y[j]) / 450;
+					spring_x +=  0.5 * log(norm/l) * (x[i] - x[j]) / 650;
+					spring_y += 0.5 * log(norm/l) * (y[i] - y[j]) / 450;
 				}
 			}
 
