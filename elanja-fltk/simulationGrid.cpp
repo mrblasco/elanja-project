@@ -117,7 +117,8 @@ void drawAgents(int i){
 
 	//circle(20 + (10 + 20)*column, 20 + (10 + 20)*row, sqrt(m.degree[i]));
 //	printf("Agent %d = %f %f, degree = %d\n", i, m.x[i],m.y[i], m.degree[i]);
-	circle(m.x[i], m.y[i], sqrt(m.degree[i]));
+	//circle(m.x[i], m.y[i], sqrt(m.degree[i]));
+	circle(m.x[i], m.y[i], m.degree[i]);
 }
 
 void timer_cb(void *p) /*delay tra step e altro*/

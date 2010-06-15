@@ -151,8 +151,8 @@ void coordinates(double *A, double threshold,double *x, double *y)
 					rep_x += (x[i] - x[j]) / (norm*norm);
 					rep_y +=  (y[i] - y[j]) / (norm*norm);
 				} else {
-					spring_x +=  0.5 * log(norm/l) * (x[i] - x[j]) / 650;
-					spring_y += 0.5 * log(norm/l) * (y[i] - y[j]) / 450;
+					spring_x +=  0.1 * log(norm/l) * (x[i] - x[j]) / 650;
+					spring_y += 0.1 * log(norm/l) * (y[i] - y[j]) / 450;
 				}
 			}
 
