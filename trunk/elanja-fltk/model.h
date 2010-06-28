@@ -12,9 +12,9 @@
 class model{
 public: 
      	/* initialize functions and variables */
-	void init(int agents, double rho, int nFeatures); 
-	void reinit(int agents, double rho, int nFeatures); 
-	void step(); 
+	void init(int agents, double rho, int nFeatures, int w, int h); 
+	void reinit(int agents, double rho, int nFeatures, int w, int h); 
+	void step(int w, int h); 
 	
 	int agents;
 	int distance;
@@ -35,13 +35,12 @@ public:
 	int *degree;
 	int *A_degree;
 	int *B_degree;
-	
 };
 
 //void interaction(int agents, int m,  double *p, double *q, double *A, double epsilon, double friendship);
 double newInteraction(double L, double *A, int agents);
 //void multiplyer(int agents, int *A, int *C);
 void update(double L,int *degree, double *A, double threshold, double *features);
-void coordinates(double *A, double threshold, double *x, double *y);
+void coordinates(double *A, double threshold, double *x, double *y, int w, int h);
 
 #endif

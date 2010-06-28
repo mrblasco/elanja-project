@@ -10,7 +10,7 @@ extern bool externAgentOn;
 extern bool dinamicProductsOn;
 extern int W,H;
 
-void model::init(int agents,  double rho, int nFeatures){
+void model::init(int agents,  double rho, int nFeatures, int w, int h){
 	int i, j;
 
 	printf("Initializing Model ... \n");	
@@ -36,8 +36,8 @@ void model::init(int agents,  double rho, int nFeatures){
 
 		//x[i] = (i %40) *18+20;		
 		//y[i] =  (i/40)*50 +40;
-		x[i] = (double) (rand() %650);		
-		y[i] = (double) (rand() %400);
+		x[i] = (double) (rand() %w);		
+		y[i] = (double) (rand() %h);
 
 		degree[i] =4;
 
@@ -56,7 +56,7 @@ void model::init(int agents,  double rho, int nFeatures){
 	t = 0; 
 }
 
-void model::reinit(int agents, double rho,  int nFeatures){
+void model::reinit(int agents, double rho,  int nFeatures, int w, int h){
 	int i, j;
 
 	printf("Reinitializing Model ... \n");
@@ -87,8 +87,8 @@ void model::reinit(int agents, double rho,  int nFeatures){
 	for(i=0; i<agents; i++)	
 	{
 
-		x[i] = (double) (rand() %650);		
-		y[i] = (double) (rand() %400);
+		x[i] = (double) (rand() %w);		
+		y[i] = (double) (rand() %h);
 
 		degree[i] = 1;
 		for(j=0; j<nFeatures; j++)
@@ -105,11 +105,12 @@ void model::reinit(int agents, double rho,  int nFeatures){
  	t = 0;
 } 
 
-void model::step(){
+void model::step(int w, int h){
 
 	int i, j; 
 	double threshold, L;
      
+	printf("rho = %f\n", rho);
      /* number of available links among all the possible*/
      L = ( rho * agents * (agents - 1) )/ 2;
 
@@ -118,17 +119,19 @@ void model::step(){
 	update(L, degree, A, threshold, features);
 
 
-	coordinates(A, threshold, x, y);
+	coordinates(A, threshold, x, y, w, h);
 	
 	t += 1;
 }
 
 /* produce le coordinate x[] , y[]*/
-void coordinates(double *A, double threshold,double *x, double *y)
+void coordinates(double *A, double threshold,double *x, double *y, int w, int h)
 {
 
 	int k, i, j;
 	int K = 250;
+
+	//printf("Dimensioni simulation grid: w = %d, h = %d\n", w, h);
 
 	double c1, c2, l, delta;
 	double norm, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
@@ -167,6 +170,8 @@ void coordinates(double *A, double threshold,double *x, double *y)
 
 		}
 	}
+
+	
 }
 
  /* compute correlation matrix and finds a threshold */
