@@ -17,11 +17,13 @@ bool initModel=true;
 int W,H;
 
 /*invoca costruttore FL_GL_WINDOW*/
-simulationGrid::simulationGrid(int x,int y,int w,int h, priceGenetics *graphic1, const char *l):Fl_Gl_Window(x,y,w,h,l)  
+simulationGrid::simulationGrid(int x,int y,int w,int h, degreeStats *g1, clusteringStats *g2, capitalVariation *g3, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
 /*	grow = true; */
 	restart = false; 
-	this->graphic1 = graphic1;
+	this->g1 = g1;
+	this->g2 = g2;
+	this->g3 = g3;
 	W=w;
 	H=h;
 }
@@ -48,7 +50,7 @@ void simulationGrid::init(){
 	
 	if(initModel)
 	{ 
-		m.init(AGENTS_INIT,  RHO_INIT , FEATURES_INIT );   
+		m.init(AGENTS_INIT,  RHO_INIT , FEATURES_INIT, w(), h());   
 		initModel=false; 
 	}
 	else
@@ -59,8 +61,6 @@ void simulationGrid::init(){
 
 void simulationGrid::draw() {	
 	int i, j, k;
-	int nAgentsColumn, nAgentsRow;
-	int count;
 	
 	/*inizializzazione grafica */
 	if (!valid())
@@ -68,27 +68,21 @@ void simulationGrid::draw() {
 	
 	/* passa al modello i parametri presi dalla gui  e reinit  */
 	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.nFeatures != gui_nFeatures) )
-     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures);         
+     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures, w(), h());         
 
 	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	nAgentsColumn = (745 - 20)/40;
-	//printf("Colonne = %d\n", nAgentsColumn);
-
-	nAgentsRow = m.agents/nAgentsColumn + 1;
-	//printf("Righe = %d\n",nAgentsRow);
 	
-     for (i=0;i<m.agents;i++)
-     {
-          for (j=i+1;j<m.agents;j++)
-          {
-               if(m.A[i*m.agents +j]>m.threshold)
-               {               
-                    link(m.x[i],m.y[i],m.x[j],m.y[j]);
-               }
-          }
-     }
+	for (i=0;i<m.agents;i++)
+	{
+		for (j=i+1;j<m.agents;j++)
+		{
+			if(m.A[i*m.agents +j]>m.threshold)
+			{               
+			    link(m.x[i],m.y[i],m.x[j],m.y[j]);
+			}
+		}
+	}
 
 	/* Draw all Agents */
 	for(i=0; i<m.agents;i++)
@@ -100,7 +94,12 @@ void simulationGrid::draw() {
 	/* Draw Friendship links */
 
 	/* passo di simulazione */
-	m.step();
+	printf("Dimensioni simulation grid: w = %d, h = %d\n", w(), h());
+	m.step(w(), h());
+
+	g1->redraw();
+	g2->redraw();
+	g3->redraw();
 
 }
 
@@ -149,11 +148,11 @@ void circle(double x, double y, double radius){
 void link(double x, double y, double xx, double yy)
 {	
 
-	glColor4d(0.2,0,1,0.2); 	
+	glColor4d(0.0,0.0,1.0,0.2); 	
 
-     glBegin(GL_LINES);
-	glVertex2d(x, y);
-	glVertex2d(xx,yy);	
+	glBegin(GL_LINES);
+		glVertex2d(x, y);
+		glVertex2d(xx,yy);	
 	glEnd();
 }
 

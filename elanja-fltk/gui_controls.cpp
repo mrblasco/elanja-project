@@ -76,13 +76,28 @@ void simSpeedSliderCallback(Fl_Value_Slider* s, void*){
 }
 
 /************************* STATISTICS ********************************/
-void priceGeneticsCallback(Fl_Widget*, void* data)
+void degreeStatsCallback(Fl_Widget*, void* data)
 {
 	widgetWindow * w;
 	
 	w = (widgetWindow *)data;
 	w->set_visible();
 	w->show();
+}
 
+void clusteringStatsCallback(Fl_Widget*, void* data){
+	widgetWindow * w;
+
+	w=(widgetWindow *)data;
+	w->set_visible();
+	w->show();
+}
+
+void capitalVariationCallback(Fl_Widget*, void* data){
+	widgetWindow * w;
+
+	w=(widgetWindow *)data;
+	w->set_visible();
+	w->show();
 }
 

@@ -22,7 +22,9 @@ void friendshipSliderCallback(Fl_Widget*, void*);
 void thresholdSliderCallback(Fl_Widget*, void*);
 void simSpeedSliderCallback(Fl_Widget*, void*);*/
 
-void priceGeneticsCallback(Fl_Widget*, void*);
+void degreeStatsCallback(Fl_Widget*, void*);
+void clusteringStatsCallback(Fl_Widget*, void* data);
+void capitalVariationCallback(Fl_Widget*, void* data);
 
 
 #endif

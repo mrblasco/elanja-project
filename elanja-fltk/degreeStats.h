@@ -7,14 +7,12 @@
 #include "glStats.h"
 #include "model.h"
 
-//extern agent agents[];
-
-class priceGenetics : public glStats
+class degreeStats : public glStats
 {
 public:
-	priceGenetics(int w,int h,const char *l=0);
-	int sides;
-	bool grow;
+	degreeStats(int w,int h,const char *l=0);
+	double *degree_history;
+	double *degree_avg_history;
 protected:
 	void paint();
 };
