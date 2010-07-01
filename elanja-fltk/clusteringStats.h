@@ -11,8 +11,9 @@ class clusteringStats : public glStats
 {
 public:
 	clusteringStats(int w,int h,const char *l=0);
-	int sides;
-	bool grow;
+     double clusteringHistory[STATS_W];	
+     double clustAvgHistory[STATS_W];	
+
 protected:
 	void paint();
 };
