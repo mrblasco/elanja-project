@@ -4,49 +4,73 @@
 extern model m;
 extern bool doNextSimulationStep;
 
-clusteringStats::clusteringStats(int w,int h,const char *l):glStats(w,h,l) 
+clusteringStats::clusteringStats(int w, int h,const char *l):glStats(w,h,l) 
 {
-	grow = true;
+     int j;
+
+          for(j=0;j<STATS_W;  j++)  
+          {
+               clusteringHistory[j] = 0.0;
+          }
 }
 
 void clusteringStats::paint() 
 {	
-	int i,j, dx, dy;
-	double max_capital;
-	
-	
-	/*if (!valid()) {
-		//tutto questo codice eseguito tutte le volte che la
-		//finestra deve essere (re)inizializzata, per esempio a
-		//causa di un resize
-		
-		//inizializzazione grafica, non toccare! serve fatto così per compatibilità con altri sistemi
-		valid(1);
-		glLoadIdentity();
-		//glViewport(0,0,w(),h());
-		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glMatrixMode (GL_PROJECTION);     
-		glLoadIdentity();
-		glOrtho(0, w(), 0, h(), -100, 100);                
-		glMatrixMode (GL_MODELVIEW);
-	}*/
+	int i,j,k; 
+     int check[20];
+     double clustering;
+
+
+     for(j=0;j<w();j++)  
+          clusteringHistory[j] = clusteringHistory[j+1];
+
+    clustering=0;
+    for(i=0;i<m.agents;i++)
+    {
+          if(m.degree[i]>1)
+          {   
+               /*inizializza */
+               for(j=0;j<20;j++)
+                    check[j] = -1;
+
+               k=0;
+               for(j=0;j<m.agents;j++)
+               {
+                    if(m.A[i*m.agents +j]==1)
+                     {    
+                         check[k] = j;
+                         k++;
+                     }
+               }
+               for(j=0;j<20;j++)
+               {
+                   if(check[j]>=0)
+                   {
+                        for(k=0;k<20;k++)
+                        {
+                              if(m.A[check[j]*m.agents+check[k]]==1 && check[k]>=0)
+                                   clustering = clustering +1;
+                         }
+                    }
+               }
+               clustering = clustering / (2*m.degree[i]);
+          }               
+     }
+     clusteringHistory[STATS_W-1] = clustering;
+
 	
 	if(doNextSimulationStep){
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		glColor4d(1, 0, 0,0.7);
+		glColor4d(0.5, 0.5, 0,0.7);
 
 		/* Qua disegniamo il nostro grafico per le statistiche */
-
-		glBegin(GL_POLYGON);
-		for(i=0; i<3; i++)
-		{
-			glVertex2d(rand()%100, rand()%300);
-			glVertex2d(50, 80);
-			glVertex2d(80, 80);
-			glVertex2d(80, 50);
-		}
+          for(j=0;j<STATS_W;j++)
+          {
+		glBegin(GL_LINE);
+			glVertex2d(j,(STATS_H/4)*clusteringHistory[j]);
+			glVertex2d(j+1,(STATS_H/4)*clusteringHistory[j-1]);
+          }
 		glEnd();
 		
 	}
