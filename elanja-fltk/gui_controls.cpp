@@ -8,7 +8,7 @@ int gui_agents;
 int gui_distance;
 double gui_rho;
 int gui_nFeatures;
-double gui_friendship;
+double gui_friends;
 double gui_threshold;
 
 bool doNextSimulationStep;
@@ -60,7 +60,7 @@ void epsilonSliderCallback(Fl_Value_Slider* s, void*){
 void friendshipSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
 // 	slider->value(slider->value());
-  	gui_friendship = slider->value();
+  	gui_friends = slider->value();
   	restart = true;
 }
 void thresholdSliderCallback(Fl_Value_Slider* s, void*){

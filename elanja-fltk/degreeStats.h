@@ -11,8 +11,7 @@ class degreeStats : public glStats
 {
 public:
 	degreeStats(int w,int h,const char *l=0);
-	double *degree_history;
-	double *degree_avg_history;
+	double degreeHistory[5][20];
 protected:
 	void paint();
 };

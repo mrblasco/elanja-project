@@ -6,7 +6,7 @@ extern int gui_agents;
 extern int gui_distance; 
 extern double gui_rho; /* fraction of a-type people over population*/
 extern int gui_nFeatures; /* inherited fracion of links  */
-extern double gui_friendship; /*  fraction of population met in one iteration */
+extern double gui_friends; /*  fraction of population met in one iteration */
 extern double gui_threshold; 
 
 extern bool restart; 
@@ -17,10 +17,11 @@ bool initModel=true;
 int W,H;
 
 /*invoca costruttore FL_GL_WINDOW*/
-simulationGrid::simulationGrid(int x,int y,int w,int h, degreeStats *g1, clusteringStats *g2, capitalVariation *g3, const char *l):Fl_Gl_Window(x,y,w,h,l)  
+simulationGrid::simulationGrid(int x,int y,int w, int h, degreeStats *g1, clusteringStats *g2, capitalVariation *g3, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
 /*	grow = true; */
 	restart = false; 
+     /* aggiunge le finestre con le statistiche*/
 	this->g1 = g1;
 	this->g2 = g2;
 	this->g3 = g3;
@@ -38,19 +39,21 @@ void simulationGrid::init(){
 	glLoadIdentity();
 	glOrtho(0, w(), 0, h(), -100, 100);                
 	glMatrixMode (GL_MODELVIEW);
+	glColor4d(0.2,0,1,0.2); 	
+
 	
 	/* parametri iniziali */
 	gui_agents = AGENTS_INIT;  
 	gui_distance = DISTANCE_INIT;
 	gui_rho = RHO_INIT;
 	gui_nFeatures = FEATURES_INIT;
-	gui_friendship = SAMPLE_INIT;
+	gui_friends = FRIENDS_INIT;
 	gui_threshold = THRESHOLD_INIT;
 	simSpeed = SIM_SPEED_INIT;
 	
 	if(initModel)
 	{ 
-		m.init(AGENTS_INIT,  RHO_INIT , FEATURES_INIT, w(), h());   
+		m.init(AGENTS_INIT,  RHO_INIT, FEATURES_INIT, 0.2, w(), h());   
 		initModel=false; 
 	}
 	else
@@ -67,31 +70,28 @@ void simulationGrid::draw() {
 		init(); 
 	
 	/* passa al modello i parametri presi dalla gui  e reinit  */
-	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.nFeatures != gui_nFeatures) )
-     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures, w(), h());         
+	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.nFeatures != gui_nFeatures) ||  (m.threshold != gui_threshold) )
+     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures, gui_threshold, w(), h());         
+
 
 	/* cancella il display */
 	glClear(GL_COLOR_BUFFER_BIT);
-	
-	for (i=0;i<m.agents;i++)
-	{
-		for (j=i+1;j<m.agents;j++)
-		{
-			if(m.A[i*m.agents +j]>m.threshold)
-			{               
-			    link(m.x[i],m.y[i],m.x[j],m.y[j]);
-			}
-		}
-	}
+     for (i=0;i<m.agents;i++)
+     {
+               for (j=0;j<m.agents;j++)
+               {
+                    if(m.A[i*m.agents +j]==1)
+                    {               
+                         link(m.x[i],m.y[i],m.x[j],m.y[j]);
+                    }
+               }
+     }
 
 	/* Draw all Agents */
 	for(i=0; i<m.agents;i++)
 	{
 		drawAgents(i);
 	}
-
-	//printf("threshold = %f\n", m.threshold);
-	/* Draw Friendship links */
 
 	/* passo di simulazione */
 	printf("Dimensioni simulation grid: w = %d, h = %d\n", w(), h());
@@ -109,14 +109,7 @@ void drawAgents(int i){
 
 	/* rosso, green, blue, opacity */
 	glColor4d(1- m.features[0*m.agents + i],m.features[1*m.agents + i],m.features[2*m.agents + i],0.8);
-	
-	/* position_x, position_ y, size */
-	//circle(rand() % (745 - 10) +10, rand() % (490) + 10, 3.0 * (double) sqrt(m.degree[i]));
-	//circle( (i%40) *16+20,  (j%40)*16 +40, 1.0 * (double) m.degree[i]);
-
-	//circle(20 + (10 + 20)*column, 20 + (10 + 20)*row, sqrt(m.degree[i]));
-//	printf("Agent %d = %f %f, degree = %d\n", i, m.x[i],m.y[i], m.degree[i]);
-	//circle(m.x[i], m.y[i], sqrt(m.degree[i]));
+	 
 	circle(m.x[i], m.y[i], m.degree[i]);
 }
 
@@ -149,7 +142,6 @@ void link(double x, double y, double xx, double yy)
 {	
 
 	glColor4d(0.0,0.0,1.0,0.2); 	
-
 	glBegin(GL_LINES);
 		glVertex2d(x, y);
 		glVertex2d(xx,yy);	
