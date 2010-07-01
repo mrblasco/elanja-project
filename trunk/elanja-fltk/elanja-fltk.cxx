@@ -7,14 +7,14 @@
 #include "clusteringStats.h"
 #include "capitalVariation.h"
 
-static degreeStats g1(STATS_WIDTH, STATS_HIGH);
-static widgetWindow degreeStats(STATS_WIDTH, STATS_HIGH, &g1, "Degree Statistics");
+static degreeStats g1(STATS_W, STATS_H);
+static widgetWindow degreeStats(STATS_W, STATS_H, &g1, "Degree Statistics");
 
-static clusteringStats g2(STATS_WIDTH,STATS_HIGH); 
-static widgetWindow clusteringStats(STATS_WIDTH,STATS_HIGH,&g2,"Clustering Statistics"); 
+static clusteringStats g2(STATS_W,STATS_H); 
+static widgetWindow clusteringStats(STATS_W,STATS_H,&g2,"Clustering Statistics"); 
 
-static capitalVariation g3(STATS_WIDTH,STATS_HIGH); 
-static widgetWindow capitalVariation(STATS_WIDTH,STATS_HIGH,&g3,"Capitale medio"); 
+static capitalVariation g3(STATS_W,STATS_H); 
+static widgetWindow capitalVariation(STATS_W,STATS_H,&g3,"Capitale medio"); 
 
 static simulationGrid glf(10,30,SIMULATION_WIDTH,SIMULATION_HIGH, &g1, &g2, &g3);  /* classe grafica  */
 
@@ -66,8 +66,9 @@ int main(int argc, char **argv)
 	{	
           /* Main Window */
 	 	elanjaWindow = new Fl_Double_Window(WINDOW_WIDTH, WINDOW_HIGH, "Elanja");
-		elanjaWindow->color(FL_LIGHT3);
-		elanjaWindow->selection_color((Fl_Color)53);
+		elanjaWindow->color(FL_LIGHT3);	
+	     elanjaWindow->selection_color((Fl_Color)53);
+      
     		{	/* Button's Group */ 
 			Fl_Group* o = new Fl_Group(585, 660, 172, 65);
 			{ 	/* Play Button */
@@ -111,12 +112,12 @@ int main(int argc, char **argv)
         			//populationSlider->box(FL_THIN_DOWN_BOX);
         			populationSlider->color((Fl_Color)10);
         			populationSlider->selection_color((Fl_Color)136);
-				populationSlider->minimum(0.05);
-        			populationSlider->maximum(0.95);
+				populationSlider->minimum(0.001);
+        			populationSlider->maximum(0.2);
         			populationSlider->labelfont(1);
         			populationSlider->labelsize(12);
         			populationSlider->value(RHO_INIT);
-				populationSlider->step(0.05);
+				populationSlider->step(0.001);
         			populationSlider->callback((Fl_Callback*)populationSliderCallback);
         			populationSlider->align(FL_ALIGN_TOP_LEFT);
       			}
@@ -144,9 +145,9 @@ int main(int argc, char **argv)
 			        friendshipSlider->labelfont(1);
 			        friendshipSlider->labelsize(12);
         			friendshipSlider->minimum(0.0);
-			        friendshipSlider->maximum(1.0);
-			        friendshipSlider->step(0.05);
-			        friendshipSlider->value(FRIEND_INIT);
+			        friendshipSlider->maximum(0.2);
+			        friendshipSlider->step(0.001);
+			        friendshipSlider->value(FRIENDS_INIT);
 			        friendshipSlider->callback((Fl_Callback*)friendshipSliderCallback);
 			        friendshipSlider->align(FL_ALIGN_TOP_LEFT);
 			}
@@ -173,9 +174,9 @@ int main(int argc, char **argv)
 			        thresholdSlider->selection_color((Fl_Color)136);
 			        thresholdSlider->labelfont(1);
 			        thresholdSlider->labelsize(12);
-			        thresholdSlider->minimum(0.0);
+			        thresholdSlider->minimum(-1.0);
 				thresholdSlider->maximum(1.0);
-			        thresholdSlider->step(0.1);
+			        thresholdSlider->step(0.05);
 			        thresholdSlider->value(THRESHOLD_INIT);
 			        thresholdSlider->callback((Fl_Callback*)thresholdSliderCallback);
 			        thresholdSlider->align(FL_ALIGN_TOP_LEFT);     

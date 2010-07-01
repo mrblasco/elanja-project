@@ -12,8 +12,8 @@
 class model{
 public: 
      	/* initialize functions and variables */
-	void init(int agents, double rho, int nFeatures, int w, int h); 
-	void reinit(int agents, double rho, int nFeatures, int w, int h); 
+	void init(int agents, double rho, int nFeatures, double threshold, int w, int h); 
+	void reinit(int agents, double rho, int nFeatures, double threshold, int w, int h); 
 	void step(int w, int h); 
 	
 	int agents;
@@ -21,11 +21,12 @@ public:
 	int m;
 	double rho;
 	double epsilon;
-	double friendship;
+	double friends;
 	double threshold;
 	int nFeatures;
 
 	double *features;
+	int *F;
 
 	double *A;
 	
@@ -37,10 +38,11 @@ public:
 	int *B_degree;
 };
 
+void genFeatures(int i);
 //void interaction(int agents, int m,  double *p, double *q, double *A, double epsilon, double friendship);
-double newInteraction(double L, double *A, int agents);
+double genCorrMat();
 //void multiplyer(int agents, int *A, int *C);
-void update(double L,int *degree, double *A, double threshold, double *features);
-void coordinates(double *A, double threshold, double *x, double *y, int w, int h);
+void update();
+void coordinates(double *A, double *x, double *y, int w, int h);
 
 #endif
