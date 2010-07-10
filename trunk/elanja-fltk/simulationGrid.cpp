@@ -6,7 +6,7 @@ extern int gui_agents;
 extern int gui_distance; 
 extern double gui_rho; /* fraction of a-type people over population*/
 extern int gui_nFeatures; /* inherited fracion of links  */
-extern double gui_friends; /*  fraction of population met in one iteration */
+extern int gui_friends; /*  fraction of population met in one iteration */
 extern double gui_threshold; 
 
 extern bool restart; 
@@ -53,7 +53,7 @@ void simulationGrid::init(){
 	
 	if(initModel)
 	{ 
-		m.init(AGENTS_INIT,  RHO_INIT, FEATURES_INIT, 0.2, w(), h());   
+		m.init(AGENTS_INIT,  RHO_INIT, FEATURES_INIT, 0.2, FRIENDS_INIT, w(), h());   
 		initModel=false; 
 	}
 	else
@@ -70,8 +70,8 @@ void simulationGrid::draw() {
 		init(); 
 	
 	/* passa al modello i parametri presi dalla gui  e reinit  */
-	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.nFeatures != gui_nFeatures) ||  (m.threshold != gui_threshold) )
-     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures, gui_threshold, w(), h());         
+	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.nFeatures != gui_nFeatures) ||  (m.threshold != gui_threshold)||  (m.friends != gui_friends) )
+     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures, gui_threshold, gui_friends, w(), h());         
 
 
 	/* cancella il display */
@@ -110,7 +110,7 @@ void drawAgents(int i){
 	/* rosso, green, blue, opacity */
 	glColor4d(1- m.features[0*m.agents + i],m.features[1*m.agents + i],m.features[2*m.agents + i],0.8);
 	 
-	circle(m.x[i], m.y[i], m.degree[i]);
+	circle(m.x[i], m.y[i],2+ m.degree[i]);
 }
 
 void timer_cb(void *p) /*delay tra step e altro*/
@@ -141,7 +141,7 @@ void circle(double x, double y, double radius){
 void link(double x, double y, double xx, double yy)
 {	
 
-	glColor4d(0.0,0.0,1.0,0.2); 	
+	glColor4d(0.9,0.0,1.0,0.2); 	
 	glBegin(GL_LINES);
 		glVertex2d(x, y);
 		glVertex2d(xx,yy);	

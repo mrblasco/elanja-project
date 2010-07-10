@@ -8,7 +8,7 @@ int gui_agents;
 int gui_distance;
 double gui_rho;
 int gui_nFeatures;
-double gui_friends;
+int gui_friends;
 double gui_threshold;
 
 bool doNextSimulationStep;

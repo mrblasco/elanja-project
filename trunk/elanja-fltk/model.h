@@ -12,8 +12,8 @@
 class model{
 public: 
      	/* initialize functions and variables */
-	void init(int agents, double rho, int nFeatures, double threshold, int w, int h); 
-	void reinit(int agents, double rho, int nFeatures, double threshold, int w, int h); 
+	void init(int agents, double rho, int nFeatures, double threshold, int friends, int w, int h); 
+	void reinit(int agents, double rho, int nFeatures, double threshold, int friends,int w, int h); 
 	void step(int w, int h); 
 	
 	int agents;
@@ -21,7 +21,7 @@ public:
 	int m;
 	double rho;
 	double epsilon;
-	double friends;
+	int friends;
 	double threshold;
 	int nFeatures;
 
