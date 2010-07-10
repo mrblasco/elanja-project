@@ -2,8 +2,7 @@
 #define AGENTS_INIT		    20
 #define DISTANCE_INIT         1 
 #define FEATURES_INIT		4.0  /*  mantiene vecchi links */
-#define FRIENDS_INIT		0.01  /* 1 = tutto il netw, 0 uguole nessuno  */
-
+#define FRIENDS_INIT		20 
  
 #define FRACTION_INIT		0.5  
 #define RHO_INIT		0.1  

@@ -8,7 +8,7 @@ int t; // counter for iteractions
 
 extern int w, h;
  
-void model::init(int agents,  double rho, int nFeatures, double threshold, int w, int h){
+void model::init(int agents,  double rho, int nFeatures, double threshold, int friends, int w, int h){
 
 	int i, j;
 
@@ -19,7 +19,7 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int w
 	this->rho = rho;
 	this->nFeatures = nFeatures;
 	this-> threshold = threshold;
-//	this->friends = friends;
+	this->friends = friends;
      
   	this->F = (int*) malloc(sizeof(int)*nFeatures);
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
@@ -38,25 +38,24 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int w
 		//x[i] = (i %40) *18+20;		
 		//y[i] =  (i/40)*50 +40;
           /* random graph */
-		x[i] = 40+ (double) (rand() %w);		
-		y[i] = 40+ (double) (rand() %h);
+		x[i] = 10+ (double) (rand() %w);		
+		y[i] = 5 + (double) (rand() %h);
 
 	}
 
 	t = 0; 
 }
 
-void model::reinit(int agents, double rho,  int nFeatures, double threshold, int w, int h){
+void model::reinit(int agents, double rho,  int nFeatures, double threshold, int friends, int w, int h){
 	int i, j;
 
 	printf("Reinitializing Model ... \n");
  
 	this->agents = agents;
-	this->friends = friends;
      this->threshold = threshold;
 	this->nFeatures = nFeatures;
 	this->rho = rho;
-     
+	this->friends = friends;     
 
 	if(F) free(F);
 	this->F = (int*) malloc(sizeof(int)*nFeatures);
@@ -81,8 +80,8 @@ void model::reinit(int agents, double rho,  int nFeatures, double threshold, int
 	//	x[i] = (i %40) *18+20;		
 	//	y[i] =  (i/40)*50 +40;
           /* random graph */
-		x[i] = 40+ (double) (rand() %w); 
-		y[i] = 30+ (double) (rand() %h); 
+		x[i] = 10+ (double) (rand() %w); 
+		y[i] = 5+ (double) (rand() %h); 
 
 	}
  	t = 0;
@@ -96,15 +95,6 @@ void model::reinit(int agents, double rho,  int nFeatures, double threshold, int
 void model::step(int w, int h){
 
 int i, j;
-
-     /*Initialize adjacency matrix*/
-	for(i=0; i<agents; i++)
-	{
-	     for(j=0; j<agents; j++)
-	     {
-		     A[i*agents + j] = 0;	
-          }	
-	}
 
      /* Compute correlation matrix*/
 	genCorrMat();
@@ -131,7 +121,6 @@ void genFeatures(int i){
 	{
 		for(j=0; j<m.nFeatures; j++)
 		{
-           //    m.F[j]=0;
                uNum = (rand()%2000) - 1000;
  			m.features[j*m.agents + i] = (double) uNum / (double) 1000;
 		}
@@ -146,49 +135,33 @@ void genFeatures(int i){
 double genCorrMat()
 {
 	int i, j, l;
+     double temp, xx, yy;
+
+     /* Initialize adjacency matrix*/
+	for(i=0; i<m.agents; i++)
+	{
+	     for(j=0; j<m.agents; j++)
+	     {
+		     m.A[i*m.agents + j] = 0;	
+          }	
+	}
 	
-	double featuresTmp2[m.agents][m.agents];
-	double featuresTmp[m.agents][m.nFeatures];
-
-     /* features de-meaned */
 	for(i=0; i<m.agents; i++)
 	{	
-		for(j=0; j<m.nFeatures; j++)
-		{
-			featuresTmp[i][j] = m.features[j*m.agents + i];
-		}
+          for(j=0;j<m.agents;j++)
+          {
+               xx=0;     
+               yy=0;
+               temp = 0;
+		     for(l=0; l<m.nFeatures; l++)
+		     {
+                    temp += m.features[l*m.agents + i] * m.features[l*m.agents + j];
+                    xx +=    pow(m.features[l*m.agents + i],2);
+                    yy +=    pow(m.features[l*m.agents + j],2);
+		     }
+               m.A[i*m.agents+j] = temp / (pow(xx,0.5) *pow(yy,0.5));
+          }
 	}	
-
-     /*initialize matrix*/
-	for(i=0; i<m.agents; i++)
-	{	
-		for(j=0; j<m.agents; j++)
-		{
-			featuresTmp2[i][j] = 0;	
-		}
-	}
-
-	/* Product of matrices */
-	for(i=0; i<m.agents; i++)
-	{	
-		for(j=0; j<m.agents; j++)
-		{		
-			for (l=0; l<m.nFeatures;l++) 
-			{
-				featuresTmp2[i][j] += featuresTmp[i][l] * featuresTmp[j][l]; 
-              // printf("%.2f ",featuresTmp2[i][j]);
-			}
-		}	
-	}
-
-     /*correlation matrix */
-	for(i=0; i<m.agents; i++)
-	{	
-		for(j=0; j<m.agents; j++)
-		{
-			m.A[i*m.agents+j] = (double) (featuresTmp2[i][j] / (double) sqrt( featuresTmp2[i][i] * featuresTmp2[j][j])); 
-		}
-	}
 }
  
 
@@ -198,6 +171,7 @@ double genCorrMat()
 void update(){
 
 	int i, j, control;
+     double rnd;
      double tvalue;
    
 	for(i=0; i<m.agents; i++)
@@ -220,7 +194,7 @@ void update(){
 			          }
 	             	}
 
-                    if (m.degree[i]<20)
+                    if (m.degree[i]<m.friends)
                     {
                          control = 1;
                     }
@@ -254,7 +228,7 @@ void update(){
 				         m.degree[i]++;
 			          }
 	             	}
-                    if (m.degree[i]<20)
+                    if (m.degree[i]<m.friends)
                     {
                          control = 1;
                     }
@@ -273,14 +247,11 @@ void update(){
                          }
 	             	}
                } 
-          /* if degree less than zero, reinitizlize all features */
-        
-          printf("m.degre%d \n",m.degree[i]);     
 
-		if ( m.degree[i] < m.rho * m.agents)
-		{
-               genFeatures(i);
-          }
+          /* reinitizlize at random a fraction rho of agents */
+               rnd = (rand()%1000) / (double) 1000;
+         		if (rnd < m.rho)
+		          genFeatures(i);
 	}
 }
 
@@ -290,43 +261,44 @@ void update(){
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void coordinates(double *A, double *x, double *y, int w, int h)
 {
- 	int k, i, j;
-          double  dist_x, dist_y, norm_x,norm_y;
-	double norm, distance, delta, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
-     double avg_x, avg_y;
 
-     delta = 0.01;
+    int i,j,t;
+    double disp_x[m.agents], disp_y[m.agents];
+    double area, k, diff_x, diff_y;
 
-     avg_x = avg_y = 0;
-	for(k=0; k<0; k++)
-	{		
-          rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
-		for(i=0; i<m.agents; i++)
-		{
-		     for(j=i+1; j<m.agents; j++)
-		     {
-                    dist_x =  (x[i] - x[j]);
-                    dist_y = (y[i] - y[j]);
-                    norm_x =  sqrt(pow( (x[i] - x[j]),2));
-                    norm_y = sqrt(pow( (y[i] - y[j]),2) );
-                    
-			     if(A[i*m.agents+j] == 0) 
-			     {
-                         rep_x +=  (dist_x) / pow(norm_x,3);
-                         rep_y +=  (dist_y) / pow(norm_y,3);
+    area = w*h;
+    k = 0.000000001*sqrt(area/(m.agents));   
 
-			     } else {
-				     spring_x += (log(norm_x) - 10) * ( dist_x ) / norm_x;
-				     spring_y += (log(norm_y) - 10) * ( dist_y) / norm_y;
-			     }
-  
-			     x[i] = x[i] + delta*(rep_x+spring_x);	
-			     y[i]= y[i] + delta*(rep_y+spring_y);
-               }     
-	     }
-     }
+    for(t=0;t<0;t++)
+    {
+        for(i=0;i<m.agents;i++)
+        {
+            disp_x[i] = 0;
+            disp_y[i] = 0;
+            for(j=0;j<m.agents;j++)
+            {
+                if(j != i)
+                {
+                    diff_x = x[i]-x[j];
+                    diff_y = y[i]-y[j];
+                    disp_x[i] += k*k/diff_x;
+                    disp_y[i] += k*k/diff_y;
+                    if(A[i*m.agents+j] == 1)
+                    {
+                        disp_x[i] += -(diff_x*diff_x*k)*(diff_x/abs(diff_x));
+                        disp_y[i] += -(diff_y*diff_y*k)*(diff_y/abs(diff_y));
+                    }
+                }
+            }
+        }
+        for(i=0;i<m.agents;i++)
+        {
+            x[i] += disp_x[i];
+            y[i] += disp_y[i];
+            x[i] = MAX(0,MIN(x[i],w));   
+            y[i] = MAX(0,MIN(y[i],h));
+        }
+    }
+}
+			
  
-
-}				 
-
-

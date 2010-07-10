@@ -107,17 +107,17 @@ int main(int argc, char **argv)
         			agentsSlider->align(FL_ALIGN_TOP_LEFT);/* Label align*/
       			}
       			{ 	/* Population Slider */
-				populationSlider = new Fl_Value_Slider(15, 625, 250, 35, "Rho");
+				populationSlider = new Fl_Value_Slider(15, 625, 250, 35, "% Nodes With Renewed Features");
         			populationSlider->type(5);
         			//populationSlider->box(FL_THIN_DOWN_BOX);
         			populationSlider->color((Fl_Color)10);
         			populationSlider->selection_color((Fl_Color)136);
-				populationSlider->minimum(0.001);
-        			populationSlider->maximum(0.2);
+				populationSlider->minimum(0.0);
+        			populationSlider->maximum(1.0);
         			populationSlider->labelfont(1);
         			populationSlider->labelsize(12);
         			populationSlider->value(RHO_INIT);
-				populationSlider->step(0.001);
+				populationSlider->step(0.05);
         			populationSlider->callback((Fl_Callback*)populationSliderCallback);
         			populationSlider->align(FL_ALIGN_TOP_LEFT);
       			}
@@ -137,16 +137,16 @@ int main(int argc, char **argv)
         			epsilonSlider->align(FL_ALIGN_TOP_LEFT);
       			}
       			{	/* Friendship Slider */
-				friendshipSlider = new Fl_Value_Slider(290, 625, 250, 35, "Friendship");
+				friendshipSlider = new Fl_Value_Slider(290, 625, 250, 35, "Max Number of Friends");
         			friendshipSlider->type(5);
 			        //friendshipSlider->box(FL_THIN_DOWN_BOX);
 			        friendshipSlider->color((Fl_Color)10);
 			        friendshipSlider->selection_color((Fl_Color)136);
 			        friendshipSlider->labelfont(1);
 			        friendshipSlider->labelsize(12);
-        			friendshipSlider->minimum(0.0);
-			        friendshipSlider->maximum(0.2);
-			        friendshipSlider->step(0.001);
+        			friendshipSlider->minimum(1);
+			        friendshipSlider->maximum(40);
+			        friendshipSlider->step(1);
 			        friendshipSlider->value(FRIENDS_INIT);
 			        friendshipSlider->callback((Fl_Callback*)friendshipSliderCallback);
 			        friendshipSlider->align(FL_ALIGN_TOP_LEFT);
