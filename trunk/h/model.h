@@ -30,10 +30,12 @@ public:
 	int *degree;
 	int *A_degree;
 	int *B_degree;
-};
 
-void genFeatures(int i);
-double genCorrMat();
-void update();
+
+     void genFeatures(int i);
+     double genCorrMat();
+     void update();
+
+};
 
 #endif

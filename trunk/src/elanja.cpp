@@ -4,11 +4,12 @@
 #include "../h/model.h"
 #include "../h/const.h"
 
+
 using namespace std;
 
 int main(int argc, char **argv)
 {
-        int i, j = 0;
+     int t, i, j = 0;
 	int n_iter;
 
 	/* Create an istance of model */
@@ -28,10 +29,9 @@ int main(int argc, char **argv)
 		/* Set number of iteration */
 		n_iter = 200;
 		/* Set model parameters */
-		m.init(AGENTS,FEATURES,MAX_NUM_FRIENDS,THRESHOLD,RHO);
-	}
-	else if (argc == 4)
-	{
+		m.init(AGENTS, RHO, FEATURES,THRESHOLD, MAX_NUM_FRIENDS);
+
+	} else if (argc == 6) {
 
 		/* Set number of iteration */
 		n_iter = atoi(argv[6]);
@@ -44,10 +44,9 @@ int main(int argc, char **argv)
 		printf("	- max number of friends %d\n", m.friends);
 		printf("	- threshold %f\n", m.threshold);
 		printf("	- fraction of nodes with renewed features %f\n", m.rho);
-	}
-	else
-	{
-		printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>> E R R O R <<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
+	} 	else 	{
+
+          printf(">>>>>>>>>>>>>>>>>>>>>>>>> E R R O R <<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
 		printf("	- usage: ./main <n AGENTS> <n FEATURES> <n MAX NUM of FRIEND> <n THRESHOLD> <n RHO> <n NUMBER OF ITERACTION>\n");
 		exit(0);
 	}
@@ -58,26 +57,33 @@ int main(int argc, char **argv)
 	FILE *out3;
 	FILE *out4;	
 	FILE *out5;
-	out = fopen("matrix.dat", "w");	
+	out = fopen("AM.dat", "w");	
 	out2 = fopen("single_node.dat", "w");
 	out3 = fopen("alfa.dat", "w");
 	out4 = fopen("degree.dat", "w");
 	out5 = fopen("composition.dat", "w");
 		
-
 	/* Initialize random number generator's seed to the current time */
 	srand(time(NULL));
 
+     printf("age=%d \n rho = %f \n thrs = %f \n feat= %d\n friend =%d\n",m.agents,m.rho,m.threshold,m.nFeatures,m.friends);
+
+
 	/* Number of cicles of the system */
- 	for(i=0; i<n_iter; i++)
+ 	for(t=0; t<1; t++)
 	{
 		/* Makes a model's step */
-		m.step();
-	} 
-	printf("\n \n \n ");
-	printf("Dovrei aver fatto un sacco di raba ma non sono sicuro quindi dovete controllarmi inserendo i dati nei file!!! HAHHAHAHHAHAHHAHAHHAHAHHAHHAHAHAHHA \n");
-		printf("\n \n \n ");
-
+	     m.step();
+         /* Print adjacency Matrix */
+          for(i=0;i<m.agents;i++)
+          {
+               for(j=0;j<m.agents;j++)
+               {
+                    fprintf(out,"%f ",m.A[i*m.agents +j]);
+               }               
+               fprintf(out,"\n");               
+          }
+     }
 	
 
 	return 0;

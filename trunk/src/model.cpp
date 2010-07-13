@@ -1,4 +1,5 @@
 #include "../h/model.h"
+#include "../h/const.h"
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -26,51 +27,24 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 	this->degree = (int*) malloc(sizeof(int)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
 
-	for(i=0; i<agents; i++)	
-	{
-     		degree[i] =4;
-          	genFeatures(i);
-	}
-
 	t = 0; 
 }
 
-void model::reinit(int agents, double rho,  int nFeatures, double threshold, int friends){
-	int i, j;
-
-	printf("Reinitializing Model ... \n");
  
-	this->agents = agents;
-     	this->threshold = threshold;
-	this->nFeatures = nFeatures;
-	this->rho = rho;
-	this->friends = friends;     
-
-	if(F) free(F);
-	this->F = (int*) malloc(sizeof(int)*nFeatures);
-	if(A) free(A);
-	this->A = (double*) malloc(sizeof(double)*agents*agents);
-	if(features) free(features);
-	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
-	if(degree) free(degree);
-	this->degree = (int*) malloc(sizeof(int)*agents);
-	
-	for(i=0; i<agents; i++)	
-	{
-     		degree[i] =4;
-          	genFeatures(i);  
-	}
- 	t = 0;
-} 
-
-
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%      STEP              %%%%%%%%%%%%%%%%
 %%%%%%%%      FUNCTION     %%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void model::step(){
 
-int i, j;
+     int i, j;
+ 
+
+	for(i=0; i<agents; i++)	
+	{
+		degree[i] =0;
+     	genFeatures(i);
+	}
 
      /* Compute correlation matrix*/
 	genCorrMat();
@@ -86,16 +60,16 @@ int i, j;
 %%%%%   GENERATE FEATURES       %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-void genFeatures(int i){
+void model::genFeatures(int i){
      
      int j, uNum;
 
-	for(i=0; i<m.agents; i++)	
+	for(i=0; i<agents; i++)	
 	{
-		for(j=0; j<m.nFeatures; j++)
+		for(j=0; j<nFeatures; j++)
 		{
                uNum = (rand()%2000) - 1000;
- 			m.features[j*m.agents + i] = (double) uNum / (double) 1000;
+ 			features[j*agents + i] = (double) uNum / (double) 1000;
 		}
      }	
 }
@@ -105,34 +79,34 @@ void genFeatures(int i){
 %%%%%   COMPUTE CORRELATION     %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-double genCorrMat()
+double model::genCorrMat()
 {
 	int i, j, l;
      double temp, xx, yy;
 
      /* Initialize adjacency matrix*/
-	for(i=0; i<m.agents; i++)
+	for(i=0; i<agents; i++)
 	{
-	     for(j=0; j<m.agents; j++)
+	     for(j=0; j<agents; j++)
 	     {
-		     m.A[i*m.agents + j] = 0;	
+		     A[i*agents + j] = 0;	
           }	
 	}
 	
-	for(i=0; i<m.agents; i++)
+	for(i=0; i<agents; i++)
 	{	
-          for(j=0;j<m.agents;j++)
+          for(j=0;j<agents;j++)
           {
                xx=0;     
                yy=0;
                temp = 0;
-		     for(l=0; l<m.nFeatures; l++)
+		     for(l=0; l<nFeatures; l++)
 		     {
-                    temp += m.features[l*m.agents + i] * m.features[l*m.agents + j];
-                    xx +=    pow(m.features[l*m.agents + i],2);
-                    yy +=    pow(m.features[l*m.agents + j],2);
+                    temp += features[l*agents + i] * features[l*agents + j];
+                    xx +=    pow(features[l*agents + i],2);
+                    yy +=    pow(features[l*agents + j],2);
 		     }
-               m.A[i*m.agents+j] = temp / (pow(xx,0.5) *pow(yy,0.5));
+               A[i*agents+j] = temp / (pow(xx,0.5) *pow(yy,0.5));
           }
 	}	
 }
@@ -141,48 +115,50 @@ double genCorrMat()
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%   COMPUTE DEGREES       %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-void update(){
+void model::update(){
 
 	int i, j, control;
      double rnd;
      double tvalue;
    
-	for(i=0; i<m.agents; i++)
+
+	for(i=0; i<agents; i++)
 	{
-		m.degree[i] = 0;
+		degree[i] = 0;
 
      	/* Compute the degree with positive ...  */ 
-          if(m.threshold>=0)
+          if(threshold>=0)
           {
                control = 0;
-               tvalue = m.threshold;
+               tvalue = threshold;
                while(control==0)
                {
-                    m.degree[i]=0;
-		          for(j=0; j<m.agents; j++)
+                    degree[i]=0;
+		          for(j=0; j<agents; j++)
 		          {
-			          if( m.A[i*m.agents +j] > tvalue &&( j != i) )
+			          if( A[i*agents +j] > tvalue &&( j != i) )
 			          {
-				         m.degree[i]++;
+				         degree[i]++;
 			          }
 	             	}
 
-                    if (m.degree[i]<m.friends)
+
+                    if (degree[i]<friends)
                     {
                          control = 1;
                     }
                     tvalue = tvalue + 0.05;
                }
                /* compile Adjacency matrix */
-	          for(j=0; j<m.agents; j++)
+	          for(j=0; j<agents; j++)
 	          {
-		          if( m.A[i*m.agents +j] > tvalue &&( j != i) )
+		          if( A[i*agents +j] > tvalue &&( j != i) )
 		          {
-			         m.A[i*m.agents +j] =1;
+			         A[i*agents +j] =1;
 
 		          } else {
 
-			         m.A[i*m.agents +j] =0;
+			         A[i*agents +j] =0;
                     }
              	}
 
@@ -190,40 +166,40 @@ void update(){
           } else {
 
                control = 0;
-               tvalue = m.threshold;
+               tvalue = threshold;
                while(control==0)
                {
-                    m.degree[i]=0;
-		          for(j=0; j<m.agents; j++)
+                    degree[i]=0;
+		          for(j=0; j<agents; j++)
 		          {
-			          if( m.A[i*m.agents +j] < tvalue &&( j != i) )
+			          if( A[i*agents +j] < tvalue &&( j != i) )
 			          {
-				         m.degree[i]++;
+				         degree[i]++;
 			          }
 	             	}
-                    if (m.degree[i]<m.friends)
+                    if (degree[i]<friends)
                     {
                          control = 1;
                     }
                     tvalue = tvalue - 0.05;
                }
                     /* compile Adjacency matrix */
-		          for(j=0; j<m.agents; j++)
+		          for(j=0; j<agents; j++)
 		          {
-			          if( m.A[i*m.agents +j] < tvalue &&( j != i) )
+			          if( A[i*agents +j] < tvalue &&( j != i) )
 			          {
-				         m.A[i*m.agents +j] =1;
+				         A[i*agents +j] =1;
 
 			          } else {
 
-				         m.A[i*m.agents +j] =0;
+				         A[i*agents +j] =0;
                          }
 	             	}
                } 
 
           /* reinitizlize at random a fraction rho of agents */
                rnd = (rand()%1000) / (double) 1000;
-         		if (rnd < m.rho)
+         		if (rnd < rho)
 		          genFeatures(i);
 	}
 }
