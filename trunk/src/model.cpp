@@ -26,6 +26,7 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
 	this->degree = (int*) malloc(sizeof(int)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
+	this->tvalue = (double*) malloc(sizeof(int)*agents);
 
 	t = 0; 
 }
@@ -44,6 +45,7 @@ void model::step(){
 	{
 		degree[i] =0;
      	genFeatures(i);
+	tvalue[i] = 0;
 	}
 
      /* Compute correlation matrix*/
@@ -121,7 +123,6 @@ void model::update(){
 
 	int i, j, control;
      double rnd;
-     double tvalue;
    
 
 	for(i=0; i<agents; i++)
@@ -132,13 +133,13 @@ void model::update(){
           if(threshold>=0)
           {
                control = 0;
-               tvalue = threshold;
+               tvalue[i] = threshold;
                while(control==0)
                {
                     degree[i]=0;
 		          for(j=0; j<agents; j++)
 		          {
-			          if( A[i*agents +j] > tvalue &&( j != i) )
+			          if( A[i*agents +j] > tvalue[i] &&( j != i) )
 			          {
 				         degree[i]++;
 			          }
@@ -149,12 +150,12 @@ void model::update(){
                     {
                          control = 1;
                     }
-                    tvalue = tvalue + 0.05;
+                    tvalue[i] = tvalue[i] + 0.05;
                }
                /* compile Adjacency matrix */
 	          for(j=0; j<agents; j++)
 	          {
-		          if( A[i*agents +j] > tvalue &&( j != i) )
+		          if( A[i*agents +j] > tvalue[i] &&( j != i) )
 		          {
 			         A[i*agents +j] =1;
 
@@ -168,13 +169,13 @@ void model::update(){
           } else {
 
                control = 0;
-               tvalue = threshold;
+               tvalue[i] = threshold;
                while(control==0)
                {
                     degree[i]=0;
 		          for(j=0; j<agents; j++)
 		          {
-			          if( A[i*agents +j] < tvalue &&( j != i) )
+			          if( A[i*agents +j] < tvalue[i] &&( j != i) )
 			          {
 				         degree[i]++;
 			          }
@@ -183,12 +184,13 @@ void model::update(){
                     {
                          control = 1;
                     }
-                    tvalue = tvalue - 0.05;
+                    tvalue[i] = tvalue[i] - 0.05;
                }
+
                     /* compile Adjacency matrix */
 		          for(j=0; j<agents; j++)
 		          {
-			          if( A[i*agents +j] < tvalue &&( j != i) )
+			          if( A[i*agents +j] < tvalue[i] &&( j != i) )
 			          {
 				         A[i*agents +j] =1;
 
