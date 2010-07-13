@@ -53,13 +53,13 @@ int main(int argc, char **argv)
 	}
 
 	/* Text file for printing the matrices */
-	FILE *file1;
-	FILE *file2;	
+	FILE *OUT;
+	FILE *OUT2;	
 	/*FILE *file3;
 	FILE *file4;	
 	FILE *file5;*/
-	file1 = fopen("AM.dat", "a");	
-	file2 = fopen("Measures.dat", "a");
+	OUT = fopen("AM.dat", "a");	
+	OUT2 = fopen("Measures.dat", "a");
 	/*file3 = fopen("file3.dat", "a");
 	file4 = fopen("file4.dat", "a");
 	file5 = fopen("file5.dat", "a");*/
@@ -89,9 +89,9 @@ int main(int argc, char **argv)
           {
                for(j=0;j<m.agents;j++)
                {
-                    fprintf(file1,"%f ",m.A[i*m.agents +j]);
-               }               
-               fprintf(file1,"\n");  
+                    fprintf(OUT,"%f ",m.A[i*m.agents +j]);
+               }              
+               fprintf(OUT,"\n");  
           }
 
 /*
@@ -151,7 +151,7 @@ int main(int argc, char **argv)
      /*Print on files */ 
           for (i=0;i<m.agents;i++)
           {
-               fprintf(file2,"%d %d %f %f %f %f %f %f\n",i,m.degree[i],average_Knn[i],average_features[i],variance_features[i],AvAvFeatures[i],AvVarFeatures[i],m.tvalue[i]);
+               fprintf(OUT2,"%d %d %f %f %f %f %f %f\n",i,m.degree[i],average_Knn[i],average_features[i],variance_features[i],AvAvFeatures[i],AvVarFeatures[i],m.tvalue[i]);
            
           }
      }	

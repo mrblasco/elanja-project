@@ -26,7 +26,7 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
 	this->degree = (int*) malloc(sizeof(int)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
-	this->tvalue = (double*) malloc(sizeof(int)*agents);
+	this->tvalue = (double*) malloc(sizeof(double)*agents);
 
 	t = 0; 
 }
