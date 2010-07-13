@@ -1,4 +1,4 @@
-#include "model.h"
+#include "../h/model.h"
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -8,7 +8,7 @@ int t; // counter for iteractions
 
 extern int w, h;
  
-void model::init(int agents,  double rho, int nFeatures, double threshold, int friends, int w, int h){
+void model::init(int agents,  double rho, int nFeatures, double threshold, int friends){
 
 	int i, j;
 
@@ -25,34 +25,23 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
 	this->degree = (int*) malloc(sizeof(int)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
-	this->x = (double*) malloc(sizeof(double)*agents);
-	this->y = (double*) malloc(sizeof(double)*agents);
 
 	for(i=0; i<agents; i++)	
 	{
-
-     	degree[i] =4;
-          genFeatures(i);
-       
-          /* regular lattice */
-		//x[i] = (i %40) *18+20;		
-		//y[i] =  (i/40)*50 +40;
-          /* random graph */
-		x[i] = 10+ (double) (rand() %w);		
-		y[i] = 5 + (double) (rand() %h);
-
+     		degree[i] =4;
+          	genFeatures(i);
 	}
 
 	t = 0; 
 }
 
-void model::reinit(int agents, double rho,  int nFeatures, double threshold, int friends, int w, int h){
+void model::reinit(int agents, double rho,  int nFeatures, double threshold, int friends){
 	int i, j;
 
 	printf("Reinitializing Model ... \n");
  
 	this->agents = agents;
-     this->threshold = threshold;
+     	this->threshold = threshold;
 	this->nFeatures = nFeatures;
 	this->rho = rho;
 	this->friends = friends;     
@@ -65,24 +54,11 @@ void model::reinit(int agents, double rho,  int nFeatures, double threshold, int
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
 	if(degree) free(degree);
 	this->degree = (int*) malloc(sizeof(int)*agents);
-	if(x) free(x);
-	this->x = (double*) malloc(sizeof(double)*agents);
-	if(y) free(y);
-	this->y = (double*) malloc(sizeof(double)*agents);
-
 	
 	for(i=0; i<agents; i++)	
 	{
-     	degree[i] =4;
-          genFeatures(i);
-              
-          /* regular lattice */
-	//	x[i] = (i %40) *18+20;		
-	//	y[i] =  (i/40)*50 +40;
-          /* random graph */
-		x[i] = 10+ (double) (rand() %w); 
-		y[i] = 5+ (double) (rand() %h); 
-
+     		degree[i] =4;
+          	genFeatures(i);  
 	}
  	t = 0;
 } 
@@ -92,7 +68,7 @@ void model::reinit(int agents, double rho,  int nFeatures, double threshold, int
 %%%%%%%%      STEP              %%%%%%%%%%%%%%%%
 %%%%%%%%      FUNCTION     %%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-void model::step(int w, int h){
+void model::step(){
 
 int i, j;
 
@@ -101,9 +77,6 @@ int i, j;
 
      /* Compute degrees and adjacency matrix*/
 	update();
-
-     /* Coordinates on the plane*/
-     coordinates(A, x, y, w, h);
 
 	t += 1;
 }
@@ -254,48 +227,4 @@ void update(){
 		          genFeatures(i);
 	}
 }
-
-
-/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%   GENERATE COORDINATES %%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-void coordinates(double *A, double *x, double *y, int w, int h)
-{
-int k, i, j;
-double  dist_x, dist_y, norm_x,norm_y;
-double norm, distance, delta, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
-double avg_x, avg_y;
-
-     delta = 0.0001;
-
-     avg_x = avg_y = 0;
-    for(k=0; k<100; k++)
-    {        
-          rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
-        for(i=0; i<m.agents; i++)
-        {
-             for(j=i+1; j<m.agents; j++)
-             {
-                    dist_x =  (x[i] - x[j]);
-                    dist_y = (y[i] - y[j]);
-                    norm_x =  sqrt(pow( (x[i] - x[j]),2));
-                    norm_y = sqrt(pow( (y[i] - y[j]),2) );
-                    
-                 if(A[i*m.agents+j] == 0) 
-                 {
-                         rep_x +=  (dist_x) / pow(norm_x,3);
-                         rep_y +=  (dist_y) / pow(norm_y,3);
-
-                 } else {
-                     spring_x += (log(norm_x) - 10) * ( dist_x ) / norm_x;
-                     spring_y += (log(norm_y) - 10) * ( dist_y) / norm_y;
-                 }
-  
-                 x[i] = x[i] + delta*(rep_x+spring_x);    
-                 y[i]= y[i] + delta*(rep_y+spring_y);
-               }     
-         }
-     }
-}
-			
  

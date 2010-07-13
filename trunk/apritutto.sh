@@ -1,4 +1,4 @@
 #!/bin/bash
 
-find . -type f -iname "*.h" -o -iname "*.cpp" -o -iname "*.cxx" | rev | sort -r | rev | xargs gedit Makefile &
+find src -type f -iname "*.h" -o -iname "*.cpp" | rev | sort -r | rev | xargs gedit Makefile &
 

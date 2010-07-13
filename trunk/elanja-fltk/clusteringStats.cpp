@@ -73,6 +73,7 @@ void clusteringStats::paint()
           }
 		glEnd();
 		
+		printf("Faccio clustering\n");
 	}
 	
 }

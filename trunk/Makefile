@@ -1,36 +1,21 @@
 GPPFLAGS= -Wall -Wunused -pedantic -ggdb
 LINKERFLAGS= -lm
 OBJS= *.o
+CC= g++
 
-model: elanja.o matrices.o multiply.o
-	g++ -o main ${GPPFLAGS} ${LINKERFLAGS} elanja.o matrices.o multiply.o
+textual: model elanja
+	g++ -o main ${GPPFLAGS} ${LINKERFLAGS} elanja.o model.o
 
-elanja.o: src/elanja.cpp h/matrices.h h/multiply.h
-	g++ -c ${GPPFLAGS} src/elanja.cpp
+elanja: 
+	$(CC) -c src/elanja.cpp
 
-matrices.o: src/matrices.cpp
-	g++ -c ${GPPFLAGS} src/matrices.cpp
-
-multiply.o: src/multiply.cpp
-	g++ -c ${GPPFLAGS} src/multiply.cpp
-
-prova: test
-
-test: test.o util.o
-	g++ -o test ${GPPFLAGS} ${LINKERFLAGS} test.o util.o
-
-test.o: src/test.cpp h/util.h
-	g++ -c ${GPPFLAGS} src/test.cpp
-
-util.o: src/util.cpp
-	g++ -c ${GPPFLAGS} src/util.cpp
-
-
+model: 
+	$(CC) -c src/model.cpp
 
 clean:	
 	rm -f *.o
 	rm -f elanja
 	rm -f main
-	rm -f test
 	rm -f *~
 	rm -f *.png
+	rm -f *.dat
