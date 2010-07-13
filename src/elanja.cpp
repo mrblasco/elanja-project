@@ -53,16 +53,16 @@ int main(int argc, char **argv)
 	}
 
 	/* Text file for printing the matrices */
-	FILE *out;
-	FILE *out2;	
-	FILE *out3;
-	FILE *out4;	
-	FILE *out5;
-	out = fopen("AM.dat", "w");	
-	out2 = fopen("Measures.dat", "w");
-	out3 = fopen("alfa.dat", "w");
-	out4 = fopen("degree.dat", "w");
-	out5 = fopen("composition.dat", "w");
+	FILE *file1;
+	FILE *file2;	
+	/*FILE *file3;
+	FILE *file4;	
+	FILE *file5;*/
+	file1 = fopen("AM.dat", "a");	
+	file2 = fopen("Measures.dat", "a");
+	/*file3 = fopen("file3.dat", "a");
+	file4 = fopen("file4.dat", "a");
+	file5 = fopen("file5.dat", "a");*/
 		
 	/* Initialize random number generator's seed to the current time */
 	srand(time(NULL));
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 	double average_Knn[m.agents];
 
 	/* Features Distribution*/
-     double square_sum;
+	double square_sum;
 	double average_features[m.agents];
 	double variance_features[m.agents];
 	double AvAvFeatures[m.agents];
@@ -83,16 +83,17 @@ int main(int argc, char **argv)
 	{
 		/* Makes a model's step */
 	     m.step();
-
+	
          /* Print adjacency Matrix */
-          for(i=0;i<m.agents;i++)
+         for(i=0;i<m.agents;i++)
           {
                for(j=0;j<m.agents;j++)
                {
-                    fprintf(out,"%f ",m.A[i*m.agents +j]);
+                    fprintf(file1,"%f ",m.A[i*m.agents +j]);
                }               
-               fprintf(out,"\n");               
+               fprintf(file1,"\n");  
           }
+
 /*
      STATISTICS TO BE PRINTED
 */
@@ -150,7 +151,7 @@ int main(int argc, char **argv)
      /*Print on files */ 
           for (i=0;i<m.agents;i++)
           {
-               fprintf(out2,"%d %d %f %f %f %f %f\n",i,m.degree[i],average_Knn[i],average_features[i],variance_features[i],AvAvFeatures[i],AvVarFeatures[i]);
+               fprintf(file2,"%d %d %f %f %f %f %f %f\n",i,m.degree[i],average_Knn[i],average_features[i],variance_features[i],AvAvFeatures[i],AvVarFeatures[i],m.tvalue[i]);
            
           }
      }	
