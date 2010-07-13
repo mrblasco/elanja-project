@@ -266,12 +266,12 @@ double  dist_x, dist_y, norm_x,norm_y;
 double norm, distance, delta, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
 double avg_x, avg_y;
 
-     delta = 0.0001;
+     delta = 0.000001;
 
      avg_x = avg_y = 0;
-    for(k=0; k<100; k++)
-    {        
-          rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
+    for(k=0; k<0; k++)
+    {       
+        rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
         for(i=0; i<m.agents; i++)
         {
              for(j=i+1; j<m.agents; j++)
@@ -280,8 +280,8 @@ double avg_x, avg_y;
                     dist_y = (y[i] - y[j]);
                     norm_x =  sqrt(pow( (x[i] - x[j]),2));
                     norm_y = sqrt(pow( (y[i] - y[j]),2) );
-                    
-                 if(A[i*m.agents+j] == 0) 
+                   
+                 if(A[i*m.agents+j] == 0)
                  {
                          rep_x +=  (dist_x) / pow(norm_x,3);
                          rep_y +=  (dist_y) / pow(norm_y,3);
@@ -290,10 +290,10 @@ double avg_x, avg_y;
                      spring_x += (log(norm_x) - 10) * ( dist_x ) / norm_x;
                      spring_y += (log(norm_y) - 10) * ( dist_y) / norm_y;
                  }
-  
-                 x[i] = x[i] + delta*(rep_x+spring_x);    
+ 
+                 x[i] = x[i] + delta*(rep_x+spring_x);   
                  y[i]= y[i] + delta*(rep_y+spring_y);
-               }     
+               }    
          }
      }
 }
