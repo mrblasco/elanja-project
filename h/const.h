@@ -1,5 +1,6 @@
-#define EPSILON 0.8		/* External Update  */
-#define T	0.20				/* Integration Threshold */
-#define PIPPO 10
-#define PLUTO 7
+#define AGENTS 100
+#define FEATURES 5
+#define MAX_NUM_FRIENDS 20
+#define THRESHOLD 0.20
+#define RHO 0.10 /* % nodes with renewed features */
  
