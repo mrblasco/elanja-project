@@ -38,8 +38,8 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 void model::step(){
 
      int i, j;
- 
 
+     /* initialize features and degree vectors */
 	for(i=0; i<agents; i++)	
 	{
 		degree[i] =0;
@@ -52,7 +52,9 @@ void model::step(){
      /* Compute degrees and adjacency matrix*/
 	update();
 
-	t += 1;
+
+
+//	t += 1;
 }
 
 
