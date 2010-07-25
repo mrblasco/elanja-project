@@ -22,11 +22,20 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 	this-> threshold = threshold;
 	this->friends = friends;
      
+     /*  */
   	this->F = (int*) malloc(sizeof(int)*nFeatures);
 	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
 	this->degree = (int*) malloc(sizeof(int)*agents);
+	this->tvalue = (double*) malloc(sizeof(double)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
 	this->tvalue = (double*) malloc(sizeof(double)*agents);
+
+     /* initialize features and degree vectors */
+	for(i=0; i<agents; i++)	
+	{
+		degree[i] =0;
+     	genFeatures(i);
+	}
 
 	t = 0; 
 }
@@ -39,14 +48,7 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 void model::step(){
 
      int i, j;
-
-     /* initialize features and degree vectors */
-	for(i=0; i<agents; i++)	
-	{
-		degree[i] =0;
-     	genFeatures(i);
-	tvalue[i] = 0;
-	}
+     int rnd;
 
      /* Compute correlation matrix*/
 	genCorrMat();
@@ -54,9 +56,33 @@ void model::step(){
      /* Compute degrees and adjacency matrix*/
 	update();
 
+     /* Dynamic: at each step extract one pair of nodes at random then: 
+          1. if no link, with probability rho they both copy-paste one feature
+          2. if directed link, the pointing node copy-paste one feature
+          3. if reciprocal link, they do not change nothing. 
+     */
+      i = rand()%agents;    
+      j = rand()%agents;    
+     rnd = rand()%nFeatures;
+          
+     /* directed from i to j  */
+     if( A[i*agents + j] == 0 && A[j*agents + i] ==1 )
+     {
+          features[rnd*agents + i] = features[rnd*agents + j];
+     }
 
+     if (A[i*agents + j] == 1 && A[j*agents + i] == 0 )
+     {
+          features[rnd*agents + i] = features[rnd*agents + j];
+     }
+     if (A[i*agents + j] == 0 && A[j*agents + i] == 0)
+     {
+          if( rand()%1000 / (double) 1000 < rho )
+          {
+               features[rnd*agents + i] = features[rnd*agents + j];
+           }
+     }
 
-//	t += 1;
 }
 
 
@@ -122,9 +148,7 @@ double model::genCorrMat()
 void model::update(){
 
 	int i, j, control;
-     double rnd;
-   
-
+ 
 	for(i=0; i<agents; i++)
 	{
 		degree[i] = 0;
@@ -150,7 +174,7 @@ void model::update(){
                     {
                          control = 1;
                     }
-                    tvalue[i] = tvalue[i] + 0.05;
+                    tvalue[i] += 0.05;
                }
                /* compile Adjacency matrix */
 	          for(j=0; j<agents; j++)
@@ -184,7 +208,7 @@ void model::update(){
                     {
                          control = 1;
                     }
-                    tvalue[i] = tvalue[i] - 0.05;
+                    tvalue[i] += - 0.05;
                }
 
                     /* compile Adjacency matrix */
@@ -200,11 +224,6 @@ void model::update(){
                          }
 	             	}
                } 
-
-          /* reinitizlize at random a fraction rho of agents */
-               rnd = (rand()%1000) / (double) 1000;
-         		if (rnd < rho)
-		          genFeatures(i);
 	}
 }
  
