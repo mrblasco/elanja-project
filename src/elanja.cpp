@@ -54,13 +54,13 @@ int main(int argc, char **argv)
 	}
 
 	/* Text file for printing the matrices */
-	FILE *OUT;
-	FILE *OUT2;	
+	FILE *out;
+	FILE *out2;	
 	/*FILE *file3;
 	FILE *file4;	
 	FILE *file5;*/
-	OUT = fopen("AM.dat", "a");	
-	OUT2 = fopen("Measures.dat", "a");
+	out = fopen("AM.dat", "a");	     
+     out2 = fopen("Measures.dat", "a");
 	/*file3 = fopen("file3.dat", "a");
 	file4 = fopen("file4.dat", "a");
 	file5 = fopen("file5.dat", "a");*/
@@ -92,9 +92,9 @@ int main(int argc, char **argv)
           {
                for(j=0;j<m.agents;j++)
                {
-                    fprintf(OUT,"%f ",m.A[i*m.agents +j]);
+                    fprintf(out,"%f ",m.A[i*m.agents +j]);
                }              
-               fprintf(OUT,"\n");  
+               fprintf(out,"\n");  
           }
 
      /* Number of simulations 10 */

@@ -60,7 +60,7 @@ void model::step(){
           1. if no link, with probability rho they both copy-paste one feature
           2. if directed link, the pointing node copy-paste one feature
           3. if reciprocal link, they do not change nothing. 
-     */
+   */
       i = rand()%agents;    
       j = rand()%agents;    
      rnd = rand()%nFeatures;
