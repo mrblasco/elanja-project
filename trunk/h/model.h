@@ -32,8 +32,6 @@ public:
 	int *A_degree;
 	int *B_degree;
 	
-	double *tvalue;
-
      void genFeatures(int i);
      double genCorrMat();
      void update();
