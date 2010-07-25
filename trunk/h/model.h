@@ -18,6 +18,7 @@ public:
 	int agents;
 	double rho;
 	int friends;
+    
 	double threshold;
 	int nFeatures;
 
@@ -25,7 +26,7 @@ public:
 	int *F;
 
 	double *A;
-	
+	double *tvalue;
 
 	int *degree;
 	int *A_degree;
