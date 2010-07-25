@@ -56,121 +56,129 @@ int main(int argc, char **argv)
 	/* Text file for printing the matrices */
 	FILE *out;
 	FILE *out2;	
-	/*FILE *file3;
-	FILE *file4;	
-	FILE *file5;*/
-	out = fopen("AM.dat", "a");	     
-     out2 = fopen("Measures.dat", "a");
-	/*file3 = fopen("file3.dat", "a");
-	file4 = fopen("file4.dat", "a");
-	file5 = fopen("file5.dat", "a");*/
+	FILE *out3;
+	FILE *out4;	
+	FILE *out5;
+	out = fopen("AM.dat", "w");	
+	out2 = fopen("Measures.dat", "w");
+	out3 = fopen("alfa.dat", "w");
+	out4 = fopen("degree.dat", "w");
+	out5 = fopen("composition.dat", "w");
 		
 	/* Initialize random number generator's seed to the current time */
 	srand(time(NULL));
      
      double f, th;
-     int z, x;
+     int z, x, s;
 
      /* degree */
 	double average_Knn[m.agents];
 
 	/* Features Distribution*/
-	double square_sum;
+     double square_sum;
 	double average_features[m.agents];
 	double variance_features[m.agents];
 	double AvAvFeatures[m.agents];
 	double AvVarFeatures[m.agents];
 
     /*Print on files */ 
-    fprintf(out2,"thld feat iter id tvalue degree Knn avgFeat varFeat AvAvFeat AvVarFeat\n");
+    fprintf(out2,"thld feat sim iter id tvalue degree Knn avgFeat varFeat AvAvFeat AvVarFeat\n");
 
 		/* Makes one model's step */
 	     m.step();
-	
+
          /* Print adjacency Matrix */
-         for(i=0;i<m.agents;i++)
+          for(i=0;i<m.agents;i++)
           {
                for(j=0;j<m.agents;j++)
                {
                     fprintf(out,"%f ",m.A[i*m.agents +j]);
-               }              
-               fprintf(out,"\n");  
+               }               
+               fprintf(out,"\n");               
           }
 
-     /* Number of simulations 10 */
- 	for(t=0; t<10; t++)
+     /* Number of simulations */
+ 	for(t=0; t<SIMULATIONS; t++)
 	{
-
           /* varying thresholds */ 
       	for(x=0; x<36; x++)
 	     {
                th = x / (double) 20  - 0.8;
+               printf("threshold = %f \n",th);
 
-        		/* Set model parameters */
-           	for(z=4; z<11; z++)
+        		/* Set model features */
+           	for(z=4; z<MAXFEAT; z++)
 	          {
+                    printf("feature = %d \n",z);
                    m.init(AGENTS, RHO, z, th , 20);
          
-	               /* Makes a model's step */
-                    m.step();
+	               /* Makes the dinamic */
+                    for (s=0;s<ITER;s++)
+                    {     
+                         m.step();
+                    
+                         /****************************************
+                              STATISTICS TO BE PRINTED
+                         ********************************************/
+                     
+	                    /*  Average AvDegree first-neighbors vs degree */
+                     	for(i=0;i<m.agents;i++)
+	                    {
+		                    average_Knn[i] = 0;
 
-                    /****************************************
-                         STATISTICS TO BE PRINTED
-                    ********************************************/
-                
-	               /*  Average AvDegree first-neighbors vs degree */
-                	for(i=0;i<m.agents;i++)
-	               {
-		               average_Knn[i] = 0;
+		                    for(j=0;j<m.agents;j++)
+		                    {
+			                    if(m.A[i*m.agents+j] == 1)
+			                    {
+				                    average_Knn[i] += (double) m.degree[j];
+			                    }
+		                    }
+                              if(m.degree[i]!=0)
+     		                    average_Knn[i] = average_Knn[i] / (double) m.degree[i];
+	                    }
 
-		               for(j=0;j<m.agents;j++)
-		               {
-			               if(m.A[i*m.agents+j] == 1)
-			               {
-				               average_Knn[i] += (double) m.degree[j];
-			               }
-		               }
-		               average_Knn[i] = average_Knn[i] / (double) m.degree[i];
-	               }
+                         /* Features Av e Var  */
+	                    for(i=0;i<m.agents;i++)
+	                    {
+                              average_features[i] = 0;
+                              variance_features[i] = 0;
+                              square_sum = 0;
+		                    for(j=0;j<m.nFeatures;j++)
+		                    {
+			                    average_features[i] += m.features[j*m.agents + i];
+                                   square_sum += pow(m.features[j*m.agents + i],2);
+		                    }
+                              average_features[i] = average_features[i]  / (double) m.nFeatures;
+                              variance_features[i] =  (square_sum -  pow(average_features[i],2) )  / (double) (m.nFeatures - 1);
+	                    }
 
-                    /* Features Av e Var  */
-	               for(i=0;i<m.agents;i++)
-	               {
-                         average_features[i] = 0;
-                         variance_features[i] = 0;
-                         square_sum = 0;
-		               for(j=0;j<m.nFeatures;j++)
-		               {
-			               average_features[i] += m.features[j*m.agents + i];
-                              square_sum += pow(m.features[j*m.agents + i],2);
-		               }
-                         average_features[i] = average_features[i]  / (double) m.nFeatures;
-                         variance_features[i] =  (square_sum -  pow(average_features[i],2) )  / (double) (m.nFeatures - 1);
-	               }
+                         /* First Neighbors Features Av e Var  */
+	                    for(i=0;i<m.agents;i++)
+	                    {
+		                    AvAvFeatures[i] = 0;
+                              AvVarFeatures[i] = 0;
 
-                    /* First Neighbors Features Av e Var  */
-	               for(i=0;i<m.agents;i++)
-	               {
-		               AvAvFeatures[i] = 0;
-                         AvVarFeatures[i] = 0;
+		                    for(j=0;j<m.agents;j++)
+		                    {
+			                    if(m.A[i*m.agents+j] == 1)
+			                    {
+				                    AvAvFeatures[i] += average_features[j];
+                                        AvVarFeatures[i] += variance_features[j];
+			                    }
+		                    }
+                              if(m.degree[i]!=0)
+                              {
+		                         AvAvFeatures[i] = AvAvFeatures[i] / (double) m.degree[i];
+                                   AvVarFeatures[i] = AvVarFeatures[i] / (double) m.degree[i];
+                              }
+	                    }
 
-		               for(j=0;j<m.agents;j++)
-		               {
-			               if(m.A[i*m.agents+j] == 1)
-			               {
-				               AvAvFeatures[i] += average_features[j];
-                                   AvVarFeatures[i] += variance_features[j];
-			               }
-		               }
-		               AvAvFeatures[i] = AvAvFeatures[i] / (double) m.degree[i];
-                         AvVarFeatures[i] = AvVarFeatures[i] / (double) m.degree[i];
-	               }
-
-                    /* tvalue, number of potential friends for a given threshold.*/
-                    for (i=0;i<m.agents;i++)
-                    {
-                         fprintf(out2,"%f %d %d %d %f %d %f %f %f %f %f\n",m.threshold,z,t,i,m.tvalue[i],m.degree[i],average_Knn[i],average_features[i],variance_features[i],AvAvFeatures[i],AvVarFeatures[i]);
-                
+                         /* tvalue, number of potential friends for a given threshold.*/
+                         for (i=0;i<m.agents;i++)
+                         {
+                              fprintf(out2,"%f %d %d %d %d %f %d %f %f %f %f %f\n",m.threshold,z,t,s,i,m.tvalue[i],m.degree[i],average_Knn[i],average_features[i],variance_features[i],AvAvFeatures[i],AvVarFeatures[i]);
+                     
+                         }
                     }
                }
           }

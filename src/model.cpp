@@ -13,7 +13,7 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 
 	int i, j;
 
-	printf("Initializing Model ... \n");	
+	//printf("Initializing Model ... \n");	
 
 	/* "this" field of the class model */
 	this->agents = agents;
@@ -28,7 +28,6 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 	this->degree = (int*) malloc(sizeof(int)*agents);
 	this->tvalue = (double*) malloc(sizeof(double)*agents);
 	this->A = (double*) malloc(sizeof(double)*agents*agents);
-	this->tvalue = (double*) malloc(sizeof(double)*agents);
 
      /* initialize features and degree vectors */
 	for(i=0; i<agents; i++)	
@@ -47,7 +46,7 @@ void model::init(int agents,  double rho, int nFeatures, double threshold, int f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void model::step(){
 
-     int i, j;
+     int i, j,h;
      int rnd;
 
      /* Compute correlation matrix*/
@@ -60,29 +59,32 @@ void model::step(){
           1. if no link, with probability rho they both copy-paste one feature
           2. if directed link, the pointing node copy-paste one feature
           3. if reciprocal link, they do not change nothing. 
-   */
-      i = rand()%agents;    
-      j = rand()%agents;    
-     rnd = rand()%nFeatures;
-          
-     /* directed from i to j  */
-     if( A[i*agents + j] == 0 && A[j*agents + i] ==1 )
+     */
+     for(h=0;h<100;h++)
      {
-          features[rnd*agents + i] = features[rnd*agents + j];
-     }
+           i = rand()%agents;    
+           j = rand()%agents;    
+          rnd = rand()%nFeatures;
 
-     if (A[i*agents + j] == 1 && A[j*agents + i] == 0 )
-     {
-          features[rnd*agents + i] = features[rnd*agents + j];
-     }
-     if (A[i*agents + j] == 0 && A[j*agents + i] == 0)
-     {
-          if( rand()%1000 / (double) 1000 < rho )
+          /* 2. the link is directed from j to i   */
+          if( A[i*agents + j] == 0 && A[j*agents + i] ==1 )
+          {
+               features[rnd*agents + j] = features[rnd*agents + i];
+          }
+          /* 2. the link is directed from i to j   */
+          if (A[i*agents + j] == 1 && A[j*agents + i] == 0 )
           {
                features[rnd*agents + i] = features[rnd*agents + j];
-           }
+          }
+          /* 3. there is no link  */
+          if (A[i*agents + j] == 0 && A[j*agents + i] == 0)
+          {
+               if( rand()%1000 / (double) 1000 < rho )
+               {
+                    features[rnd*agents + i] = features[rnd*agents + j]; 
+                }
+          } 
      }
-
 }
 
 
@@ -170,11 +172,12 @@ void model::update(){
 	             	}
 
 
-                    if (degree[i]<friends)
+                    if (degree[i]<friends || tvalue[i]==1)
                     {
                          control = 1;
                     }
                     tvalue[i] += 0.05;
+                    tvalue[i] = MIN(tvalue[i],1.0);                    
                }
                /* compile Adjacency matrix */
 	          for(j=0; j<agents; j++)
@@ -204,13 +207,13 @@ void model::update(){
 				         degree[i]++;
 			          }
 	             	}
-                    if (degree[i]<friends)
+                    if (degree[i]<friends || tvalue[i]==-1)
                     {
                          control = 1;
                     }
                     tvalue[i] += - 0.05;
+                    tvalue[i] = MAX(tvalue[i],-1);     
                }
-
                     /* compile Adjacency matrix */
 		          for(j=0; j<agents; j++)
 		          {
