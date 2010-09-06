@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-     int t, i, j = 0;
+     int t, i, j;
 	int n_iter;
 
 
@@ -33,19 +33,19 @@ int main(int argc, char **argv)
 		/* Set model parameters */
 		m.init(AGENTS, RHO, FEATURES,THRESHOLD, MAX_NUM_FRIENDS);
 
-	} else if (argc == 6) {
+	} else if (argc == 7) {
 
 		/* Set number of iteration */
 		n_iter = atoi(argv[6]);
 		/* Set model parameters */
-		m.init(atoi(argv[1]),atoi(argv[5]),atoi(argv[2]),atoi(argv[4]),atoi(argv[3]));
+		m.init(atoi(argv[1]),atof(argv[5]),atoi(argv[2]),atof(argv[4]),atoi(argv[3]));
 
 		printf("Using parameters: \n");
 		printf("	- agents %d\n", m.agents);
-		printf("	- features %d", m.nFeatures);
+		printf("	- features %d\n", m.nFeatures);
 		printf("	- max number of friends %d\n", m.friends);
-		printf("	- threshold %f\n", m.threshold);
-		printf("	- fraction of nodes with renewed features %f\n", m.rho);
+		printf("	- threshold %.2f\n", m.threshold);
+		printf("	- fraction of nodes with renewed features %.2f\n", m.rho);
 	} 	else 	{
 
           printf(">>>>>>>>>>>>>>>>>>>>>>>>> E R R O R <<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
@@ -157,6 +157,7 @@ int main(int argc, char **argv)
 	                    {
 		                    AvAvFeatures[i] = 0;
                               AvVarFeatures[i] = 0;
+     /* tvalue, number of potential friends for a given threshold. */
 
 		                    for(j=0;j<m.agents;j++)
 		                    {
@@ -181,9 +182,8 @@ int main(int argc, char **argv)
                          }
                     }
                }
-          }
-     }	
-
+          }	
+	printf("Simulation succesfully ended. \n");
 	return 0;
 }
 
