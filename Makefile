@@ -4,7 +4,7 @@ OBJS= *.o
 CC= g++
 
 textual: model elanja
-	g++ -o main ${GPPFLAGS} ${LINKERFLAGS} elanja.o model.o
+	g++ -o elanja ${GPPFLAGS} ${LINKERFLAGS} elanja.o model.o
 
 elanja: 
 	$(CC) -c src/elanja.cpp

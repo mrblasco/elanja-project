@@ -32,17 +32,12 @@ Compilazione:
 
 andate nella cartella principale del progetto ed eseguite:
 
-1) make	model	compila tutto il progetto in modalita' testuale
-2) make test	compila solo test
+1) make	textual	compila tutto il progetto in modalita' testuale
+2) cd elanja.fltk/ e poi make per compilare il progetto nella modalita' grafica
 
 #---------------------------------------------------------------------------------------------------------#
 
-Ho fatto un po di pulizia delle cose inutili e ho modificato il progetto cosi' che prenda in input il numero di agenti, il numero di iterazioni e la distanza del vicinato da considerare.
-Ho inoltre modificato lo script che non si chiama piu' R_script.sh ma elanja.sh che serve per eseguire il progetto e visualizzare tutte le figure.
-Per usarlo dovete fare:
-	./elanja.sh <n agenti> <n iterazioni> <distanza> <opzione per le figure> <n sumulazioni>
-
-Per ora, anche se fate piu' di una simulazione non vengono salvati i risultati, dato che si usa sempre i soliti file per i risultati.
+Il progetto testuale accetta anche parametri da input lo potete eseguire o come ./elanja ed utilizza i parametri di default oppure li potete scrivere explicitamente.
 
 #---------------------------------------------------------------------------------------------------------#
 
