@@ -1,8 +1,0 @@
-n <- 100;
-t <- 50;
-degree <- scan("degree.dat");
-dim(degree) <- c(t*n);
-sink("degree_analysis.txt");
-mean(degree);
-var(degree);
-dev.off();

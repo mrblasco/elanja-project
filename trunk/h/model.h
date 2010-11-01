@@ -1,40 +1,34 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <iostream>
-
+#include <cmath>
+#include <fstream>
+#include <iomanip>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "const.h"
+
 
 class model{
 public: 
-     	/* initialize functions and variables */
-	void init(int agents, double rho, int nFeatures, double threshold, int friends); 
-	void reinit(int agents, double rho, int nFeatures, double threshold, int friends); 
+     	/* Initialize functions and variables */
+	void init(int edge_agents, int agents, int nFeatures, int pos_features, int n_iter); 
+	/* Step computing the model status */
 	void step(); 
 	
-	int agents;
-	double rho;
-	int friends;
-    
-	double threshold;
-	int nFeatures;
+	int edge_agents; 
+	int agents; 
+	int link; 
+	int nFeatures; 
+	int pos_features;
+	int control; 
+	int index, index2, label;
+	int n_iter; 
 
-	double *features;
-	int *F;
-
-	double *A;
-	double *tvalue;
-
-	int *degree;
-	int *A_degree;
-	int *B_degree;
-	
-     void genFeatures(int i);
-     double genCorrMat();
-     void update();
+	/* matrix/vector pointers */
+	int *A, *k, *degree_freq, *feature, *feat_freq, *vector, *region, *reg_size;
 
 };
 

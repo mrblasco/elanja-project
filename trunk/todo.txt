@@ -5,6 +5,6 @@ Suggerimenti di Rambaldi - 12/11/09
 - Cosa succede se si inserisce un grande persuasore e un grande critico (a cosa potrebbe corrispondere quest'ultima figura)?
 
 /******************************************************************/
-Jacopo 21/12/09
-Sistemare le simulazioni multiple cosi' da salvare i risultati su file differenti ogni volta.
+Jacopo 01/11/2010
+Sistemare la parte grafica con il nuovo modello di axelrod, dopo che Elisa ha confermato il corretto funzionamento della parte testuale.
 
