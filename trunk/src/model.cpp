@@ -18,9 +18,7 @@ int t; // counter for iteractions
 
 extern int w, h;
  
-void model::init(int edge_agents, int agents, int nFeatures, int pos_features, int n_iter){
-
-	int i, j;
+void model::init(int edge_agents, int agents, int nFeatures, int pos_features, int n_iter, int outdegree, double delta, int maxSide){
 
 	printf("Initializing Model ... \n");	
 
@@ -32,6 +30,9 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	this->pos_features = pos_features;
 	this->n_iter = n_iter;
 	this->control = 0;
+	this->outdegree = outdegree;
+	this->delta = delta;
+	this->maxSide = maxSide;
      
 	/* Memory allocation needed */
     	this->A = (int*) malloc(sizeof(double)*agents*agents); /* adjacency matrix */
@@ -42,84 +43,137 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	this->vector = (int*) malloc(sizeof(double)*agents); /* temporary vector for various values */
 	this->region = (int*) malloc(sizeof(double)*agents); /* labels */
 	this->reg_size = (int*) malloc(sizeof(double)*agents); /* labels histogram */
+	
+	int list[(edge_agents*edge_agents)][outdegree];
+	//int list = malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
 
-	/* Initialize degree, region, adjacency matrix */
+	/* =================CREATE NETWORK ====================  */
+
+	/* maxSide
+
+	% 0 is no local interactions, i.e., random network
+	% 1 is the square of 4 neighbors
+	% 2 is the square of 8 neighbors 
+
+	note: outdegree needs to be larger than 8 (or 24) to have long-range shortcuts,i.e., small worlds.
+	if maxSide > 2 then outdegree needs to be at least 48 or seg. fault. */
+
+	/* Initialize network list; first column id of all agents, second, third ... outdegree-th column ids of all linked agents. */
+
+	int i,j,i2,j2,jj,ii;
+	int neighbors, distance;
+	double ll,outcome;
+	int l, g, n, k, mlinks;
+
+	for (i=0;i<edge_agents;i++)
+	{
+		for (j=0; j<edge_agents;j++)
+		{            
+			for (g=0;g<outdegree;g++)
+			{       
+				//*(list + (i*edge_agents +j)*outdegree + g ) = -1;
+				list[(i*edge_agents +j)][g] = -1;
+			}
+		}
+	}   
+
+	for (i=0;i<edge_agents;i++)
+	{
+		for(j=0;j<edge_agents;j++)
+		{
+			neighbors=0;
+			
+			/* local links */
+			for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
+			{
+				for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
+				{
+					/* normalize to torus */
+					i2 = ((edge_agents + ii) % (edge_agents));  
+					j2 = ((edge_agents + jj) % (edge_agents));
+
+					if ( ( (i!=i2) || (j!=j2) ) )
+					{
+						if( (i==i2) || (j==j2) )
+						{
+							/* fill the list of neighbors */
+							//*(list + (i*edge_agents +j)*outdegree + neighbors ) = (i2*edge_agents +j2);
+							list[(i*edge_agents +j)][neighbors] = (i2*edge_agents +j2);
+							neighbors++;
+						}
+					}
+				}
+			}
+
+			/* then shortcuts are added */
+			while (neighbors <= outdegree)
+			{         
+				i2 = (rand()%edge_agents);
+				j2 = (rand()%edge_agents);
+
+				distance =  floor (sqrt(pow(MIN(fabs(i-i2),edge_agents-fabs(i-i2)),2) + pow(MIN(fabs(j-j2),edge_agents-fabs(j-j2)),2)));
+
+				if(distance > maxSide )
+				{   
+					mlinks = 0;  /* check to avoid multiple links*/
+
+					outcome =  pow(distance, (- delta) );
+					ll = (double) (rand()%1000) / (double) 1000;
+					if ( ll < outcome )
+					{
+						for (k = 0 ; k < neighbors; k++)
+						{
+							//if( *(list + (i*edge_agents +j)*outdegree + k ) == (i2*edge_agents +j2))
+							if( list[i*edge_agents +j][ k] == (i2*edge_agents +j2))
+								mlinks = 1;
+						}
+						if(mlinks == 0)
+						{
+							list[i*edge_agents +j][ k] = (i2*edge_agents +j2);
+							neighbors++;
+						}
+					}
+				}
+			}
+		}  
+	}
+
 	for(i=0;i<agents;i++)
 	{
-		k[i] = 0;
 		region[i] = 0;
-
 		for(j=0;j<agents;j++)
 		{
 			A[j*agents+i] = 0;
 		}
 	}
-	
-	/* Making the lattice */
-	A[1*agents+0] = A[edge_agents*agents+0] = A[(edge_agents-2)*agents+(edge_agents-1)] = A[(2*edge_agents-1)*agents+(edge_agents-1)] = A[(agents-edge_agents+1)*agents+(agents-edge_agents)] = A[(agents-2*edge_agents)*agents+(agents-edge_agents)] = A[(agents-2)*agents+(agents-1)] = A[(agents-edge_agents-1)*agents+(agents-1)] = 1;
-	for(i=1;i<agents-1;i++)
-	{
-		if(i % edge_agents == 0)
-		{
-			A[(i+1)*agents+i] = A[(i-edge_agents)*agents+i] = A[(i+edge_agents)*agents+i] = 1;
-		}
-		else if( ((i+1) % edge_agents == 0) && (i>edge_agents) )
-		{
-			A[(i-1)*agents+i] = A[(i-edge_agents)*agents+i] = A[(i+edge_agents)*agents+i] = 1;
-		}
-		else if(i < edge_agents-1)
-		{
-			A[(i+1)*agents+i] = A[(i-1)*agents+i] = A[(i+edge_agents)*agents+i] = 1;
-		}
-		else if(i >= agents-edge_agents)
-		{
-			A[(i+1)*agents+i] = A[(i-1)*agents+i] = A[(i-edge_agents)*agents+i] = 1;
-		}
-		else if( i != edge_agents-1 )
-		{
-			A[(i+1)*agents+i] = A[(i-1)*agents+i] = A[(i+edge_agents)*agents+i] = A[(i-edge_agents)*agents+i] = 1;
-		}
-	}
 
-	/* Computing number of links */
-	link = 0;
-	for(i=0;i<agents;i++)
+	k = 0;
+	for(i=0;i<edge_agents;i++)
 	{
-		for(j=0;j<agents;j++)
+		for(j=0;j<edge_agents;j++)
 		{
-			link += A[j*agents+i];
+			for(g=0;g<outdegree;g++)
+			{
+				l = list[i*edge_agents +j][g]; 
+				A[l*agents+k] = 1;
+				link++;
+			}
+			k++;
 		}
 	}
 	cout << link << endl;
 
+	ofstream outfile;
+	outfile.open("matrice_di_agiacenza.txt");
 	for(i=0;i<agents;i++)
 	{
-		k[i] = 0;
-		
 		for(j=0;j<agents;j++)
 		{
-			if(A[j*agents+i] == 1)
-			{
-				k[i]++;
-			}
+			outfile << A[j*agents+i] << "\t";
 		}
+		outfile << endl;
 	}
-
-	/* Printing histogram of the degree */
- 	/*outfile.open("degree.txt");
-	for(i=0;i<agents;i++)
-	{
-		degree_freq[i] = 0;
-	}
-	for(i=0;i<agents;i++)
-	{
-		degree_freq[k[i]]++;
-	}
-	for(i=0;i<agents;i++)
-	{
-		outfile << i << "\t" << degree_freq[i] << endl;
-	}
-	outfile.close();*/
+	outfile.close();
 
 }
 
@@ -137,7 +191,7 @@ void model::step(){
 	ofstream outfile;
 	outfile.open("dati.txt");
 
-	for(pos_features=3;pos_features<=18;pos_features=pos_features+3)
+	//for(pos_features=3;pos_features<=18;pos_features=pos_features+3)
 	{
 		cout << "pos_features = " << pos_features << endl;
 
@@ -153,25 +207,6 @@ void model::step(){
 					feature[j*agents+i] = rand() % pos_features;
 				}
 			}
-
-			/* Printing histogram of features */
-		 	/*outfile.open("features.txt");
-			for(i=0;i<pos_features;i++)
-			{
-				feat_freq[i] = 0;
-			}
-			for(i=0;i<agents;i++)
-			{
-				for(j=0;j<nFeatures;j++)
-				{
-					feat_freq[feature[j*agents+i]]++;
-				}
-			}
-			for(i=0;i<pos_features;i++)
-			{
-				outfile << i << "\t" << feat_freq[i] << endl;
-			}
-			outfile.close();*/
 
 			/* Dynamic part */
 			t = 0;
@@ -247,7 +282,7 @@ void model::step(){
 					control = 1;
 				}
 
-				if(t % 1000 == 0) {cout << t << "\t" << index2 << endl;}
+				if(t % 500 == 0) {cout << t << "\t" << index2 << endl;}
 				t++;
 			}
 			cout << "Numero di step eseguiti = " << t << endl;
@@ -286,21 +321,22 @@ void model::step(){
 				}
 			}
 
-			/* Printing histogram of sizes of region */
-		 	/*outfile.open("reg_size.txt");
-			for(i=0;i<agents;i++)
-			{
-				reg_size[i] = 0;
-			}
-			for(i=0;i<agents;i++)
-			{
-				reg_size[region[i]]++;
-			}
-			for(i=0;i<agents;i++)
-			{
-				outfile << i << "\t" << reg_size[i] << endl;
-			}
-			outfile.close();*/
+                        /* Printing histogram of sizes of region */
+                        /*outfile.open("reg_size.txt");
+                        for(i=0;i<agents;i++)
+                        {
+                                reg_size[i] = 0;
+                        }
+                        for(i=0;i<agents;i++)
+                        {
+                                reg_size[region[i]]++;
+                        }
+                        for(i=0;i<agents;i++)
+                        {
+                                outfile << i << "\t" << reg_size[i] << endl;
+                        }
+                        outfile.close();*/
+
 
 			/* Printing needed at the end of each simulation */
 			for(i=0;i<agents;i++)

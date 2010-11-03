@@ -14,7 +14,7 @@
 class model{
 public: 
      	/* Initialize functions and variables */
-	void init(int edge_agents, int agents, int nFeatures, int pos_features, int n_iter); 
+	void init(int edge_agents, int agents, int nFeatures, int pos_features, int n_iter, int outdegree, double delta, int maxSide); 
 	/* Step computing the model status */
 	void step(); 
 	
@@ -26,6 +26,9 @@ public:
 	int control; 
 	int index, index2, label;
 	int n_iter; 
+	int outdegree;
+	double delta;
+	int maxSide;
 
 	/* matrix/vector pointers */
 	int *A, *k, *degree_freq, *feature, *feat_freq, *vector, *region, *reg_size;
