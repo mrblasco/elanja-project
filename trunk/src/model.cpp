@@ -38,13 +38,13 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
     	this->A = (int*) malloc(sizeof(double)*agents*agents); /* adjacency matrix */
 	this->k = (int*) malloc(sizeof(double)*agents); /* degree */
 	this->degree_freq = (int*) malloc(sizeof(double)*agents); /* degree histogram */
-	this->feature = (int*) malloc(sizeof(double)*agents*(double)nFeatures); /* features */
+	this->feature = (int*) malloc(sizeof(double)*(agents*nFeatures)); /* features */
 	this->feat_freq = (int*) malloc(sizeof(double)*pos_features); /* features histogram */
 	this->vector = (int*) malloc(sizeof(double)*agents); /* temporary vector for various values */
 	this->region = (int*) malloc(sizeof(double)*agents); /* labels */
 	this->reg_size = (int*) malloc(sizeof(double)*agents); /* labels histogram */
 	
-	 int list[(edge_agents*edge_agents)][outdegree];
+	// int list[(edge_agents*edge_agents)][outdegree];
 	//int (int*)malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
 	this->Nlist = (int*)malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
 
@@ -242,7 +242,7 @@ void model::step(){
 						n = 0;
 						for(f=0;f<nFeatures;f++)
 						{
-							if( feature[i*nFeatures+f] != feature[j*agents+f] )
+							if( feature[i*nFeatures+f] != feature[j*nFeatures+f] )
 							{
 								vector[n] = f;
 								n++;
@@ -315,7 +315,7 @@ void model::step(){
 						index = 0;
 						for(f=0;f<nFeatures;f++)
 						{
-							if(feature[i*agents+f] == feature[j*agents+f])
+							if(feature[i*nFeatures+f] == feature[j*nFeatures+f])
 							{
 								index++;
 							}
@@ -356,7 +356,7 @@ void model::step(){
 				outfile << pos_features << "\t" << i << "\t" << region[i] << "\t";
 				for(j=0;j<nFeatures;j++)
 				{
-					outfile << feature[i*agents+f] << "\t"; 
+					outfile << feature[i*nFeatures+f] << "\t"; 
 				}
 				outfile << "\n";
 			}
