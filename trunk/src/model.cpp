@@ -27,7 +27,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	this->agents = agents;
 	this->link = 0;
 	this->nFeatures = nFeatures;
-	this->pos_features = pos_features;
+	this->pos_features = pos_features; 
 	this->n_iter = n_iter;
 	this->control = 0;
 	this->outdegree = outdegree;
@@ -44,10 +44,12 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	this->region = (int*) malloc(sizeof(double)*agents); /* labels */
 	this->reg_size = (int*) malloc(sizeof(double)*agents); /* labels histogram */
 	
-	int list[(edge_agents*edge_agents)][outdegree];
-	//int list = malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
+	 int list[(edge_agents*edge_agents)][outdegree];
+	//int (int*)malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
+	this->Nlist = (int*)malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
 
-	/* =================CREATE NETWORK ====================  */
+
+	/* =========CREATE NETWORK ====================  */
 
 	/* maxSide
 
@@ -57,26 +59,24 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 
 	note: outdegree needs to be larger than 8 (or 24) to have long-range shortcuts,i.e., small worlds.
 	if maxSide > 2 then outdegree needs to be at least 48 or seg. fault. */
+     double uNum;
 
-	/* Initialize network list; first column id of all agents, second, third ... outdegree-th column ids of all linked agents. */
+	/* Initialize var and network list */
 
 	int i,j,i2,j2,jj,ii;
 	int neighbors, distance;
 	double ll,outcome;
 	int l, g, n, k, mlinks;
 
-	for (i=0;i<edge_agents;i++)
+	for (i=0;i<agents;i++)
 	{
-		for (j=0; j<edge_agents;j++)
-		{            
-			for (g=0;g<outdegree;g++)
-			{       
-				//*(list + (i*edge_agents +j)*outdegree + g ) = -1;
-				list[(i*edge_agents +j)][g] = -1;
-			}
+		for (g=0;g<outdegree;g++)
+		{       
+               Nlist[i*outdegree +g] = -1;
 		}
 	}   
 
+     /* create network list -- local neighbors*/
 	for (i=0;i<edge_agents;i++)
 	{
 		for(j=0;j<edge_agents;j++)
@@ -96,17 +96,15 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 					{
 						if( (i==i2) || (j==j2) )
 						{
-							/* fill the list of neighbors */
-							//*(list + (i*edge_agents +j)*outdegree + neighbors ) = (i2*edge_agents +j2);
-							list[(i*edge_agents +j)][neighbors] = (i2*edge_agents +j2);
+                                   Nlist[(i*edge_agents +j)*outdegree + neighbors] = (i2*edge_agents +j2);
 							neighbors++;
 						}
 					}
 				}
 			}
 
-			/* then shortcuts are added */
-			while (neighbors <= outdegree)
+			/* ... then shortcuts are added */
+			while (neighbors < outdegree)
 			{         
 				i2 = (rand()%edge_agents);
 				j2 = (rand()%edge_agents);
@@ -123,58 +121,63 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 					{
 						for (k = 0 ; k < neighbors; k++)
 						{
-							//if( *(list + (i*edge_agents +j)*outdegree + k ) == (i2*edge_agents +j2))
-							if( list[i*edge_agents +j][ k] == (i2*edge_agents +j2))
+							if( Nlist[ (i*edge_agents +j)*outdegree + k ] == (i2*edge_agents +j2))
 								mlinks = 1;
 						}
 						if(mlinks == 0)
 						{
-							list[i*edge_agents +j][ k] = (i2*edge_agents +j2);
+                                  Nlist[ (i*edge_agents +j)*outdegree + k ]  = (i2*edge_agents +j2);
 							neighbors++;
 						}
 					}
 				}
 			}
 		}  
-	}
+     }
+          /* To test print the list :  seems ok!
+          for(i=0;i<agents;i++)
+          {
+              for(k=0;k<outdegree;k++)
+               {
+                   printf("%d \t",Nlist[ i*outdegree + k ] );
+               }
+               printf("\n");
+          }exit(0);*/
+     
 
+     /* initialize region and print Adiacency matrix... */
 	for(i=0;i<agents;i++)
 	{
 		region[i] = 0;
 		for(j=0;j<agents;j++)
 		{
-			A[j*agents+i] = 0;
+			A[i*agents+j] = 0; 
 		}
 	}
 
-	k = 0;
-	for(i=0;i<edge_agents;i++)
-	{
-		for(j=0;j<edge_agents;j++)
-		{
-			for(g=0;g<outdegree;g++)
-			{
-				l = list[i*edge_agents +j][g]; 
-				A[l*agents+k] = 1;
-				link++;
-			}
-			k++;
-		}
-	}
-	cout << link << endl;
-
-	ofstream outfile;
-	outfile.open("matrice_di_agiacenza.txt");
 	for(i=0;i<agents;i++)
 	{
+		for(g=0;g<outdegree;g++)
+		{
+			l = Nlist[(i*outdegree +g)]; 
+			A[i*agents+l] = 1; 
+			link++;
+		}
+	}
+	cout << "Numero di links " << link << endl;
+
+	ofstream outfile;
+	outfile.open("AdMatrix.txt");
+	for(i=0;i<agents;i++)
+	{
+
 		for(j=0;j<agents;j++)
 		{
 			outfile << A[j*agents+i] << "\t";
-		}
+		} 
 		outfile << endl;
 	}
 	outfile.close();
-
 }
 
  
@@ -184,14 +187,14 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void model::step(){
 	
-	int i,j,n,m,a,b,t,f,s;
+	int i,j,n,m,a,b,t,f,s,l,ll;
 	double p, r, prob;
 
 	/* Create output file */
 	ofstream outfile;
 	outfile.open("dati.txt");
 
-	//for(pos_features=3;pos_features<=18;pos_features=pos_features+3)
+	for(pos_features=3;pos_features<=18;pos_features=pos_features+3)
 	{
 		cout << "pos_features = " << pos_features << endl;
 
@@ -199,85 +202,93 @@ void model::step(){
 		{
 			cout << "Simulation " << s << endl;
 
-			/* Making features */
+			/* Create features vectors*/
 			for(i=0;i<agents;i++)
 			{
-				for(j=0;j<nFeatures;j++)
+				for(f=0;f<nFeatures;f++)
 				{
-					feature[j*agents+i] = rand() % pos_features;
+					feature[i*nFeatures+f] = rand() % pos_features;
+      //                  printf("%d \t",feature[i*nFeatures+f]);
 				}
+        //            printf("\n");
 			}
+//               exit(0);
 
-			/* Dynamic part */
+			/* Dynamic process */
 			t = 0;
 			control = 0;
 			while(control == 0)
 			{
 				for(i=0;i<agents;i++)
 				{
-					n = 0;
-					for(j=0;j<agents;j++)
-					{
-						if(A[j*agents+i] == 1)
-						{
-							vector[n] = j;
-							n++;
-						}
-					}
-					a = rand() % n;
-					j = vector[a];
-					prob = 0;
+					a = rand() % outdegree;
+                         j = Nlist[i*outdegree +a];
+
+                         a =0;                         
 					for(f=0;f<nFeatures;f++)
 					{
-						if( feature[f*agents+i] == feature[f*agents+j] )
-						{
-							prob++;
-						}
+                              l= feature[(i*nFeatures+f)];
+                              ll =  feature[(j*nFeatures+f)];
+						if( l == ll )
+                              {
+							a++; 
+                              }
 					}
-					prob = prob / (double) nFeatures;
-					r = (rand() % 10001) / 10000;
-					if( r<prob )
+					prob = (double)  a / (double) nFeatures;
+					r = (rand() % 10000) / (double) 10000;
+
+					if( r <= prob )
 					{
 						n = 0;
-						for(m=0;m<nFeatures;m++)
+						for(f=0;f<nFeatures;f++)
 						{
-							if( feature[m*agents+i] != feature[m*agents+j] )
+							if( feature[i*nFeatures+f] != feature[j*agents+f] )
 							{
-								vector[n] = m;
+								vector[n] = f;
 								n++;
 							}
 						}
-						if(n != 0)
+						if(n > 0)
 						{
-							a = rand() % n;
-							b = vector[a];
-							feature[b*agents+j] = feature[b*agents+i];
+							a = rand() %n;
+							f = vector[a];
+							feature[i*nFeatures+f] = feature[j*nFeatures+f];
 						}						
 					}
 				}
+
 				index2 = 0;
 				for(i=0;i<agents;i++)
 				{
-					for(j=0;j<agents;j++)
+					for(l=0;l<outdegree;l++)
 					{
-						if(A[j*agents+i] == 1)
+                              j = Nlist[i*outdegree +l];
+
+						index = 0;
+						for(f=0;f<nFeatures;f++)
 						{
-							index = 0;
-							for(f=0;f<nFeatures;f++)
+							if(feature[i*nFeatures+f] == feature[j*nFeatures+f])
 							{
-								if(feature[f*agents+i] == feature[f*agents+j])
-								{
-									index++;
-								}
-							}
-							if( (index == nFeatures) || (index == 0) )
-							{
-								index2++;
+								index++;
 							}
 						}
+						if( (index == nFeatures) || (index == 0) )
+						{
+							index2++;
+						} else {
+/// prova
+//                              printf("Agent %d",i);
+//						for(f=0;f<nFeatures;f++)
+//						{
+//							printf("%d\t",feature[i*nFeatures+f]-feature[j*nFeatures+f]);
+//						}
+//printf("\n");
+                              }
+
 					}
 				}
-				if( index2 == link )
+
+				if( index2 == (outdegree*agents)  )
 				{
 					control = 1;
 				}
@@ -287,13 +298,14 @@ void model::step(){
 			}
 			cout << "Numero di step eseguiti = " << t << endl;
 		
-			/* Labeling cultural regions */
+			/* Labeling cultural regions  */
 			label = 2;
 			for(i=0;i<agents;i++)
 			{
 				region[i] = 0;
 			}
 			region[0] = 1;
+
 			for(i=0;i<agents;i++)
 			{
 				for(j=i+1;j<agents;j++)
@@ -341,7 +353,7 @@ void model::step(){
 			/* Printing needed at the end of each simulation */
 			for(i=0;i<agents;i++)
 			{
-				outfile << i << "\t" << region[i] << "\t";
+				outfile << pos_features << "\t" << region[i] << "\t";
 				for(j=0;j<nFeatures;j++)
 				{
 					outfile << feature[j*agents+i] << "\t"; 
