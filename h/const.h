@@ -1,10 +1,10 @@
-#define EDGE_AGENTS 30
+#define EDGE_AGENTS 10
 #define AGENTS EDGE_AGENTS*EDGE_AGENTS
 #define NFEATURES 3
 #define POS_FEATURES 20
 #define N_ITER 1
-#define OUTDEGREE 4
-#define DELTA 0.01
+#define OUTDEGREE 8
+#define DELTA 0.1
 #define MAXSIDE 1
 
 
