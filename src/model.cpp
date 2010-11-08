@@ -173,7 +173,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 
 		for(j=0;j<agents;j++)
 		{
-			outfile << A[j*agents+i] << "\t";
+			outfile << A[i*agents+j] << "\t";
 		} 
 		outfile << endl;
 	}
@@ -310,12 +310,12 @@ void model::step(){
 			{
 				for(j=i+1;j<agents;j++)
 				{
-					if(A[j*agents+i] == 1)
+					if(A[i*agents+j] == 1)
 					{
 						index = 0;
 						for(f=0;f<nFeatures;f++)
 						{
-							if(feature[f*agents+i] == feature[f*agents+j])
+							if(feature[i*agents+f] == feature[j*agents+f])
 							{
 								index++;
 							}
@@ -353,10 +353,10 @@ void model::step(){
 			/* Printing needed at the end of each simulation */
 			for(i=0;i<agents;i++)
 			{
-				outfile << pos_features << "\t" << region[i] << "\t";
+				outfile << pos_features << "\t" << i << "\t" << region[i] << "\t";
 				for(j=0;j<nFeatures;j++)
 				{
-					outfile << feature[j*agents+i] << "\t"; 
+					outfile << feature[i*agents+f] << "\t"; 
 				}
 				outfile << "\n";
 			}
