@@ -42,7 +42,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	this->feat_freq = (int*) malloc(sizeof(double)*pos_features); /* features histogram */
 	this->vector = (int*) malloc(sizeof(double)*agents); /* temporary vector for various values */
 	this->region = (int*) malloc(sizeof(double)*agents); /* labels */
-	this->reg_size = (int*) malloc(sizeof(double)*1000000*pos_features); /* labels histogram */
+	//this->reg_size = (int*) malloc(sizeof(double)*1000000*pos_features); /* labels histogram */
 	
 	// int list[(edge_agents*edge_agents)][outdegree];
 	//int (int*)malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
@@ -201,6 +201,9 @@ void model::step(){
 	{
 		cout << "pos_features = " << pos_features << endl;
 
+		int *reg_size;
+		reg_size = (int*) malloc(sizeof(double)*1000000*pos_features); /* labels histogram */
+
 		for(s=0;s<n_iter;s++)
 		{
 			cout << "Simulation " << s+1 << endl;
@@ -339,6 +342,7 @@ void model::step(){
                         }
 
 		}
+	void free(void *reg_size);
 	}
      
 }
