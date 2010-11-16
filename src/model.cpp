@@ -42,7 +42,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	this->feat_freq = (int*) malloc(sizeof(double)*pos_features); /* features histogram */
 	this->vector = (int*) malloc(sizeof(double)*agents); /* temporary vector for various values */
 	this->region = (int*) malloc(sizeof(double)*agents); /* labels */
-	this->reg_size = (int*) malloc(sizeof(double)*agents); /* labels histogram */
+	this->reg_size = (int*) malloc(sizeof(double)*1000000*pos_features); /* labels histogram */
 	
 	// int list[(edge_agents*edge_agents)][outdegree];
 	//int (int*)malloc(sizeof(int)*(edge_agents*edge_agents*outdegree));
@@ -95,7 +95,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 					if ( ( (i!=i2) || (j!=j2) ) )
 					//if( (i2==i && j2==j-1) || (i2==i-1 && j2==j) )
 					{
-						if( (i==i2) || (j==j2) )
+						//if( (i==i2) || (j==j2) )
 						{
                                    Nlist[(i*edge_agents +j)*outdegree + neighbors] = (i2*edge_agents +j2);
 							neighbors++;
@@ -136,7 +136,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 		}  
      }
           // To test print the list :  seems ok!
-          /*for(i=0;i<agents;i++)
+         /* for(i=0;i<agents;i++)
           {
 		cout << i << "\t";
               for(k=0;k<outdegree;k++)
@@ -188,16 +188,16 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 %%%%%%%%      FUNCTION     %%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void model::step(){
+
+        FILE *out1;
+        FILE *out2;     
+        out1 = fopen("dati.txt", "w");     
+        out2 = fopen("reg_size.txt", "w");
 	
 	int i,j,n,m,a,b,t,f,s,l,ll;
 	double p, r, prob;
-	//double noise = 0.0005;
 
-	/* Create output file */
-	ofstream outfile;
-	outfile.open("dati.txt");
-
-	for(pos_features=10;pos_features<=500;pos_features=pos_features+20)
+	for(pos_features=10;pos_features<=100;pos_features=pos_features+10)
 	{
 		cout << "pos_features = " << pos_features << endl;
 
@@ -221,7 +221,6 @@ void model::step(){
 			t = 0;
 			control = 0;
 			while(control == 0)
-			//for(t=0;t<agents*agents;t++)
 			{
 				for(i=0;i<agents;i++)
 				{
@@ -306,50 +305,27 @@ void model::step(){
 					control = 1;
 				}
 
-				//if(t % 1000 == 0) {cout << t << "\t" << index2 << endl;}
-				//if(t % 1000000 == 0) {cout << t << endl;}
+				if(t % 1000 == 0) {cout << t << "\t" << index2 << endl;}
 				t++;
 			}
 			cout << "Numero di step eseguiti = " << t << endl;
-		
-			/* Labeling cultural regions  */
-			label = 2;
-			for(i=0;i<agents;i++)
-			{
-				region[i] = 0;
-			}
-			region[0] = 1;
 
+			/* Printing needed at the end of each simulation */
 			for(i=0;i<agents;i++)
 			{
-				for(j=0;j<agents;j++)
+				fprintf(out1,"%d %d\t",pos_features,i);
+				region[i] = feature[i*nFeatures+0];
+				region[i] += feature[i*nFeatures+1]*1000;
+				region[i] += feature[i*nFeatures+2]*1000000;
+				for(f=0;f<nFeatures;f++)
 				{
-					if(A[i*agents+j] == 1)
-					{
-						index = 0;
-						for(f=0;f<nFeatures;f++)
-						{
-							if(feature[i*nFeatures+f] == feature[j*nFeatures+f])
-							{
-								index++;
-							}
-						}
-						if( index == nFeatures )
-						{
-							region[j] = region[i];
-						}
-						else if( (index == 0) && (region[j] == 0) )
-						{
-							region[j] = label;
-							label++;
-						}
-					}
+					fprintf(out1,"%d\t",feature[i*nFeatures+f]); 
 				}
+				fprintf(out1,"%d\n",region[i]);
 			}
 
-                        /* Printing histogram of sizes of region */
-                        /*outfile.open("reg_size.txt");
-                        for(i=0;i<agents;i++)
+			/* Printing histogram of sizes of region */
+                        for(i=0;i<1000000*pos_features;i++)
                         {
                                 reg_size[i] = 0;
                         }
@@ -357,28 +333,11 @@ void model::step(){
                         {
                                 reg_size[region[i]]++;
                         }
-                        for(i=0;i<agents;i++)
+                        for(i=0;i<1000000*pos_features;i++)
                         {
-                                outfile << i << "\t" << reg_size[i] << endl;
+                                if(reg_size[i] > 0) { fprintf(out2,"%d %d %d %d\n",s+1,pos_features,i,reg_size[i]);}
                         }
-                        outfile.close();*/
 
-			int sum;
-
-			/* Printing needed at the end of each simulation */
-			for(i=0;i<agents;i++)
-			{
-				outfile << pos_features << "\t" << i << "\t" << /*region[i] <<*/ "\t";
-				sum = 0;
-				sum = feature[i*nFeatures+0];
-				sum += feature[i*nFeatures+1]*1000;
-				sum += feature[i*nFeatures+2]*1000000;
-				for(f=0;f<nFeatures;f++)
-				{
-					outfile << feature[i*nFeatures+f] << "\t"; 
-				}
-				outfile << sum << endl;
-			}
 		}
 	}
      
