@@ -82,17 +82,18 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 		for(j=0;j<edge_agents;j++)
 		{
 			neighbors=0;
-			
+
 			/* local links */
 			for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
 			{
 				for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
 				{
-					/* normalize to torus */
+					// normalize to torus 
 					i2 = ((edge_agents + ii) % (edge_agents));  
 					j2 = ((edge_agents + jj) % (edge_agents));
 
 					if ( ( (i!=i2) || (j!=j2) ) )
+					//if( (i2==i && j2==j-1) || (i2==i-1 && j2==j) )
 					{
 						if( (i==i2) || (j==j2) )
 						{
@@ -134,15 +135,16 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 			}
 		}  
      }
-          /* To test print the list :  seems ok!
-          for(i=0;i<agents;i++)
+          // To test print the list :  seems ok!
+          /*for(i=0;i<agents;i++)
           {
+		cout << i << "\t";
               for(k=0;k<outdegree;k++)
                {
-                   printf("%d \t",Nlist[ i*outdegree + k ] );
+                   cout << Nlist[ i*outdegree + k ] << "\t";
                }
-               printf("\n");
-          }exit(0);*/
+              cout << endl;
+          }*/
      
 
      /* initialize region and print Adiacency matrix... */
@@ -166,7 +168,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	}
 	cout << "Numero di links " << link << endl;
 
-	ofstream outfile;
+	/*ofstream outfile;
 	outfile.open("AdMatrix.txt");
 	for(i=0;i<agents;i++)
 	{
@@ -177,7 +179,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 		} 
 		outfile << endl;
 	}
-	outfile.close();
+	outfile.close();*/
 }
 
  
@@ -189,18 +191,19 @@ void model::step(){
 	
 	int i,j,n,m,a,b,t,f,s,l,ll;
 	double p, r, prob;
+	//double noise = 0.0005;
 
 	/* Create output file */
 	ofstream outfile;
 	outfile.open("dati.txt");
 
-	for(pos_features=3;pos_features<=18;pos_features=pos_features+3)
+	for(pos_features=10;pos_features<=500;pos_features=pos_features+20)
 	{
 		cout << "pos_features = " << pos_features << endl;
 
 		for(s=0;s<n_iter;s++)
 		{
-			cout << "Simulation " << s << endl;
+			cout << "Simulation " << s+1 << endl;
 
 			/* Create features vectors*/
 			for(i=0;i<agents;i++)
@@ -218,6 +221,7 @@ void model::step(){
 			t = 0;
 			control = 0;
 			while(control == 0)
+			//for(t=0;t<agents*agents;t++)
 			{
 				for(i=0;i<agents;i++)
 				{
@@ -257,6 +261,15 @@ void model::step(){
 					}
 				}
 
+				//Noise
+				/*i = rand() % agents;
+				r = (rand() % 1000000) / (double) 1000000;
+				if(r<noise)
+				{
+					f = rand() % nFeatures;
+					feature[i*nFeatures+f] = rand() % pos_features;
+				}*/
+
 				index2 = 0;
 				for(i=0;i<agents;i++)
 				{
@@ -293,7 +306,8 @@ void model::step(){
 					control = 1;
 				}
 
-				if(t % 500 == 0) {cout << t << "\t" << index2 << endl;}
+				//if(t % 1000 == 0) {cout << t << "\t" << index2 << endl;}
+				//if(t % 1000000 == 0) {cout << t << endl;}
 				t++;
 			}
 			cout << "Numero di step eseguiti = " << t << endl;
@@ -308,7 +322,7 @@ void model::step(){
 
 			for(i=0;i<agents;i++)
 			{
-				for(j=i+1;j<agents;j++)
+				for(j=0;j<agents;j++)
 				{
 					if(A[i*agents+j] == 1)
 					{
@@ -349,16 +363,21 @@ void model::step(){
                         }
                         outfile.close();*/
 
+			int sum;
 
 			/* Printing needed at the end of each simulation */
 			for(i=0;i<agents;i++)
 			{
-				outfile << pos_features << "\t" << i << "\t" << region[i] << "\t";
-				for(j=0;j<nFeatures;j++)
+				outfile << pos_features << "\t" << i << "\t" << /*region[i] <<*/ "\t";
+				sum = 0;
+				sum = feature[i*nFeatures+0];
+				sum += feature[i*nFeatures+1]*1000;
+				sum += feature[i*nFeatures+2]*1000000;
+				for(f=0;f<nFeatures;f++)
 				{
 					outfile << feature[i*nFeatures+f] << "\t"; 
 				}
-				outfile << "\n";
+				outfile << sum << endl;
 			}
 		}
 	}
