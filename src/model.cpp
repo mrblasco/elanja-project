@@ -84,7 +84,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 			neighbors=0;
 
 			/* local links */
-			for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
+			/*for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
 			{
 				for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
 				{
@@ -93,16 +93,15 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 					j2 = ((edge_agents + jj) % (edge_agents));
 
 					if ( ( (i!=i2) || (j!=j2) ) )
-					//if( (i2==i && j2==j-1) || (i2==i-1 && j2==j) )
 					{
-						//if( (i==i2) || (j==j2) )
+						if( (i==i2) || (j==j2) )
 						{
                                    Nlist[(i*edge_agents +j)*outdegree + neighbors] = (i2*edge_agents +j2);
 							neighbors++;
 						}
 					}
 				}
-			}
+			}*/
 
 			/* ... then shortcuts are added */
 			while (neighbors < outdegree)
@@ -135,16 +134,19 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 			}
 		}  
      }
+	
+	FILE *out2;
+	out2 = fopen("list.txt", "w");
           // To test print the list :  seems ok!
-         /* for(i=0;i<agents;i++)
+         for(i=0;i<agents;i++)
           {
-		cout << i << "\t";
+		fprintf(out2,"%d\t",i);
               for(k=0;k<outdegree;k++)
                {
-                   cout << Nlist[ i*outdegree + k ] << "\t";
+                   fprintf(out2,"%d\t",Nlist[ i*outdegree + k ]);
                }
-              cout << endl;
-          }*/
+              fprintf(out2,"\n");
+          }
      
 
      /* initialize region and print Adiacency matrix... */
@@ -190,18 +192,23 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 void model::step(){
 
         FILE *out1;
-        FILE *out2;     
         out1 = fopen("dati.txt", "w");     
-        out2 = fopen("reg_size.txt", "w");
+
+	FILE *out3;
+	out3 = fopen("tempi.txt","w");
 	
+	double tempo;
+
 	int i,j,n,m,a,b,t,f,s,l,ll;
 	double p, r, prob;
 
-	for(pos_features=10;pos_features<=100;pos_features=pos_features+10)
+	for(pos_features=250;pos_features<=2000;pos_features=pos_features+250)
 	{
 		cout << "pos_features = " << pos_features << endl;
 
-		int *reg_size;
+		tempo = 0;
+
+		/*int *reg_size;
 		reg_size = (int*) malloc(sizeof(double)*1000000*pos_features); /* labels histogram */
 
 		for(s=0;s<n_iter;s++)
@@ -312,23 +319,24 @@ void model::step(){
 				t++;
 			}
 			cout << "Numero di step eseguiti = " << t << endl;
+			tempo += t;
 
 			/* Printing needed at the end of each simulation */
-			for(i=0;i<agents;i++)
+			/*for(i=0;i<agents;i++)
 			{
 				fprintf(out1,"%d %d\t",pos_features,i);
 				region[i] = feature[i*nFeatures+0];
-				region[i] += feature[i*nFeatures+1]*1000;
-				region[i] += feature[i*nFeatures+2]*1000000;
+				region[i] += feature[i*nFeatures+1]*10000;
+				region[i] += feature[i*nFeatures+2]*100000000;
 				for(f=0;f<nFeatures;f++)
 				{
 					fprintf(out1,"%d\t",feature[i*nFeatures+f]); 
 				}
 				fprintf(out1,"%d\n",region[i]);
-			}
+			}*/
 
 			/* Printing histogram of sizes of region */
-                        for(i=0;i<1000000*pos_features;i++)
+                        /*for(i=0;i<1000000*pos_features;i++)
                         {
                                 reg_size[i] = 0;
                         }
@@ -339,10 +347,12 @@ void model::step(){
                         for(i=0;i<1000000*pos_features;i++)
                         {
                                 if(reg_size[i] > 0) { fprintf(out2,"%d %d %d %d\n",s+1,pos_features,i,reg_size[i]);}
-                        }
+                        }*/
 
 		}
-	void free(void *reg_size);
+		tempo = (double) tempo / (double) n_iter;
+		fprintf(out3,"%d %f\n",pos_features,tempo);
+	//void free(void *reg_size);
 	}
      
 }
