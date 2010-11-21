@@ -24,14 +24,14 @@ public:
 	int nFeatures; 
 	int pos_features;
 	int control; 
-	int index, index2, label;
+	int index, index2;
 	int n_iter; 
 	int outdegree;
 	double delta;
 	int maxSide;
 
 	/* matrix/vector pointers */
-	int *A, *k, *degree_freq, *feature, *feat_freq, *vector, *region, /**reg_size,*/ *Nlist;
+	int *A, *k, *degree_freq, *feature, *feat_freq, *vector, *label, *reg_size, *Nlist;
 
 };
 
