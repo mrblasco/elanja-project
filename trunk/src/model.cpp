@@ -89,7 +89,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 
 					if ( ( (i!=i2) || (j!=j2) ) )
 					{
-						//if( (i==i2) || (j==j2) )
+						if( (i==i2) || (j==j2) )
 						{
                                    Nlist[(i*edge_agents +j)*outdegree + neighbors] = (i2*edge_agents +j2);
 							neighbors++;
@@ -369,7 +369,7 @@ void model::step(){
 		mean_max_reg = (double) mean_max_reg / (double) n_iter;
 		for(i=0;i<n_iter;i++)
 		{
-			var_max_reg += pow(max_reg[s]-mean_max_reg,2);
+			var_max_reg += pow(max_reg[i]-mean_max_reg,2);
 		}
 		var_max_reg = (double) var_max_reg / (double) n_iter;
 		tempo = (double) tempo / (double) n_iter;
