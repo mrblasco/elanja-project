@@ -192,14 +192,20 @@ void model::step(){
         out2 = fopen("dati.txt", "w");     
 	out3 = fopen("medie.txt","w");
 	out4 = fopen("hist_label.txt","w");
+	FILE *out5;
+	out5 = fopen("test","w");
 
 	int i,j,n,m,a,b,t,f,s,l,ll, test;
 	double p, r, prob, tempo, mean_max_reg, var_max_reg;
 	double max_reg[n_iter];
 	double noise = 0.0005;
 	int STEPS = agents*agents; //to stop the dynamic when we introduce noise
+	int counter2;
+	
+	cout << agents*outdegree << endl;
+	cout << agents*outdegree*0.95 << endl;
 
-	for(pos_features=10;pos_features<=100;pos_features=pos_features+10)
+	for(pos_features=5;pos_features<=35;pos_features=pos_features+5)
 	{
 		cout << "pos_features = " << pos_features << endl;
 
@@ -222,9 +228,11 @@ void model::step(){
 			/* Dynamic process */
 			t = 0;
 			control = 0;
+			int counter;
 			while(control == 0)
 			//for(t=0;t<STEPS;t++) //to use instead of while when we introduce noise
 			{
+				counter = 0;
 				for(i=0;i<agents;i++)
 				{
 					a = rand() % outdegree;
@@ -241,9 +249,10 @@ void model::step(){
 					}
 					prob = (double)  a / (double) nFeatures;
 					r = (rand() % 10000) / (double) 10000;
-					if( r <= prob )
+					if( r < prob )
 					{
 						n = 0;
+						a = 0;
 						for(f=0;f<nFeatures;f++)
 						{
 							if( feature[i*nFeatures+f] != feature[j*nFeatures+f] )
@@ -251,12 +260,17 @@ void model::step(){
 								vector[n] = f;
 								n++;
 							}
+							else
+							{
+								a++;
+							}
 						}
-						if(n > 0)
+						if(n > 0 && a > 0)
 						{
 							a = rand() %n;
 							f = vector[a];
 							feature[i*nFeatures+f] = feature[j*nFeatures+f];
+							counter++;
 						}						
 					}
 
@@ -292,12 +306,56 @@ void model::step(){
 					}
 				}
 
-				if( index2 == (outdegree*agents)  )
+				if( index2 >= (outdegree*agents)*0.95  )
 				{
 					control = 1;
 				}
 
-				if(t % 1000 == 0) {cout << t << "\t" << index2 << endl;}
+				//Labeling
+				/*a = 0;
+				label[0]= a;
+				for(i=1;i<agents;i++)
+				{
+					test =1;
+					for(j=0;j<i;j++)
+					{
+						if(feature[i*nFeatures+0]==feature[j*nFeatures+0])
+						{
+							if(feature[i*nFeatures+1]==feature[j*nFeatures+1])
+							{
+								if(feature[i*nFeatures+2]==feature[j*nFeatures+2])
+								{
+									label[i] = label[j];          
+									test = 0;
+								}                            
+							}                        
+						}
+					}
+					if(test==1)
+					{
+						a++;
+						label[i] = a;
+					}
+				}
+
+			       // print max frequence
+			       counter2 = 0;
+			       for(j=0;j<agents;j++)
+			       {
+				    n = 0;
+				    for(i=0;i<agents;i++)
+				    {
+				         if(label[i]==j)
+				              n++;
+				    }
+				         if(counter2<n)
+				              counter2 =n;
+			       }
+
+				//if(t % 1000 == 0) {cout << t << "\t" << index2 << endl;}
+				fprintf(out5,"%d %d %d %d\n",t,counter,3200-index2,counter2);
+				//if(t % 1000 == 0) printf("%d %d %d %d\n",t,counter,3200-index2,counter2);
+				if(t % 1000 == 0) cout << t << "\t" << counter << "\t" << 3200-index2 << "\t" << counter2 << endl;*/
 				t++;
 			}
 			cout << "Numero di step eseguiti = " << t << endl;
@@ -352,7 +410,7 @@ void model::step(){
                         }
                         for(i=0;i<agents;i++)
                         {
-                                if( reg_size[i]>0 ) {fprintf(out4,"%d %d %d %d\n",s+1,pos_features,i,reg_size[i]);}
+                               /* if( reg_size[i]>0 )*/ {fprintf(out4,"%d %d %d %d\n",s+1,pos_features,i,reg_size[i]);}
                         }
 
 			max_reg[s] = 0;
@@ -363,7 +421,7 @@ void model::step(){
 					max_reg[s] = reg_size[i];
 				}
 			}
-			max_reg[s] = (double) max_reg[s] / (double) agents;
+			max_reg[s] = (double) max_reg[s] / agents;
 			mean_max_reg += max_reg[s];
 		}
 		mean_max_reg = (double) mean_max_reg / (double) n_iter;
@@ -375,7 +433,7 @@ void model::step(){
 		tempo = (double) tempo / (double) n_iter;
 		fprintf(out3,"%d %f %f %f\n",pos_features,tempo,mean_max_reg,var_max_reg);
 	}
-     
+
 }
 
  
