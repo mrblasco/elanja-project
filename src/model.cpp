@@ -189,21 +189,20 @@ void model::step(){
         FILE *out2;
 	FILE *out3;
 	FILE *out4;
+	FILE *out5;
         out2 = fopen("dati.txt", "w");     
 	out3 = fopen("medie.txt","w");
 	out4 = fopen("hist_label.txt","w");
-	FILE *out5;
-	out5 = fopen("test","w");
+	out5 = fopen("test.txt","w");
 
 	int i,j,n,m,a,b,t,f,s,l,ll, test;
 	double p, r, prob, tempo, mean_max_reg, var_max_reg;
 	double max_reg[n_iter];
 	double noise = 0.0005;
-	int STEPS = agents*agents; //to stop the dynamic when we introduce noise
-	int counter2;
+	int counter, counter2;
 	
-	cout << agents*outdegree << endl;
-	cout << agents*outdegree*0.95 << endl;
+	/*cout << agents*outdegree << endl;
+	cout << agents*outdegree*0.95 << endl;*/
 
 	for(pos_features=5;pos_features<=35;pos_features=pos_features+5)
 	{
@@ -228,9 +227,7 @@ void model::step(){
 			/* Dynamic process */
 			t = 0;
 			control = 0;
-			int counter;
 			while(control == 0)
-			//for(t=0;t<STEPS;t++) //to use instead of while when we introduce noise
 			{
 				counter = 0;
 				for(i=0;i<agents;i++)
@@ -240,9 +237,7 @@ void model::step(){
 					a = 0;                         
 					for(f=0;f<nFeatures;f++)
 					{
-						l= feature[(i*nFeatures+f)];
-						ll =  feature[(j*nFeatures+f)];
-						if( l == ll )
+						if( feature[(i*nFeatures+f)] == feature[(j*nFeatures+f)] )
 						{
 							a++; 
 						}
@@ -306,7 +301,7 @@ void model::step(){
 					}
 				}
 
-				if( index2 >= (outdegree*agents)*0.95  )
+				if( index2 == (outdegree*agents) || t >= 100*agents  )
 				{
 					control = 1;
 				}
@@ -350,12 +345,10 @@ void model::step(){
 				    }
 				         if(counter2<n)
 				              counter2 =n;
-			       }
+			       }*/
 
-				//if(t % 1000 == 0) {cout << t << "\t" << index2 << endl;}
-				fprintf(out5,"%d %d %d %d\n",t,counter,3200-index2,counter2);
-				//if(t % 1000 == 0) printf("%d %d %d %d\n",t,counter,3200-index2,counter2);
-				if(t % 1000 == 0) cout << t << "\t" << counter << "\t" << 3200-index2 << "\t" << counter2 << endl;*/
+				fprintf(out5,"%d %d %d %d\n",pos_features,s+1,t,outdegree*agents-index2);
+				if(t % 1000 == 0) cout << pos_features << "\t" << s+1 << "\t" << t << "\t" << outdegree*agents-index2 << endl;
 				t++;
 			}
 			cout << "Numero di step eseguiti = " << t << endl;
@@ -410,7 +403,7 @@ void model::step(){
                         }
                         for(i=0;i<agents;i++)
                         {
-                               /* if( reg_size[i]>0 )*/ {fprintf(out4,"%d %d %d %d\n",s+1,pos_features,i,reg_size[i]);}
+				if( reg_size[i]>0 ) {fprintf(out4,"%d %d %d %d\n",s+1,pos_features,i,reg_size[i]);}
                         }
 
 			max_reg[s] = 0;
