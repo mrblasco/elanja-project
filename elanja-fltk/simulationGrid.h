@@ -16,7 +16,7 @@
 
 extern bool doNextSimulationStep; 
 /*extern bool crisis;*/
-extern int t;
+extern int pippo;
 
 class simulationGrid : public Fl_Gl_Window
 {
@@ -35,6 +35,6 @@ protected: /* non puoi cancellalro */
 void timer_cb(void *p);  /*  delay tra uno step e l'altro della simulazione */
 void circle(double x, double y, double radius); /* disegna i pallini */
 void drawAgents(int agent); /* per gli agenti */
-void link(double x, double y, double xx, double yy); /* disegna i pallini */
+void link(double x, double y, double xx, double yy); /* disegna i link */
 
 #endif

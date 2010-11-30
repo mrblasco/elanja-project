@@ -11,38 +11,27 @@
 
 class model{
 public: 
-     	/* initialize functions and variables */
-	void init(int agents, double rho, int nFeatures, double threshold, int friends, int w, int h); 
-	void reinit(int agents, double rho, int nFeatures, double threshold, int friends,int w, int h); 
-	void step(int w, int h); 
+	/* Initialize functions and variables */
+	void init(int linear_lattice_dimension, int agents, int nFeatures, int pos_traits, int outdegree, double delta, int maxSide); 
+	/* Step computing the model status */
+	void step(); 
 	
-	int agents;
-	int distance;
-	int m;
-	double rho;
-	double epsilon;
-	int friends;
-	double threshold;
-	int nFeatures;
+	int linear_lattice_dimension; 
+	int agents; 
+	int link; 
+	int nFeatures; 
+	int pos_traits;
+	int control; 
+	int index, index2;
+	int outdegree;
+	double delta;
+	int maxSide;
 
-	double *features;
-	int *F;
-
-	double *A;
-	
-	double *x;
-	double *y;
-
-	int *degree;
-	int *A_degree;
-	int *B_degree;
+	/* matrix/vector pointers */
+	int *A, *k, *degree_freq, *feature, *feat_freq, *vector, *label, *reg_size, *Nlist, *x, *y;
 };
 
-void genFeatures(int i);
-//void interaction(int agents, int m,  double *p, double *q, double *A, double epsilon, double friendship);
-double genCorrMat();
-//void multiplyer(int agents, int *A, int *C);
-void update();
-void coordinates(double *A, double *x, double *y, int w, int h);
+void genFeatures();
+void coordinates(int *x, int *y, int w, int h);
 
 #endif

@@ -2,12 +2,12 @@
 #include "const.h"
 
 /* Graphical User Interface */
-extern int gui_agents;  
-extern int gui_distance; 
-extern double gui_rho; /* fraction of a-type people over population*/
-extern int gui_nFeatures; /* inherited fracion of links  */
-extern int gui_friends; /*  fraction of population met in one iteration */
+extern int gui_linear_lattice_dimension;  
+extern double gui_delta; 
+extern int gui_pos_traits ; 
 extern double gui_threshold; 
+extern bool latticeOn;
+extern bool kelinbergOn;
 
 extern bool restart; 
 extern double simSpeed;
@@ -16,12 +16,12 @@ extern model m;   /* object of class 'model' is called 'm' */
 bool initModel=true;
 int W,H;
 
-/*invoca costruttore FL_GL_WINDOW*/
 simulationGrid::simulationGrid(int x,int y,int w, int h, degreeStats *g1, clusteringStats *g2, capitalVariation *g3, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
-/*	grow = true; */
+
 	restart = false; 
-     /* aggiunge le finestre con le statistiche*/
+
+     	/* Add statistics windows */
 	this->g1 = g1;
 	this->g2 = g2;
 	this->g3 = g3;
@@ -30,8 +30,11 @@ simulationGrid::simulationGrid(int x,int y,int w, int h, degreeStats *g1, cluste
 }
 
 void simulationGrid::init(){ 
-     /* initializza la simulation grid */ 
-	valid(1); /*valido <=> grid inizializzata*/
+
+	int i;	
+	
+     	/* Initialize Simulation Grid */ 
+	valid(1);
 	glLoadIdentity(); 
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -42,50 +45,58 @@ void simulationGrid::init(){
 	glColor4d(0.2,0,1,0.2); 	
 
 	
-	/* parametri iniziali */
-	gui_agents = AGENTS_INIT;  
-	gui_distance = DISTANCE_INIT;
-	gui_rho = RHO_INIT;
-	gui_nFeatures = FEATURES_INIT;
-	gui_friends = FRIENDS_INIT;
-	gui_threshold = THRESHOLD_INIT;
+	/* Initial Parameters */
+	gui_linear_lattice_dimension = LINEAR_LATTICE_DIMENSION_INIT;  
+	gui_delta = DELTA_INIT;
+	gui_pos_traits  = POS_TRAITS_INIT;
 	simSpeed = SIM_SPEED_INIT;
 	
-	if(initModel)
+
+	if(initModel && latticeOn)
 	{ 
-		m.init(AGENTS_INIT,  RHO_INIT, FEATURES_INIT, 0.2, FRIENDS_INIT, w(), h());   
+		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,0);   
+		initModel=false; 
+	}
+	else if(initModel && kelinbergOn)
+	{ 
+		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,1);   
 		initModel=false; 
 	}
 	else
 	{		
 		restart = true;
 	}
+	
 }
 
 void simulationGrid::draw() {	
-	int i, j, k;
+	int i, j, k, tmpAgents;
 	
-	/*inizializzazione grafica */
+	/* Grafic Initialization */
 	if (!valid())
 		init(); 
 	
-	/* passa al modello i parametri presi dalla gui  e reinit  */
-	if((m.agents != gui_agents) || (m.rho != gui_rho) || (m.nFeatures != gui_nFeatures) ||  (m.threshold != gui_threshold)||  (m.friends != gui_friends) )
-     		m.reinit(gui_agents,  gui_rho,  gui_nFeatures, gui_threshold, gui_friends, w(), h());         
+	/* Catch parameters from gui and reinit if needed */
+	if((m.delta != gui_delta) || (m.pos_traits != gui_pos_traits ) || (m.linear_lattice_dimension != gui_linear_lattice_dimension) )
+	{
+		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
+     		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide);         
+		restart = true;
+	}
 
 
-	/* cancella il display */
+	/* Clear display */
 	glClear(GL_COLOR_BUFFER_BIT);
-     for (i=0;i<m.agents;i++)
-     {
-               for (j=0;j<m.agents;j++)
-               {
-                    if(m.A[i*m.agents +j]==1)
-                    {               
-                         link(m.x[i],m.y[i],m.x[j],m.y[j]);
-                    }
-               }
-     }
+	     for (i=0;i<m.agents;i++)
+	     {
+		       for (j=0;j<m.agents;j++)
+		       {
+			    if(m.A[i*m.agents +j]==1)
+			    {               
+			 //        link(m.x[i],m.y[i],m.x[j],m.y[j]);
+			    }
+		       }
+	     }
 
 	/* Draw all Agents */
 	for(i=0; i<m.agents;i++)
@@ -93,13 +104,13 @@ void simulationGrid::draw() {
 		drawAgents(i);
 	}
 
-	/* passo di simulazione */
-	printf("Dimensioni simulation grid: w = %d, h = %d\n", w(), h());
-	m.step(w(), h());
+	/* Simulation Step */
+	//printf("Dimensioni simulation grid: w = %d, h = %d\n", w(), h());
+	m.step();
 
-	g1->redraw();
-	g2->redraw();
-	g3->redraw();
+	//g1->redraw();
+	//g2->redraw();
+	//g3->redraw();
 
 }
 
@@ -107,19 +118,19 @@ void drawAgents(int i){
 	int k, x;		 	
 	
 
-	/* rosso, green, blue, opacity */
-	glColor4d(1- m.features[0*m.agents + i],m.features[1*m.agents + i],m.features[2*m.agents + i],0.8);
+	/* red, green, blue, opacity */
+	glColor4d(1- m.feature[0*m.agents + i],m.feature[1*m.agents + i],m.feature[2*m.agents + i],0.8);
 	 
-	circle(m.x[i], m.y[i],2+ m.degree[i]);
+	circle(m.x[i], m.y[i],20);
 }
 
-void timer_cb(void *p) /*delay tra step e altro*/
+void timer_cb(void *p) 
 {
 	simulationGrid *glf = (simulationGrid*)p; 
 
 	if(doNextSimulationStep){
 		glf->redraw();
-		simStepLabel->value(t);
+		simStepLabel->value(pippo);
 		Fl::repeat_timeout((simSpeed),timer_cb,p);
 	}
 }
@@ -129,12 +140,15 @@ void circle(double x, double y, double radius){
 	
 	da = 2.0 * asin(1.0/radius);
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex2d(x, y);
-	for(a = 0.0; a <= 2 * M_PI; a += da) {
+	glVertex2d(x-(radius/2), y+(radius/2));
+	glVertex2d(x+(radius/2), y+(radius/2));
+	glVertex2d(x+(radius/2), y-(radius/2));
+	glVertex2d(x-(radius/2), y-(radius/2));
+	/*for(a = 0.0; a <= 2 * M_PI; a += da) {
 		glVertex2d(x + cos(a) * radius, y + sin(a) * radius);
-	}
+	}*/
 
-	glVertex2d(x + radius, y);
+	//glVertex2d(x + radius, y);
 	glEnd();
 }
 

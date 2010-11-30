@@ -1,20 +1,28 @@
-#define AGENTS_MAX			1000
-#define AGENTS_INIT		    20
-#define DISTANCE_INIT         1 
-#define FEATURES_INIT		4.0  /*  mantiene vecchi links */
-#define FRIENDS_INIT		20 
- 
-#define FRACTION_INIT		0.5  
-#define RHO_INIT		0.1  
-#define SIM_SPEED_INIT		0.32 /* simulation speed */
-#define OUTDEGREE_INIT		10
-//#define NFEATURES_INIT		3
-#define THRESHOLD_INIT		0.2
+#define LINEAR_LATTICE_DIMENSION_MIN			10
+#define LINEAR_LATTICE_DIMENSION_MAX			30
+#define LINEAR_LATTICE_DIMENSION_INIT		    20
+#define DELTA_MIN	0
+#define DELTA_MAX	1010
+#define DELTA_INIT	100
+#define POS_TRAITS_MIN		1
+#define POS_TRAITS_MAX		100
+#define POS_TRAITS_INIT		10
+#define SIM_SPEED_MIN		0.001
+#define SIM_SPEED_MAX		1
+#define SIM_SPEED_INIT		0.32 
 
 /* Interface Dimensions */
-#define WINDOW_WIDTH 765
+#define WINDOW_WIDTH 1000
 #define WINDOW_HIGH 730
-#define SIMULATION_WIDTH 745
-#define SIMULATION_HIGH 500
+#define SIMULATION_WIDTH 690
+#define SIMULATION_HIGH 690
 #define STATS_W 360
 #define STATS_H 400
+
+
+#define AGENTS LINEAR_LATTICE_DIMENSION_INIT*LINEAR_LATTICE_DIMENSION_INIT
+#define NFEATURES 3
+#define POS_FEATURES 10
+#define N_ITER 10
+#define OUTDEGREE 4
+#define MAXSIDE 0
