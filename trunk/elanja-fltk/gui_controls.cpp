@@ -4,20 +4,23 @@
 #define MINDELAY	(0.001)
 #define MAX(a,b)	(a>b?a:b)
 
-int gui_agents;
-int gui_distance;
-double gui_rho;
-int gui_nFeatures;
-int gui_friends;
-double gui_threshold;
+int gui_linear_lattice_dimension;
+double gui_delta;
+int gui_pos_traits ;
 
 bool doNextSimulationStep;
 bool restart;
 double simSpeed;
-bool perturbationOn, hubsOn;
+bool latticeOn = true;
+bool kelinbergOn = false;
+bool linkVisualization = false;
+
 
 extern model m;
 
+/****************************************************/
+/**************Controls Callbacks********************/
+/****************************************************/
 void exitCallback(Fl_Widget*, void*){
 	elanjaWindow->hide();
 	exit(0);
@@ -45,29 +48,22 @@ void pauseCallback(Fl_Widget* button, void*){
 	playItem->label("@> Play");
 	playItem->callback((Fl_Callback*)playCallback);
 }
+/****************************************************/
+/************Parameters Callbacks********************/
+/****************************************************/
+
 void agentsSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
-  	gui_agents = slider->value();
+  	gui_linear_lattice_dimension = slider->value();
 }
-void populationSliderCallback(Fl_Value_Slider* s, void*){
+void deltaSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
-  	gui_rho = slider->value();
+  	gui_delta = slider->value();
 }
-void epsilonSliderCallback(Fl_Value_Slider* s, void*){
+void pos_traitsSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
-  	gui_nFeatures = slider->value();
+  	gui_pos_traits = slider->value();
 }
-void friendshipSliderCallback(Fl_Value_Slider* s, void*){
-	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
-// 	slider->value(slider->value());
-  	gui_friends = slider->value();
-  	restart = true;
-}
-void thresholdSliderCallback(Fl_Value_Slider* s, void*){
-	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
-  	gui_threshold = slider->value();
-}
-
 
 void simSpeedSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
@@ -75,7 +71,65 @@ void simSpeedSliderCallback(Fl_Value_Slider* s, void*){
   	simSpeed = MAX(MAXDELAY*(1-slider->value()),MINDELAY);
 }
 
-/************************* STATISTICS ********************************/
+void latticeCallback(Fl_Check_Button *s, void *data){
+	Fl_Check_Button * kelinberg;
+	kelinberg = (Fl_Check_Button *)data;
+	Fl_Check_Button* lattice = (Fl_Check_Button*)s;
+
+	latticeOn=!latticeOn;
+
+	
+
+	if(kelinberg->value())
+	{
+		kelinberg->value(0);
+		kelinbergOn=!kelinbergOn;
+	}
+	else
+	{
+		kelinberg->value(1);
+		kelinbergOn=!kelinbergOn;
+	}
+	
+	//printf("Lattice Network = %d \n", latticeOn);
+	//printf("Kelinberg Network = %d \n", kelinbergOn);
+}
+
+void kelinbergCallback(Fl_Check_Button *s,void * data){
+	Fl_Check_Button * lattice;
+	lattice = (Fl_Check_Button *)data;
+	Fl_Check_Button* kelinberg = (Fl_Check_Button*)s;
+
+	kelinbergOn=!kelinbergOn;
+
+	if(lattice->value())
+	{
+		lattice->value(0);
+		latticeOn=!latticeOn;
+	}
+	else
+	{
+		lattice->value(1);
+		latticeOn=!latticeOn;
+	}
+
+	//printf("Lattice Network = %d \n", latticeOn);
+	//printf("Kelinberg Network = %d \n", kelinbergOn);
+	
+}
+
+void linkCallback(Fl_Check_Button *s,void * data){
+	Fl_Check_Button * link;
+	link = (Fl_Check_Button *)data;
+
+	linkVisualization=!linkVisualization;
+	
+	//printf("Visualization links = %d \n", linkVisualization);
+}
+
+/****************************************************/
+/************Statistics Callbacks********************/
+/****************************************************/
 void degreeStatsCallback(Fl_Widget*, void* data)
 {
 	widgetWindow * w;

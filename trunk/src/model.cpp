@@ -301,7 +301,7 @@ void model::step(){
 					}
 				}
 
-				if( index2 == (outdegree*agents) || t >= 100*agents  )
+				if( index2 == (outdegree*agents) || t >= agents*agents  )
 				{
 					control = 1;
 				}

@@ -4,278 +4,211 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 model m; // istance of the model
-int t; // counter for iteractions 
+int pippo; // counter for iteractions 
 
 extern int w, h;
  
-void model::init(int agents,  double rho, int nFeatures, double threshold, int friends, int w, int h){
-
-	int i, j;
+void model::init(int linear_lattice_dimension, int agents, int nFeatures, int pos_traits, int outdegree, double delta, int maxSide){
 
 	printf("Initializing Model ... \n");	
 
-	/* "this" field of the class model */
+	/* Field of the class model */
+	this->linear_lattice_dimension = linear_lattice_dimension;
 	this->agents = agents;
-	this->rho = rho;
+	this->link = 0;
 	this->nFeatures = nFeatures;
-	this-> threshold = threshold;
-	this->friends = friends;
+	this->pos_traits = pos_traits; 
+	this->outdegree = outdegree;
+	this->delta = delta;
+	this->maxSide = maxSide;
      
-  	this->F = (int*) malloc(sizeof(int)*nFeatures);
-	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
-	this->degree = (int*) malloc(sizeof(int)*agents);
-	this->A = (double*) malloc(sizeof(double)*agents*agents);
-	this->x = (double*) malloc(sizeof(double)*agents);
-	this->y = (double*) malloc(sizeof(double)*agents);
-
-	for(i=0; i<agents; i++)	
-	{
-
-     	degree[i] =4;
-          genFeatures(i);
-       
-          /* regular lattice */
-		//x[i] = (i %40) *18+20;		
-		//y[i] =  (i/40)*50 +40;
-          /* random graph */
-		x[i] = 10+ (double) (rand() %w);		
-		y[i] = 5 + (double) (rand() %h);
-
-	}
-
-	t = 0; 
-}
-
-void model::reinit(int agents, double rho,  int nFeatures, double threshold, int friends, int w, int h){
-	int i, j;
-
-	printf("Reinitializing Model ... \n");
- 
-	this->agents = agents;
-     this->threshold = threshold;
-	this->nFeatures = nFeatures;
-	this->rho = rho;
-	this->friends = friends;     
-
-	if(F) free(F);
-	this->F = (int*) malloc(sizeof(int)*nFeatures);
+	/* Memory allocation needed */
 	if(A) free(A);
-	this->A = (double*) malloc(sizeof(double)*agents*agents);
-	if(features) free(features);
-	this->features = (double*) malloc(sizeof(double)*agents*(int)nFeatures);
-	if(degree) free(degree);
-	this->degree = (int*) malloc(sizeof(int)*agents);
+    	this->A = (int*) malloc(sizeof(double)*agents*agents); /* adjacency matrix */
+	if(k) free(k);
+	this->k = (int*) malloc(sizeof(double)*agents); /* degree */
+	if(degree_freq) free(degree_freq);
+	this->degree_freq = (int*) malloc(sizeof(double)*agents); /* degree histogram */
+	if(feature) free(feature);
+	this->feature = (int*) malloc(sizeof(double)*(agents*nFeatures)); /* features */
+	if(feat_freq) free(feat_freq);
+	this->feat_freq = (int*) malloc(sizeof(double)*pos_traits); /* features histogram */
+	if(vector) free(vector);
+	this->vector = (int*) malloc(sizeof(double)*agents); /* temporary vector for various values */
+	if(label) free(label);
+	this->label = (int*) malloc(sizeof(double)*agents); /* labels */
+	if(reg_size) free(reg_size);
+	this->reg_size = (int*) malloc(sizeof(double)*agents); /* labels histogram */
+	if(Nlist) free(Nlist);
+	this->Nlist = (int*)malloc(sizeof(int)*(linear_lattice_dimension*linear_lattice_dimension*outdegree));
 	if(x) free(x);
-	this->x = (double*) malloc(sizeof(double)*agents);
+	this->x = (int*)malloc(sizeof(int)*agents);
 	if(y) free(y);
-	this->y = (double*) malloc(sizeof(double)*agents);
+	this->y = (int*)malloc(sizeof(int)*agents);
 
-	
-	for(i=0; i<agents; i++)	
+
+	/* =========CREATE NETWORK ====================  */
+
+	/* maxSide
+
+	% 0 is no local interactions, i.e., random network
+	% 1 is the square of 4 neighbors
+	% 2 is the square of 8 neighbors 
+
+	note: outdegree needs to be larger than 8 (or 24) to have long-range shortcuts,i.e., small worlds.
+	if maxSide > 2 then outdegree needs to be at least 48 or seg. fault. */
+     	
+	/* Initialize var and network list */
+	int i,j,i2,j2,jj,ii;
+	int neighbors, distance;
+	double ll,outcome;
+	int l, g, n, k, mlinks;
+
+	for (i=0;i<agents;i++)
 	{
-     	degree[i] =4;
-          genFeatures(i);
-              
-          /* regular lattice */
-	//	x[i] = (i %40) *18+20;		
-	//	y[i] =  (i/40)*50 +40;
-          /* random graph */
-		x[i] = 10+ (double) (rand() %w); 
-		y[i] = 5+ (double) (rand() %h); 
+		for (g=0;g<outdegree;g++)
+		{       
+			Nlist[i*outdegree +g] = -1;
+		}
+	}   
 
+	/* create network list -- local neighbors*/
+	for (i=0;i<linear_lattice_dimension;i++)
+	{
+		for(j=0;j<linear_lattice_dimension;j++)
+		{
+			neighbors=0;
+
+			/* local links */
+			for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
+			{
+				for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
+				{
+					// normalize to torus 
+					i2 = ((linear_lattice_dimension + ii) % (linear_lattice_dimension));  
+					j2 = ((linear_lattice_dimension + jj) % (linear_lattice_dimension));
+
+					if ( ( (i!=i2) || (j!=j2) ) )
+					{
+						if( (i==i2) || (j==j2) )
+						{
+                                   Nlist[(i*linear_lattice_dimension +j)*outdegree + neighbors] = (i2*linear_lattice_dimension +j2);
+							neighbors++;
+						}
+					}
+				}
+			}
+
+			/* ... then shortcuts are added */
+			while (neighbors < outdegree)
+			{         
+				i2 = (rand()%linear_lattice_dimension);
+				j2 = (rand()%linear_lattice_dimension);
+
+				distance =  floor (sqrt(pow(MIN(fabs(i-i2),linear_lattice_dimension-fabs(i-i2)),2) + pow(MIN(fabs(j-j2),linear_lattice_dimension-fabs(j-j2)),2)));
+
+				if(distance > maxSide )
+				{   
+					mlinks = 0;  /* check to avoid multiple links*/
+
+					outcome =  pow(distance, (- delta) );
+					ll = (double) (rand()%1000) / (double) 1000;
+					if ( ll < outcome )
+					{
+						for (k = 0 ; k < neighbors; k++)
+						{
+							if( Nlist[ (i*linear_lattice_dimension +j)*outdegree + k ] == (i2*linear_lattice_dimension +j2))
+								mlinks = 1;
+						}
+						if(mlinks == 0)
+						{
+                            				Nlist[ (i*linear_lattice_dimension +j)*outdegree + k ]  = (i2*linear_lattice_dimension +j2);
+							neighbors++;
+						}
+					}
+				}
+			}
+		}  
 	}
- 	t = 0;
-} 
+	
+	/* Generates Agents Features */
+	genFeatures();
+	/* Generates Agents Positions */
+	coordinates(x, y, SIMULATION_WIDTH, SIMULATION_HIGH);
+}
 
 
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%      STEP              %%%%%%%%%%%%%%%%
 %%%%%%%%      FUNCTION     %%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-void model::step(int w, int h){
+void model::step(){
 
-int i, j;
-int rnd;
+	int i, a, j, f, n;
+	double p, r, prob;
+	int counter;
 
-     /* Compute correlation matrix*/
-	genCorrMat();
+	/* Dynamic process */
+	//t = 0;
+	counter = 0;
+	for(i=0;i<agents;i++)
+	{
+		a = rand() % outdegree;
+		j = Nlist[i*outdegree +a];
+		a = 0;                          
+		for(f=0;f<nFeatures;f++)
+		{
+			if( feature[(i*nFeatures+f)] == feature[(j*nFeatures+f)] )
+			{
+				a++; 
+			}
+		}
+		prob = (double)  a / (double) nFeatures;
+		r = (rand() % 10000) / (double) 10000;
+		if( r < prob )
+		{
+			n = 0;
+			a = 0;
+			for(f=0;f<nFeatures;f++)
+			{
+				if( feature[i*nFeatures+f] != feature[j*nFeatures+f] )
+				{
+					vector[n] = f;
+					n++;
+				}
+				else
+				{
+					a++;
+				}
+			}
+			if(n > 0 && a > 0)
+			{
+				a = rand() %n;
+				f = vector[a];
+				feature[i*nFeatures+f] = feature[j*nFeatures+f];
+				counter++;
+			}						
+		}
+	}
 
-     /* Compute degrees and adjacency matrix*/
-	update();
-
-     /* Coordinates on the plane*/
-     coordinates(A, x, y, w, h);
-
-     /* Dynamic: at each step extract one pair of nodes at random then: 
-          1. if no link, with probability rho they both copy-paste one feature
-          2. if directed link, the pointing node copy-paste one feature
-          3. if reciprocal link, they do not change nothing. 
-     */
-      i = rand()%agents;    
-      j = rand()%agents;    
-     rnd = rand()%nFeatures;
-          
-     /* directed from i to j  */
-     if( A[i*agents + j] == 0 && A[j*agents + i] ==1 )
-     {
-          features[rnd*agents + i] = features[rnd*agents + j];
-     }
-
-     if (A[i*agents + j] == 1 && A[j*agents + i] == 0 )
-     {
-          features[rnd*agents + i] = features[rnd*agents + j];
-     }
-     if (A[i*agents + j] == 0 && A[j*agents + i] == 0)
-     {
-          if( rand()%1000 / (double) 1000 < rho )
-          {
-               features[rnd*agents + i] = features[rnd*agents + j];
-           }
-     }
-
-
-	t += 1;
+	pippo += 1;
 }
 
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%   GENERATE FEATURES       %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-
-void genFeatures(int i){
+void genFeatures(){
      
-     int j, uNum;
+     int i, f;
 
-	for(i=0; i<m.agents; i++)	
+	/* Create features vectors*/
+	for(i=0;i<m.agents;i++)
 	{
-		for(j=0; j<m.nFeatures; j++)
+		for(f=0;f<m.nFeatures;f++)
 		{
-               uNum = (rand()%2000) - 1000;
- 			m.features[j*m.agents + i] = (double) uNum / (double) 1000;
+			m.feature[i*m.nFeatures+f] = rand() % m.pos_traits;
 		}
-     }	
-}
-
-
-/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%   COMPUTE CORRELATION     %%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-
-double genCorrMat()
-{
-	int i, j, l;
-     double temp, xx, yy;
-
-     /* Initialize adjacency matrix*/
-	for(i=0; i<m.agents; i++)
-	{
-	     for(j=0; j<m.agents; j++)
-	     {
-		     m.A[i*m.agents + j] = 0;	
-          }	
-	}
-	
-	for(i=0; i<m.agents; i++)
-	{	
-          for(j=0;j<m.agents;j++)
-          {
-               xx=0;     
-               yy=0;
-               temp = 0;
-		     for(l=0; l<m.nFeatures; l++)
-		     {
-                    temp += m.features[l*m.agents + i] * m.features[l*m.agents + j];
-                    xx +=    pow(m.features[l*m.agents + i],2);
-                    yy +=    pow(m.features[l*m.agents + j],2);
-		     }
-               m.A[i*m.agents+j] = temp / (pow(xx,0.5) *pow(yy,0.5));
-          }
-	}	
-}
- 
-
-/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%   COMPUTE DEGREES       %%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-void update(){
-
-	int i, j, control;
-     double rnd;
-     double tvalue;
-   
-	for(i=0; i<m.agents; i++)
-	{
-		m.degree[i] = 0;
-
-     	/* Compute the degree with positive ...  */ 
-          if(m.threshold>=0)
-          {
-               control = 0;
-               tvalue = m.threshold;
-               while(control==0)
-               {
-                    m.degree[i]=0;
-		          for(j=0; j<m.agents; j++)
-		          {
-			          if( m.A[i*m.agents +j] > tvalue &&( j != i) )
-			          {
-				         m.degree[i]++;
-			          }
-	             	}
-
-                    if (m.degree[i]<m.friends)
-                    {
-                         control = 1;
-                    }
-                    tvalue = tvalue + 0.05;
-               }
-               /* compile Adjacency matrix */
-	          for(j=0; j<m.agents; j++)
-	          {
-		          if( m.A[i*m.agents +j] > tvalue &&( j != i) )
-		          {
-			         m.A[i*m.agents +j] =1;
-
-		          } else {
-
-			         m.A[i*m.agents +j] =0;
-                    }
-             	}
-
-          /* ...  or negative correlation */
-          } else {
-
-               control = 0;
-               tvalue = m.threshold;
-               while(control==0)
-               {
-                    m.degree[i]=0;
-		          for(j=0; j<m.agents; j++)
-		          {
-			          if( m.A[i*m.agents +j] < tvalue &&( j != i) )
-			          {
-				         m.degree[i]++;
-			          }
-	             	}
-                    if (m.degree[i]<m.friends)
-                    {
-                         control = 1;
-                    }
-                    tvalue = tvalue - 0.05;
-               }
-                    /* compile Adjacency matrix */
-		          for(j=0; j<m.agents; j++)
-		          {
-			          if( m.A[i*m.agents +j] < tvalue &&( j != i) )
-			          {
-				         m.A[i*m.agents +j] =1;
-
-			          } else {
-
-				         m.A[i*m.agents +j] =0;
-                         }
-	             	}
-               } 
 	}
 }
 
@@ -283,43 +216,45 @@ void update(){
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%   GENERATE COORDINATES %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-void coordinates(double *A, double *x, double *y, int w, int h)
+void coordinates(int *x, int *y, int w, int h)
 {
-int k, i, j;
-double  dist_x, dist_y, norm_x,norm_y;
-double norm, distance, delta, rep_x, rep_y, spring_x, spring_y, F_x, F_y;
-double avg_x, avg_y;
+int i, j, k;
+int tmp, tmp2;
+int offset;
+	
+	offset = (int)(w)/(m.linear_lattice_dimension);
+	if(m.linear_lattice_dimension == 20)
+	{
+		offset -= 1;
+	}
+	else if(m.linear_lattice_dimension == 10)
+	{
+		offset -= 6;
+	}
+	else if(m.linear_lattice_dimension == 15)
+	{
+		offset -= 3;
+	}
+	/*else if(m.linear_lattice_dimension == 25)
+	{
+		offset = (int)(w-15)/(m.linear_lattice_dimension);
+	}
+	else if(m.linear_lattice_dimension == 30)
+	{
+		offset -= 3;
+	}*/
 
-     delta = 0.000001;
+	printf("offset = %d \n", offset);
 
-     avg_x = avg_y = 0;
-    for(k=0; k<0; k++)
-    {       
-        rep_x = rep_y = spring_x = spring_y = F_x = F_y = 0;
-        for(i=0; i<m.agents; i++)
-        {
-             for(j=i+1; j<m.agents; j++)
-             {
-                    dist_x =  (x[i] - x[j]);
-                    dist_y = (y[i] - y[j]);
-                    norm_x =  sqrt(pow( (x[i] - x[j]),2));
-                    norm_y = sqrt(pow( (y[i] - y[j]),2) );
-                   
-                 if(A[i*m.agents+j] == 0)
-                 {
-                         rep_x +=  (dist_x) / pow(norm_x,3);
-                         rep_y +=  (dist_y) / pow(norm_y,3);
-
-                 } else {
-                     spring_x += (log(norm_x) - 10) * ( dist_x ) / norm_x;
-                     spring_y += (log(norm_y) - 10) * ( dist_y) / norm_y;
-                 }
- 
-                 x[i] = x[i] + delta*(rep_x+spring_x);   
-                 y[i]= y[i] + delta*(rep_y+spring_y);
-               }    
-         }
-     }
+	for(i=0; i<m.linear_lattice_dimension; i++)
+	{
+		for(j=0; j<m.linear_lattice_dimension; j++)
+		{		
+			tmp = (m.linear_lattice_dimension * i) + j;	
+			x[tmp] = (j+1) *offset;	
+			y[tmp] = (i+1) *offset;
+		}
+	}
 }
 			
  
