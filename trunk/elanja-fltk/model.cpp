@@ -246,7 +246,7 @@ int offset;
 		offset -= 3;
 	}*/
 
-	printf("offset = %d \n", offset);
+	//printf("offset = %d \n", offset);
 
 	for(i=0; i<m.linear_lattice_dimension; i++)
 	{

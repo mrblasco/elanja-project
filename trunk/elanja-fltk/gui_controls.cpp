@@ -90,11 +90,13 @@ void latticeCallback(Fl_Check_Button *s, void *data){
 	{
 		kelinberg->value(0);
 		kelinbergOn=!kelinbergOn;
+		restart = true;
 	}
 	else
 	{
 		kelinberg->value(1);
 		kelinbergOn=!kelinbergOn;
+		restart = true;
 	}
 	
 	//printf("Lattice Network = %d \n", latticeOn);
@@ -112,11 +114,13 @@ void kelinbergCallback(Fl_Check_Button *s,void * data){
 	{
 		lattice->value(0);
 		latticeOn=!latticeOn;
+		restart = true;
 	}
 	else
 	{
 		lattice->value(1);
 		latticeOn=!latticeOn;
+		restart = true;
 	}
 
 	//printf("Lattice Network = %d \n", latticeOn);
