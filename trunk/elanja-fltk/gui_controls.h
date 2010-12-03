@@ -11,7 +11,7 @@
 #include "widgetWindow.h"
 
 void playCallback(Fl_Widget*, void*);
-void stopCallback(Fl_Widget*, void*);
+void restartCallback(Fl_Widget*, void*);
 void pauseCallback(Fl_Widget*, void*);
 void exitCallback(Fl_Widget*, void*);
 

@@ -10,6 +10,7 @@ int gui_pos_traits ;
 
 bool doNextSimulationStep;
 bool restart;
+bool restartB = false;
 double simSpeed;
 bool latticeOn = true;
 bool kelinbergOn = false;
@@ -37,9 +38,14 @@ void playCallback(Fl_Widget*, void* data){
 	Fl::add_timeout(2.0/5,timer_cb,glf);
 }
 
-void stopCallback(Fl_Widget* button, void* data){
+void restartCallback(Fl_Widget* button, void* data){
 	restart=true;
-	playCallback(button,data);
+	restartB=true;
+	doNextSimulationStep=false;
+	playButton->label("@>");
+	playButton->callback((Fl_Callback*)playCallback);
+	playItem->label("@> Play");
+	playItem->callback((Fl_Callback*)playCallback);
 }
 void pauseCallback(Fl_Widget* button, void*){
 	doNextSimulationStep=false;

@@ -10,6 +10,7 @@ extern bool latticeOn;
 extern bool kelinbergOn;
 
 extern bool restart; 
+extern bool restartB;
 extern double simSpeed;
 extern model m;   /* object of class 'model' is called 'm' */
 
@@ -54,12 +55,12 @@ void simulationGrid::init(){
 
 	if(initModel && latticeOn)
 	{ 
-		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,0);   
+		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,1);   
 		initModel=false; 
 	}
 	else if(initModel && kelinbergOn)
 	{ 
-		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,1);   
+		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,0);   
 		initModel=false; 
 	}
 	else
@@ -74,14 +75,24 @@ void simulationGrid::draw() {
 	
 	/* Grafic Initialization */
 	if (!valid())
+	{
 		init(); 
+	}
 	
+	/* If Restart Button is pressed */
+	if(restartB)
+	{
+		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
+				printf("Restarting from Button \n");
+     		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide);         
+		restartB = false;
+		simStepLabel->value(0);
+	}	
 	/* Catch parameters from gui and reinit if needed */
-	if((m.delta != gui_delta) || (m.pos_traits != gui_pos_traits ) || (m.linear_lattice_dimension != gui_linear_lattice_dimension) )
+	else if((m.delta != gui_delta) || (m.pos_traits != gui_pos_traits ) || (m.linear_lattice_dimension != gui_linear_lattice_dimension) )
 	{
 		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
      		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide);         
-		restart = true;
 	}
 
 
@@ -105,7 +116,6 @@ void simulationGrid::draw() {
 	}
 
 	/* Simulation Step */
-	//printf("Dimensioni simulation grid: w = %d, h = %d\n", w(), h());
 	m.step();
 
 	//g1->redraw();
@@ -119,7 +129,8 @@ void drawAgents(int i){
 	
 
 	/* red, green, blue, opacity */
-	glColor4d(1- m.feature[0*m.agents + i],m.feature[1*m.agents + i],m.feature[2*m.agents + i],0.8);
+	//glColor4d(1- m.feature[0*m.agents + i],m.feature[1*m.agents + i],m.feature[2*m.agents + i],0.8);
+	glColor4d(m.feature[0*m.nFeatures + i],m.feature[1*m.nFeatures + i],m.feature[2*m.nFeatures + i],0.8);
 	 
 	circle(m.x[i], m.y[i],20);
 }
