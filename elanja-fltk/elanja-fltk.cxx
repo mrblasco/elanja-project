@@ -161,7 +161,7 @@ int main(int argc, char **argv)
       			}
 			{ 	/* Lattice Network Button */
 				latticeButton = new Fl_Check_Button(715, 335, 150, 25, "Lattice Network");
-				kelinbergButton = new Fl_Check_Button(715, 365, 150, 25, "Kelimberg Network");
+				kelinbergButton = new Fl_Check_Button(715, 365, 150, 25, "Kelinberg Network");
         			latticeButton->down_box(FL_DOWN_BOX);
 				latticeButton->labelfont(1);
 			        latticeButton->labelsize(12);

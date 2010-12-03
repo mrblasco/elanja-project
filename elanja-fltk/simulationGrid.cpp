@@ -1,6 +1,9 @@
 #include "simulationGrid.h"
 #include "const.h"
 
+#define MAX(a,b)	(a>b?a:b)
+#define MIN(a,b)	(a<b?a:b)
+
 /* Graphical User Interface */
 extern int gui_linear_lattice_dimension;  
 extern double gui_delta; 
@@ -8,6 +11,7 @@ extern int gui_pos_traits ;
 extern double gui_threshold; 
 extern bool latticeOn;
 extern bool kelinbergOn;
+extern bool linkVisualization;
 
 extern bool restart; 
 extern bool restartB;
@@ -56,12 +60,14 @@ void simulationGrid::init(){
 	if(initModel && latticeOn)
 	{ 
 		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,1);   
-		initModel=false; 
+		initModel=false;
+		restart = false; 
 	}
 	else if(initModel && kelinbergOn)
 	{ 
 		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,0);   
 		initModel=false; 
+		restart = false;
 	}
 	else
 	{		
@@ -83,31 +89,38 @@ void simulationGrid::draw() {
 	if(restartB)
 	{
 		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
-				printf("Restarting from Button \n");
+		//printf("Restarting from Button \n");
      		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide);         
 		restartB = false;
 		simStepLabel->value(0);
+		restart = false;
 	}	
 	/* Catch parameters from gui and reinit if needed */
-	else if((m.delta != gui_delta) || (m.pos_traits != gui_pos_traits ) || (m.linear_lattice_dimension != gui_linear_lattice_dimension) )
+	else if((m.delta != gui_delta) || (m.pos_traits != gui_pos_traits ) || (m.linear_lattice_dimension != gui_linear_lattice_dimension) || restart )
 	{
 		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
-     		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide);         
+		if(latticeOn)
+		{
+     			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 1);
+		}
+		else
+		{
+			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 0);
+		}         
+		//printf("Reinizializzo ho cambiato parametri dalla gui\n");
+		restart = false;
 	}
 
 
 	/* Clear display */
 	glClear(GL_COLOR_BUFFER_BIT);
-	     for (i=0;i<m.agents;i++)
-	     {
-		       for (j=0;j<m.agents;j++)
-		       {
-			    if(m.A[i*m.agents +j]==1)
-			    {               
-			 //        link(m.x[i],m.y[i],m.x[j],m.y[j]);
-			    }
-		       }
-	     }
+	if(linkVisualization)
+	{	
+		for (i=0;i<m.agents;i++)
+		{
+			link(i);
+		}
+	}
 
 	/* Draw all Agents */
 	for(i=0; i<m.agents;i++)
@@ -163,13 +176,24 @@ void circle(double x, double y, double radius){
 	glEnd();
 }
 
-void link(double x, double y, double xx, double yy)
+void link(int i)
 {	
+	int j, k, z;
+	//Nlist[1*agents+1] = 4 
+	glColor4d(0.9,0.0,1.0,0.2);
+	for(j=0; j<m.outdegree;j++)
+	{
+		glBegin(GL_LINES);
+		glVertex2d(m.x[i], m.y[i]);
+		glVertex2d(m.x[m.Nlist[i*m.outdegree+j]],m.y[m.Nlist[i*m.outdegree+j]]);	
+	glEnd();	
 
+	}
+	/*
 	glColor4d(0.9,0.0,1.0,0.2); 	
 	glBegin(GL_LINES);
 		glVertex2d(x, y);
 		glVertex2d(xx,yy);	
-	glEnd();
+	glEnd();*/
 }
 

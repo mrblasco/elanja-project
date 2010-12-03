@@ -35,6 +35,6 @@ protected: /* non puoi cancellalro */
 void timer_cb(void *p);  /*  delay tra uno step e l'altro della simulazione */
 void circle(double x, double y, double radius); /* disegna i pallini */
 void drawAgents(int agent); /* per gli agenti */
-void link(double x, double y, double xx, double yy); /* disegna i link */
+void link(int i); /* disegna i link */
 
 #endif
