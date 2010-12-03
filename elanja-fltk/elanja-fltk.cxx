@@ -23,7 +23,7 @@ Fl_Double_Window *elanjaWindow=(Fl_Double_Window *)0;
 /************* Play/Stop Buttons ***********************************/
 Fl_Button *playButton=(Fl_Button *)0;
 
-Fl_Button *stopButton=(Fl_Button *)0;
+Fl_Button *restartButton=(Fl_Button *)0;
 
 /************* Simulation Steps ************************************/
 Fl_Value_Output *simStepLabel=(Fl_Value_Output *)0;
@@ -56,7 +56,7 @@ Fl_Menu_Item menu_Visualizza[] = {
  {0,0,0,0,0,0,0,0,0},
  {"Simulation", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"@> Play", 0,  (Fl_Callback*)playCallback, (void*)(&glf), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"@|> Restart", 0,  (Fl_Callback*)stopCallback, (void*)(&glf), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"@|> Restart", 0,  (Fl_Callback*)restartCallback, (void*)(&glf), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Degree Statistics", 0, (Fl_Callback*)degreeStatsCallback, (void*)(&degreeStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
@@ -100,8 +100,8 @@ int main(int argc, char **argv)
         			playButton->callback((Fl_Callback*)playCallback, (void*)(&glf));
       			} 
       			{	/* Stop Button */
-				stopButton = new Fl_Button(855, 680, 120, 30, "@|>");
-        			stopButton->callback((Fl_Callback*)stopCallback, (void*)(&glf));
+				restartButton = new Fl_Button(855, 680, 120, 30, "@|>");
+        			restartButton->callback((Fl_Callback*)restartCallback, (void*)(&glf));
 	      		} 
       			{	/* Simulation Steps */
 				simStepLabel = new Fl_Value_Output(770, 620, 172, 25, "Simulation steps:");

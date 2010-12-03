@@ -135,6 +135,8 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 	genFeatures();
 	/* Generates Agents Positions */
 	coordinates(x, y, SIMULATION_WIDTH, SIMULATION_HIGH);
+
+	pippo = 0;
 }
 
 

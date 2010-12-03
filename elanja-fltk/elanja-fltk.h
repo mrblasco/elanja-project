@@ -7,8 +7,8 @@ extern Fl_Double_Window *elanjaWindow;
 extern void playCallback(Fl_Button*, void*);
 extern Fl_Button *playButton;
 
-extern void stopCallback(Fl_Button*, void*);
-extern Fl_Button *stopButton;
+extern void restartCallback(Fl_Button*, void*);
+extern Fl_Button *restartButton;
 
 #include <FL/Fl_Value_Output.H>
 extern Fl_Value_Output *simStepLabel;
