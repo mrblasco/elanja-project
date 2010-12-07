@@ -17,13 +17,9 @@ void regionStats::paint()
 	double bin_h;
 
 	bin_w = (625/m.nRegions);
-	//bin_w = (625/m.agents);
-	
-	printf("bin_w = %d nRegions = %d \n", bin_w, m.nRegions);
 
 	if(doNextSimulationStep){
 		glClear(GL_COLOR_BUFFER_BIT);
-		
 		
 		for(i=0; i <m.nRegions; i++)
 		{
@@ -39,7 +35,5 @@ void regionStats::paint()
 				glVertex2d(bin_h+3, i*bin_w);
 			glEnd();
 		}
-		
-		
 	}
 }

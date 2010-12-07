@@ -11,10 +11,12 @@ int gui_pos_traits ;
 bool doNextSimulationStep;
 bool restart;
 bool restartB = false;
+bool restartS = false;
 double simSpeed;
 bool latticeOn = true;
 bool kleinbergOn = false;
 bool linkVisualization = true;
+bool resized = false;
 
 extern model m;
 
@@ -147,7 +149,7 @@ void regionCountStatsCallback(Fl_Widget*, void* data){
 	w->show();
 }
 
-void maxRegionCallback(Fl_Widget*, void* data){
+void maxRegionStatsCallback(Fl_Widget*, void* data){
 	widgetWindow * w;
 
 	w=(widgetWindow *)data;

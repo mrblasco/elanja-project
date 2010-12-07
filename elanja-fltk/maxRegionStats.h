@@ -1,5 +1,5 @@
-#ifndef GRAPHIC_1_H
-#define GRAPHIC_1_H
+#ifndef GRAPHIC_3_H
+#define GRAPHIC_3_H
 
 #include <math.h>
 #include <stdlib.h>
@@ -11,7 +11,7 @@ class maxRegionStats : public glStats
 {
 public:
 	maxRegionStats(int w,int h,const char *l=0);
-	double degreeHistory[5][20];
+	int maxRegionHistory[STATS2_W];
 protected:
 	void paint();
 };
