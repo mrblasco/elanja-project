@@ -21,13 +21,15 @@ extern model m;   /* object of class 'model' is called 'm' */
 bool initModel=true;
 int W,H;
 
-simulationGrid::simulationGrid(int x,int y,int w, int h, regionStats *g1, const char *l):Fl_Gl_Window(x,y,w,h,l)  
+simulationGrid::simulationGrid(int x,int y,int w, int h, regionStats *g1, regionCountStats *g2, maxRegionStats *g3, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
 
 	restart = false; 
 
      	/* Add statistics windows */
 	this->g1 = g1;
+	this->g2 = g2;
+	this->g3 = g3;
 
 	W=w;
 	H=h;
@@ -135,6 +137,8 @@ void simulationGrid::draw() {
 	computeRegions();
 
 	g1->redraw();
+	g2->redraw();
+	g3->redraw();
 }
 
 void drawAgents(int i){

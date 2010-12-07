@@ -139,7 +139,7 @@ void regionStatsCallback(Fl_Widget*, void* data)
 	w->show();
 }
 
-void clusteringStatsCallback(Fl_Widget*, void* data){
+void regionCountStatsCallback(Fl_Widget*, void* data){
 	widgetWindow * w;
 
 	w=(widgetWindow *)data;
@@ -147,7 +147,7 @@ void clusteringStatsCallback(Fl_Widget*, void* data){
 	w->show();
 }
 
-void capitalVariationCallback(Fl_Widget*, void* data){
+void maxRegionCallback(Fl_Widget*, void* data){
 	widgetWindow * w;
 
 	w=(widgetWindow *)data;
