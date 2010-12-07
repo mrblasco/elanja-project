@@ -8,7 +8,9 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H> 
 
+#include "regionCountStats.h"
 #include "regionStats.h"
+#include "maxRegionStats.h"
 #include "model.h"
 #include "elanja-fltk.h"
 
@@ -19,8 +21,11 @@ extern int pippo;
 class simulationGrid : public Fl_Gl_Window
 {
 public:
-	simulationGrid(int x, int y, int w, int h, regionStats *g1, const char *l=0);
+	simulationGrid(int x, int y, int w, int h, regionStats *g1, regionCountStats *g2, maxRegionStats *g3, const char *l=0);
 	regionStats *g1;
+	regionCountStats *g2;
+	maxRegionStats *g3;
+
 protected: /* do not delete */
 	void draw();
 	void init();
