@@ -13,9 +13,8 @@ bool restart;
 bool restartB = false;
 double simSpeed;
 bool latticeOn = true;
-bool kelinbergOn = false;
-bool linkVisualization = false;
-
+bool kleinbergOn = false;
+bool linkVisualization = true;
 
 extern model m;
 
@@ -73,42 +72,38 @@ void pos_traitsSliderCallback(Fl_Value_Slider* s, void*){
 
 void simSpeedSliderCallback(Fl_Value_Slider* s, void*){
 	Fl_Value_Slider* slider = (Fl_Value_Slider*)s;
-// 	slider->value(slider->value());
   	simSpeed = MAX(MAXDELAY*(1-slider->value()),MINDELAY);
 }
 
 void latticeCallback(Fl_Check_Button *s, void *data){
-	Fl_Check_Button * kelinberg;
-	kelinberg = (Fl_Check_Button *)data;
+	Fl_Check_Button * kleinberg;
+	kleinberg = (Fl_Check_Button *)data;
 	Fl_Check_Button* lattice = (Fl_Check_Button*)s;
 
 	latticeOn=!latticeOn;
 
 	
 
-	if(kelinberg->value())
+	if(kleinberg->value())
 	{
-		kelinberg->value(0);
-		kelinbergOn=!kelinbergOn;
+		kleinberg->value(0);
+		kleinbergOn=!kleinbergOn;
 		restart = true;
 	}
 	else
 	{
-		kelinberg->value(1);
-		kelinbergOn=!kelinbergOn;
+		kleinberg->value(1);
+		kleinbergOn=!kleinbergOn;
 		restart = true;
 	}
-	
-	//printf("Lattice Network = %d \n", latticeOn);
-	//printf("Kelinberg Network = %d \n", kelinbergOn);
 }
 
-void kelinbergCallback(Fl_Check_Button *s,void * data){
+void kleinbergCallback(Fl_Check_Button *s,void * data){
 	Fl_Check_Button * lattice;
 	lattice = (Fl_Check_Button *)data;
-	Fl_Check_Button* kelinberg = (Fl_Check_Button*)s;
+	Fl_Check_Button* kleinberg = (Fl_Check_Button*)s;
 
-	kelinbergOn=!kelinbergOn;
+	kleinbergOn=!kleinbergOn;
 
 	if(lattice->value())
 	{
@@ -122,9 +117,6 @@ void kelinbergCallback(Fl_Check_Button *s,void * data){
 		latticeOn=!latticeOn;
 		restart = true;
 	}
-
-	//printf("Lattice Network = %d \n", latticeOn);
-	//printf("Kelinberg Network = %d \n", kelinbergOn);
 	
 }
 
@@ -133,14 +125,12 @@ void linkCallback(Fl_Check_Button *s,void * data){
 	link = (Fl_Check_Button *)data;
 
 	linkVisualization=!linkVisualization;
-	
-	//printf("Visualization links = %d \n", linkVisualization);
 }
 
 /****************************************************/
 /************Statistics Callbacks********************/
 /****************************************************/
-void degreeStatsCallback(Fl_Widget*, void* data)
+void regionStatsCallback(Fl_Widget*, void* data)
 {
 	widgetWindow * w;
 	

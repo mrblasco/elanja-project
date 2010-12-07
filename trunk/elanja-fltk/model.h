@@ -26,6 +26,7 @@ public:
 	int outdegree;
 	double delta;
 	int maxSide;
+	int nRegions;
 
 	/* matrix/vector pointers */
 	int *A, *k, *degree_freq, *feature, *feat_freq, *vector, *label, *reg_size, *Nlist, *x, *y;
@@ -33,5 +34,6 @@ public:
 
 void genFeatures();
 void coordinates(int *x, int *y, int w, int h);
+void computeRegions();
 
 #endif

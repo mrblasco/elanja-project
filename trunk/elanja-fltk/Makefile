@@ -10,21 +10,14 @@ widgetWindow:
 guiControls: simulationGrid
 	$(CC) -c gui_controls.cpp
 
-simulationGrid: graphic1 graphic2 capitalVariation model
+simulationGrid: graphic1 model
 	$(CC) -c simulationGrid.cpp
 
 glStats: 
 	$(CC) -c glStats.cpp
 
 graphic1: glStats
-	$(CC) -c degreeStats.cpp
-
-graphic2: glStats
-	$(CC) -c clusteringStats.cpp
-
-capitalVariation: glStats
-	$(CC) -c capitalVariation.cpp
-
+	$(CC) -c regionStats.cpp
 
 	
 model:

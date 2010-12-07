@@ -23,12 +23,9 @@ void thresholdSliderCallback(Fl_Widget*, void*);
 void simSpeedSliderCallback(Fl_Widget*, void*);*/
 
 void latticeCallback(Fl_Check_Button * s,void * data);
-void kalinbergCallback(Fl_Check_Button * s,void * data);
+void kleinbergCallback(Fl_Check_Button * s,void * data);
 void linkCallback(Fl_Check_Button * s,void * data);
 
-void degreeStatsCallback(Fl_Widget*, void*);
-void clusteringStatsCallback(Fl_Widget*, void* data);
-void capitalVariationCallback(Fl_Widget*, void* data);
-
+void regionStatsCallback(Fl_Widget*, void*);
 
 #endif
