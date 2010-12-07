@@ -2,20 +2,12 @@
 #include "elanja-fltk.h"
 #include "gui_controls.h"
 #include "widgetWindow.h"
-#include "degreeStats.h"
-#include "clusteringStats.h"
-#include "capitalVariation.h"
+#include "regionStats.h"
 
-static degreeStats g1(STATS_W, STATS_H);
-static widgetWindow degreeStats(STATS_W, STATS_H, &g1, "Degree Statistics");
+static regionStats g1(STATS_W, STATS_H);
+static widgetWindow regionStats(STATS_W, STATS_H, &g1, "Region View");
 
-static clusteringStats g2(STATS_W,STATS_H); 
-static widgetWindow clusteringStats(STATS_W,STATS_H,&g2,"Clustering Statistics"); 
-
-static capitalVariation g3(STATS_W,STATS_H); 
-static widgetWindow capitalVariation(STATS_W,STATS_H,&g3,"Capitale medio"); 
-
-static simulationGrid glf(10,30,SIMULATION_WIDTH,SIMULATION_HIGH, &g1, &g2, &g3); 
+static simulationGrid glf(10,30,SIMULATION_WIDTH,SIMULATION_HIGH, &g1); 
 
 /************* Main Window *****************************************/
 Fl_Double_Window *elanjaWindow=(Fl_Double_Window *)0;
@@ -45,7 +37,7 @@ Fl_Value_Slider *simSpeedSlider=(Fl_Value_Slider *)0;
 
 Fl_Check_Button *latticeButton=(Fl_Check_Button *)0;
 
-Fl_Check_Button *kelinbergButton=(Fl_Check_Button *)0;
+Fl_Check_Button *kleinbergButton=(Fl_Check_Button *)0;
 
 Fl_Check_Button *linkButton=(Fl_Check_Button *)0;
 
@@ -59,13 +51,10 @@ Fl_Menu_Item menu_Visualizza[] = {
  {"@|> Restart", 0,  (Fl_Callback*)restartCallback, (void*)(&glf), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {"View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
- {"Degree Statistics", 0, (Fl_Callback*)degreeStatsCallback, (void*)(&degreeStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Clustering Statistics", 0,  (Fl_Callback*)clusteringStatsCallback, (void*)(&clusteringStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
- {"Capitale medio", 0,  (Fl_Callback*)capitalVariationCallback, (void*)(&capitalVariation), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Region Statistics", 0, (Fl_Callback*)regionStatsCallback, (void*)(&regionStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
-
 
 int main(int argc, char **argv) 
 {
@@ -77,12 +66,12 @@ int main(int argc, char **argv)
 	     	elanjaWindow->selection_color((Fl_Color)53);
       
     		{	/* Button's Group */ 
-			Fl_Group* controlGroup = new Fl_Group(710, 465, 282, 255, "Controls");
+			Fl_Group* controlGroup = new Fl_Group(710, 465, 232, 255, "Controls");
 			controlGroup->box(FL_PLASTIC_UP_FRAME);
 			controlGroup->color(FL_FOREGROUND_COLOR);
       			controlGroup->align(FL_ALIGN_TOP_LEFT|FL_ALIGN_INSIDE);
 			{	/* Simulation Speed Slider */
-				simSpeedSlider = new Fl_Value_Slider(715, 523, 270, 40, "Simulation Speed");
+				simSpeedSlider = new Fl_Value_Slider(715, 523, 220, 40, "Simulation Speed");
         			simSpeedSlider->type(5);
 			        simSpeedSlider->color((Fl_Color)10);
 			        simSpeedSlider->selection_color((Fl_Color)136);
@@ -96,15 +85,15 @@ int main(int argc, char **argv)
 			        simSpeedSlider->align(FL_ALIGN_TOP_LEFT);      
 			}
 			{ 	/* Play Button */
-				playButton = new Fl_Button(725, 680, 120, 30, "@>");
+				playButton = new Fl_Button(725, 680, 100, 30, "@>");
         			playButton->callback((Fl_Callback*)playCallback, (void*)(&glf));
       			} 
       			{	/* Stop Button */
-				restartButton = new Fl_Button(855, 680, 120, 30, "@|>");
+				restartButton = new Fl_Button(830, 680, 100, 30, "@|>");
         			restartButton->callback((Fl_Callback*)restartCallback, (void*)(&glf));
 	      		} 
       			{	/* Simulation Steps */
-				simStepLabel = new Fl_Value_Output(770, 620, 172, 25, "Simulation steps:");
+				simStepLabel = new Fl_Value_Output(740, 620, 172, 25, "Simulation steps:");
 				simStepLabel->labelfont(1);
         			simStepLabel->labelsize(12);
         			simStepLabel->maximum(1e+06);
@@ -113,12 +102,12 @@ int main(int argc, char **argv)
       			controlGroup->end();
     		} 
 		{	/* Parameters Group */
-			parametersGroup = new Fl_Group(710, 30, 282, 430, "Parameters");
+			parametersGroup = new Fl_Group(710, 30, 232, 430, "Parameters");
       			parametersGroup->box(FL_PLASTIC_UP_FRAME);
       			parametersGroup->color(FL_FOREGROUND_COLOR);
       			parametersGroup->align(FL_ALIGN_TOP_LEFT|FL_ALIGN_INSIDE);
 			{ 	/* Agent Slider */
-				agentsSlider = new Fl_Value_Slider(715, 70, 270, 40, "Lattice Linear Dimension");
+				agentsSlider = new Fl_Value_Slider(715, 70, 220, 40, "Lattice Linear Dimension");
         			agentsSlider->type(5);
         			agentsSlider->color((Fl_Color)10);/* Slider color */
         			agentsSlider->selection_color((Fl_Color)136);/* Cursor color */
@@ -132,7 +121,7 @@ int main(int argc, char **argv)
         			agentsSlider->align(FL_ALIGN_TOP_LEFT);/* Label align*/
       			}
       			{ 	/* Delta Slider */
-				deltaSlider = new Fl_Value_Slider(715, 175, 270, 40, "Delta");
+				deltaSlider = new Fl_Value_Slider(715, 175, 220, 40, "Delta");
         			deltaSlider->type(5);
         			deltaSlider->color((Fl_Color)10);
         			deltaSlider->selection_color((Fl_Color)136);
@@ -146,7 +135,7 @@ int main(int argc, char **argv)
         			deltaSlider->align(FL_ALIGN_TOP_LEFT);
       			}
       			{	/* Possible Traits Slider */
-		 		pos_traitsSlider = new Fl_Value_Slider(715, 275, 270, 40, "Possible Traits");
+		 		pos_traitsSlider = new Fl_Value_Slider(715, 275, 220, 40, "Possible Traits");
         			pos_traitsSlider->type(5);
         			pos_traitsSlider->color((Fl_Color)10);
         			pos_traitsSlider->selection_color((Fl_Color)136);
@@ -161,26 +150,26 @@ int main(int argc, char **argv)
       			}
 			{ 	/* Lattice Network Button */
 				latticeButton = new Fl_Check_Button(715, 335, 150, 25, "Lattice Network");
-				kelinbergButton = new Fl_Check_Button(715, 365, 150, 25, "Kelinberg Network");
+				kleinbergButton = new Fl_Check_Button(715, 365, 150, 25, "Kleinberg Network");
         			latticeButton->down_box(FL_DOWN_BOX);
 				latticeButton->labelfont(1);
 			        latticeButton->labelsize(12);
 				latticeButton->value(1);
-        			latticeButton->callback((Fl_Callback*)latticeCallback, (void*)(kelinbergButton));
+        			latticeButton->callback((Fl_Callback*)latticeCallback, (void*)(kleinbergButton));
       			} 
-			{ 	/* Kelinberg Network Button */
+			{ 	/* Kleinberg Network Button */
 				
-        			kelinbergButton->down_box(FL_DOWN_BOX);
-				kelinbergButton->labelfont(1);
-			        kelinbergButton->labelsize(12);
-        			kelinbergButton->callback((Fl_Callback*)kelinbergCallback, (void*)(latticeButton));
+        			kleinbergButton->down_box(FL_DOWN_BOX);
+				kleinbergButton->labelfont(1);
+			        kleinbergButton->labelsize(12);
+        			kleinbergButton->callback((Fl_Callback*)kleinbergCallback, (void*)(latticeButton));
       			} 
       			{ 	/* Link Visualization Button */
 				linkButton = new Fl_Check_Button(715, 435, 150, 25, "Link Visualization");
 		        	linkButton->down_box(FL_DOWN_BOX);
 				linkButton->labelfont(1);
 			        linkButton->labelsize(12);
-				linkButton->value(0);
+				linkButton->value(1);
         			linkButton->callback((Fl_Callback*)linkCallback);
 	      		} 
       			parametersGroup->end();
@@ -190,7 +179,6 @@ int main(int argc, char **argv)
       			o->menu(menu_Visualizza);
 		}
     		elanjaWindow->add(glf);
-    		//elanjaWindow->resizable(&glf);
     		elanjaWindow->end();
 	}
 	elanjaWindow->show(argc, argv); /* Show me */

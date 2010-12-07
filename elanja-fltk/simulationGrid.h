@@ -8,33 +8,27 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Gl_Window.H> 
 
-#include "degreeStats.h"
-#include "capitalVariation.h"
-#include "clusteringStats.h"
+#include "regionStats.h"
 #include "model.h"
 #include "elanja-fltk.h"
 
 extern bool doNextSimulationStep; 
-/*extern bool crisis;*/
+/* Simulation Counter */
 extern int pippo;
 
 class simulationGrid : public Fl_Gl_Window
 {
 public:
-	simulationGrid(int x, int y, int w, int h, degreeStats *g1, clusteringStats *g2, capitalVariation *g3, const char *l=0);
-	/*bool grow;
-	model m; */
-	degreeStats *g1;
-	clusteringStats *g2;
-	capitalVariation *g3;
-protected: /* non puoi cancellalro */
+	simulationGrid(int x, int y, int w, int h, regionStats *g1, const char *l=0);
+	regionStats *g1;
+protected: /* do not delete */
 	void draw();
 	void init();
 };
 
-void timer_cb(void *p);  /*  delay tra uno step e l'altro della simulazione */
-void circle(double x, double y, double radius); /* disegna i pallini */
-void drawAgents(int agent); /* per gli agenti */
-void link(int i); /* disegna i link */
+void timer_cb(void *p);  /*  step delay */
+void square(double x, double y, double radius); /* draws square */
+void drawAgents(int agent); /* draws agents */
+void link(int i); /* draws links */
 
 #endif

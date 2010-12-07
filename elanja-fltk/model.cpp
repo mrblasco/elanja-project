@@ -3,8 +3,10 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
-model m; // istance of the model
-int pippo; // counter for iteractions 
+/* Istance of the Model */
+model m;
+/* Simulation Counter */
+int pippo; 
 
 extern int w, h;
  
@@ -21,24 +23,19 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 	this->outdegree = outdegree;
 	this->delta = delta;
 	this->maxSide = maxSide;
+	this->nRegions = 0;
      
 	/* Memory allocation needed */
 	if(A) free(A);
     	this->A = (int*) malloc(sizeof(double)*agents*agents); /* adjacency matrix */
-	if(k) free(k);
-	this->k = (int*) malloc(sizeof(double)*agents); /* degree */
-	if(degree_freq) free(degree_freq);
-	this->degree_freq = (int*) malloc(sizeof(double)*agents); /* degree histogram */
 	if(feature) free(feature);
 	this->feature = (int*) malloc(sizeof(double)*(agents*nFeatures)); /* features */
-	if(feat_freq) free(feat_freq);
-	this->feat_freq = (int*) malloc(sizeof(double)*pos_traits); /* features histogram */
 	if(vector) free(vector);
 	this->vector = (int*) malloc(sizeof(double)*agents); /* temporary vector for various values */
 	if(label) free(label);
 	this->label = (int*) malloc(sizeof(double)*agents); /* labels */
 	if(reg_size) free(reg_size);
-	this->reg_size = (int*) malloc(sizeof(double)*agents); /* labels histogram */
+	this->reg_size = (int*) malloc(sizeof(double)*(agents*(nFeatures+1))); /* labels histogram */
 	if(Nlist) free(Nlist);
 	this->Nlist = (int*)malloc(sizeof(int)*(linear_lattice_dimension*linear_lattice_dimension*outdegree));
 	if(x) free(x);
@@ -49,14 +46,6 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 
 	/* =========CREATE NETWORK ====================  */
 
-	/* maxSide
-
-	% 0 is no local interactions, i.e., random network
-	% 1 is the square of 4 neighbors
-	% 2 is the square of 8 neighbors 
-
-	note: outdegree needs to be larger than 8 (or 24) to have long-range shortcuts,i.e., small worlds.
-	if maxSide > 2 then outdegree needs to be at least 48 or seg. fault. */
      	
 	/* Initialize var and network list */
 	int i,j,i2,j2,jj,ii;
@@ -133,16 +122,20 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 	
 	/* Generates Agents Features */
 	genFeatures();
+
 	/* Generates Agents Positions */
 	coordinates(x, y, SIMULATION_WIDTH, SIMULATION_HIGH);
+
+	/* Compute Regions */
+	computeRegions();
 
 	pippo = 0;
 }
 
 
 /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%      STEP              %%%%%%%%%%%%%%%%
-%%%%%%%%      FUNCTION     %%%%%%%%%%%%%%%%
+%%%%%%%% STEP %%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% FUNCTION %%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void model::step(){
 
@@ -151,7 +144,6 @@ void model::step(){
 	int counter;
 
 	/* Dynamic process */
-	//t = 0;
 	counter = 0;
 	for(i=0;i<agents;i++)
 	{
@@ -198,7 +190,7 @@ void model::step(){
 
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%   GENERATE FEATURES       %%%%%%%%%%%%%%%
+%%%%% GENERATE FEATURES %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void genFeatures(){
      
@@ -210,13 +202,13 @@ void genFeatures(){
 		for(f=0;f<m.nFeatures;f++)
 		{
 			m.feature[i*m.nFeatures+f] = rand() % m.pos_traits;
-		}
+		} 
 	}
 }
 
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%   GENERATE COORDINATES %%%%%%%%%%%%%%%
+%%%%%   GENERATE COORDINATES %%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 void coordinates(int *x, int *y, int w, int h)
 {
@@ -237,25 +229,78 @@ int offset;
 	{
 		offset -= 3;
 	}
-	/*else if(m.linear_lattice_dimension == 25)
-	{
-		offset = (int)(w-15)/(m.linear_lattice_dimension);
-	}
-	else if(m.linear_lattice_dimension == 30)
-	{
-		offset -= 3;
-	}*/
-
-	//printf("offset = %d \n", offset);
 
 	for(i=0; i<m.linear_lattice_dimension; i++)
 	{
 		for(j=0; j<m.linear_lattice_dimension; j++)
 		{		
-			tmp = (m.linear_lattice_dimension * i) + j;	
-			x[tmp] = (j+1) *offset;	
-			y[tmp] = (i+1) *offset;
+			if(m.linear_lattice_dimension == 25)
+			{
+				tmp = (m.linear_lattice_dimension * i) + j;	
+				x[tmp] = ((j+1) *offset)-5;	
+				y[tmp] = ((i+1) *offset)-5;
+			}
+			else
+			{
+				tmp = (m.linear_lattice_dimension * i) + j;	
+				x[tmp] = (j+1) *offset;	
+				y[tmp] = (i+1) *offset;
+			}
 		}
+	}
+}
+
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% COMPUTE REGIONS %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+void computeRegions()
+{
+	int i, j, k, a, test;
+
+	//Labeling
+	a = 0;
+	m.label[0]= a;
+	for(i=1;i<m.agents;i++)
+	{
+		test =1;
+		for(j=0;j<i;j++)
+		{
+			if(m.feature[i*m.nFeatures+0]==m.feature[j*m.nFeatures+0])
+			{
+				if(m.feature[i*m.nFeatures+1]==m.feature[j*m.nFeatures+1])
+				{
+					if(m.feature[i*m.nFeatures+2]==m.feature[j*m.nFeatures+2])
+					{
+						m.label[i] = m.label[j];          
+						test = 0;
+					}                            
+				}                        
+			}
+		}
+		if(test==1)
+		{
+			a++;
+			m.label[i] = a;
+		}
+	}
+
+        for(i=0;i<m.agents;i++)
+        {
+                m.reg_size[i*(m.nFeatures+1)+0] = 0;
+        }
+        for(i=0;i<m.agents;i++)
+        {
+                m.reg_size[m.label[i]*(m.nFeatures+1)+0]++;
+		m.reg_size[m.label[i]*(m.nFeatures+1)+1] = m.feature[i*m.nFeatures+0];
+		m.reg_size[m.label[i]*(m.nFeatures+1)+2] = m.feature[i*m.nFeatures+1];
+		m.reg_size[m.label[i]*(m.nFeatures+1)+3] = m.feature[i*m.nFeatures+2];
+        }
+
+	m.nRegions=0;
+	for(i=0;i<m.agents;i++)
+	{
+		if(m.reg_size[i*(m.nFeatures+1)+0] != 0)
+			m.nRegions++;
 	}
 }
 			

@@ -24,9 +24,6 @@ extern Fl_Value_Slider *populationSlider;
 extern void pos_traitsSliderCallback(Fl_Value_Slider*, void*);
 extern Fl_Value_Slider *epsilonSlider;
 
-extern void noiseSliderCallback(Fl_Value_Slider*, void*);
-extern Fl_Value_Slider *friendshipSlider;
-
 extern void simSpeedSliderCallback(Fl_Value_Slider*, void*);
 extern Fl_Value_Slider *simSpeedSlider;
 
@@ -34,16 +31,13 @@ extern Fl_Value_Slider *simSpeedSlider;
 extern void latticeCallback(Fl_Check_Button*, void*);
 extern Fl_Check_Button *latticeButton;
 
-extern void kelinbergCallback(Fl_Check_Button*, void*);
-extern Fl_Check_Button *kelinbergButton;
+extern void kleinbergCallback(Fl_Check_Button*, void*);
+extern Fl_Check_Button *kleinbergButton;
 
 #include <FL/Fl_Menu_Bar.H>
 extern void exitCallback(Fl_Menu_*, void*);
 extern void playCallback(Fl_Menu_*, void*);
 extern void stopCallback(Fl_Menu_*, void*);
-extern void priceGeneticsCallback(Fl_Menu_*, void*);
-extern void capitalDistributionCallback(Fl_Menu_*, void*);
-extern void capitalVariationCallback(Fl_Menu_*, void*);
 extern Fl_Menu_Item menu_Visualizza[];
 #define playItem (menu_Visualizza+4)
 

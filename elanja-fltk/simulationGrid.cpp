@@ -10,7 +10,7 @@ extern double gui_delta;
 extern int gui_pos_traits ; 
 extern double gui_threshold; 
 extern bool latticeOn;
-extern bool kelinbergOn;
+extern bool kleinbergOn;
 extern bool linkVisualization;
 
 extern bool restart; 
@@ -21,15 +21,14 @@ extern model m;   /* object of class 'model' is called 'm' */
 bool initModel=true;
 int W,H;
 
-simulationGrid::simulationGrid(int x,int y,int w, int h, degreeStats *g1, clusteringStats *g2, capitalVariation *g3, const char *l):Fl_Gl_Window(x,y,w,h,l)  
+simulationGrid::simulationGrid(int x,int y,int w, int h, regionStats *g1, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
 
 	restart = false; 
 
      	/* Add statistics windows */
 	this->g1 = g1;
-	this->g2 = g2;
-	this->g3 = g3;
+
 	W=w;
 	H=h;
 }
@@ -37,6 +36,9 @@ simulationGrid::simulationGrid(int x,int y,int w, int h, degreeStats *g1, cluste
 void simulationGrid::init(){ 
 
 	int i;	
+
+	/* Initialize random number generator's seed to the current time */
+	srand(time(NULL));
 	
      	/* Initialize Simulation Grid */ 
 	valid(1);
@@ -63,7 +65,7 @@ void simulationGrid::init(){
 		initModel=false;
 		restart = false; 
 	}
-	else if(initModel && kelinbergOn)
+	else if(initModel && kleinbergOn)
 	{ 
 		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,0);   
 		initModel=false; 
@@ -77,6 +79,7 @@ void simulationGrid::init(){
 }
 
 void simulationGrid::draw() {	
+
 	int i, j, k, tmpAgents;
 	
 	/* Grafic Initialization */
@@ -89,7 +92,6 @@ void simulationGrid::draw() {
 	if(restartB)
 	{
 		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
-		//printf("Restarting from Button \n");
      		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide);         
 		restartB = false;
 		simStepLabel->value(0);
@@ -107,10 +109,8 @@ void simulationGrid::draw() {
 		{
 			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 0);
 		}         
-		//printf("Reinizializzo ho cambiato parametri dalla gui\n");
 		restart = false;
 	}
-
 
 	/* Clear display */
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -122,7 +122,7 @@ void simulationGrid::draw() {
 		}
 	}
 
-	/* Draw all Agents */
+	/* Draws all Agents */
 	for(i=0; i<m.agents;i++)
 	{
 		drawAgents(i);
@@ -131,21 +131,18 @@ void simulationGrid::draw() {
 	/* Simulation Step */
 	m.step();
 
-	//g1->redraw();
-	//g2->redraw();
-	//g3->redraw();
+	/* Compute Regions */
+	computeRegions();
 
+	g1->redraw();
 }
 
 void drawAgents(int i){
 	int k, x;		 	
-	
 
-	/* red, green, blue, opacity */
-	//glColor4d(1- m.feature[0*m.agents + i],m.feature[1*m.agents + i],m.feature[2*m.agents + i],0.8);
-	glColor4d(m.feature[0*m.nFeatures + i],m.feature[1*m.nFeatures + i],m.feature[2*m.nFeatures + i],0.8);
+	glColor4d((double)(1+m.feature[i*m.nFeatures + 0])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 1])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 2])/(double)m.pos_traits,1.0);
 	 
-	circle(m.x[i], m.y[i],20);
+	square(m.x[i], m.y[i],20);
 }
 
 void timer_cb(void *p) 
@@ -159,41 +156,30 @@ void timer_cb(void *p)
 	}
 }
 
-void circle(double x, double y, double radius){
+void square(double x, double y, double edge){
 	double a, da;
 	
-	da = 2.0 * asin(1.0/radius);
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex2d(x-(radius/2), y+(radius/2));
-	glVertex2d(x+(radius/2), y+(radius/2));
-	glVertex2d(x+(radius/2), y-(radius/2));
-	glVertex2d(x-(radius/2), y-(radius/2));
-	/*for(a = 0.0; a <= 2 * M_PI; a += da) {
-		glVertex2d(x + cos(a) * radius, y + sin(a) * radius);
-	}*/
-
-	//glVertex2d(x + radius, y);
+		glVertex2d(x-(edge/2), y+(edge/2));
+		glVertex2d(x+(edge/2), y+(edge/2));
+		glVertex2d(x+(edge/2), y-(edge/2));
+		glVertex2d(x-(edge/2), y-(edge/2));
 	glEnd();
 }
 
 void link(int i)
 {	
 	int j, k, z;
-	//Nlist[1*agents+1] = 4 
+
 	glColor4d(0.9,0.0,1.0,0.2);
 	for(j=0; j<m.outdegree;j++)
 	{
 		glBegin(GL_LINES);
-		glVertex2d(m.x[i], m.y[i]);
-		glVertex2d(m.x[m.Nlist[i*m.outdegree+j]],m.y[m.Nlist[i*m.outdegree+j]]);	
-	glEnd();	
-
+			glVertex2d(m.x[i], m.y[i]);
+			glVertex2d(m.x[m.Nlist[i*m.outdegree+j]],m.y[m.Nlist[i*m.outdegree+j]]);	
+		glEnd();	
 	}
-	/*
-	glColor4d(0.9,0.0,1.0,0.2); 	
-	glBegin(GL_LINES);
-		glVertex2d(x, y);
-		glVertex2d(xx,yy);	
-	glEnd();*/
 }
+
+
 
