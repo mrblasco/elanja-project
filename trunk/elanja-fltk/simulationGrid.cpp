@@ -12,23 +12,23 @@ extern double gui_threshold;
 extern bool latticeOn;
 extern bool kleinbergOn;
 extern bool linkVisualization;
-
+extern bool resized;
+extern bool restartS;
 extern bool restart; 
 extern bool restartB;
 extern double simSpeed;
 extern model m;   /* object of class 'model' is called 'm' */
-
 bool initModel=true;
 int W,H;
 
-simulationGrid::simulationGrid(int x,int y,int w, int h, regionStats *g1, regionCountStats *g2, const char *l):Fl_Gl_Window(x,y,w,h,l)  
+simulationGrid::simulationGrid(int x,int y,int w, int h, regionStats *g1, regionCountStats *g2, maxRegionStats *g3, const char *l):Fl_Gl_Window(x,y,w,h,l)  
 {
 	restart = false; 
 
      	/* Add statistics windows */
 	this->g1 = g1;
 	this->g2 = g2;
-	//this->g3 = g3;
+	this->g3 = g3;
 
 	W=w;
 	H=h;
@@ -36,7 +36,7 @@ simulationGrid::simulationGrid(int x,int y,int w, int h, regionStats *g1, region
 
 void simulationGrid::init(){ 
 
-	int i;	
+	int i,tmpAgents;	
 
 	/* Initialize random number generator's seed to the current time */
 	srand(time(NULL));
@@ -59,16 +59,30 @@ void simulationGrid::init(){
 	gui_pos_traits  = POS_TRAITS_INIT;
 	simSpeed = SIM_SPEED_INIT;
 	
-
-	if(initModel && latticeOn)
+	if(resized)
+	{
+		printf("Sono dentro resized\n");
+		if(latticeOn)
+		{
+			tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
+			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta,1, w(), h());
+		}
+		else
+		{
+			tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
+			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta,0, w(), h());
+		}
+		resized = false;
+	}
+	else if(initModel && latticeOn)
 	{ 
-		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,1);   
+		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,1, w(), h());   
 		initModel=false;
 		restart = false; 
 	}
 	else if(initModel && kleinbergOn)
 	{ 
-		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,0);   
+		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,0, w(), h());   
 		initModel=false; 
 		restart = false;
 	}
@@ -86,33 +100,39 @@ void simulationGrid::draw() {
 	/* Grafic Initialization */
 	if (!valid())
 	{
-		init(); 
+		printf("Sono dentro valid\n");
+		init();	
+		
+		resized = true;
 	}
 	
 	/* If Restart Button is pressed */
 	if(restartB)
 	{
 		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
-     		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide);         
+     		m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, m.maxSide, w(), h());         
 		restartB = false;
 		simStepLabel->value(0);
 		restart = false;
+		restartS = true;
 	}	
 	/* Catch parameters from gui and reinit if needed */
-	else if((m.delta != gui_delta) || (m.pos_traits != gui_pos_traits ) || (m.linear_lattice_dimension != gui_linear_lattice_dimension) || restart )
+	else if((m.delta != gui_delta) || (m.pos_traits != gui_pos_traits ) || (m.linear_lattice_dimension != gui_linear_lattice_dimension) || restart)
 	{
 		tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
 		if(latticeOn)
 		{
-     			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 1);
+     			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 1,w(), h());
+			restartS = true;
 		}
 		else
 		{
-			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 0);
+			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 0, w(), h());
+			restartS = true;
 		}         
 		restart = false;
 	}
-
+	
 	/* Clear display */
 	glClear(GL_COLOR_BUFFER_BIT);
 	if(linkVisualization)
@@ -137,7 +157,7 @@ void simulationGrid::draw() {
 
 	g1->redraw();
 	g2->redraw();
-	//g3->redraw();
+	g3->redraw();
 }
 
 void drawAgents(int i){
@@ -145,7 +165,7 @@ void drawAgents(int i){
 
 	glColor4d((double)(1+m.feature[i*m.nFeatures + 0])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 1])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 2])/(double)m.pos_traits,1.0);
 	 
-	square(m.x[i], m.y[i],20);
+	square(m.x[i], m.y[i],5);
 }
 
 void timer_cb(void *p) 

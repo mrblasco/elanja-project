@@ -9,13 +9,13 @@
 static regionStats g1(STATS_W, STATS_H);
 static widgetWindow regionStats(STATS_W, STATS_H, &g1, "Region View");
 
-static regionCountStats g2(STATS_W, STATS_H);
+static regionCountStats g2(STATS2_W, STATS2_H);
 static widgetWindow regionCountStats(STATS2_W, STATS2_H, &g2, "Region Count");
 
-//static maxRegionStats g1(STATS_W, STATS_H);
-//static widgetWindow maxRegionStats(STATS2_W, STATS2_H, &g3, "Max Region");
+static maxRegionStats g3(STATS2_W, STATS2_H);
+static widgetWindow maxRegionStats(STATS2_W, STATS2_H, &g3, "Max Region");
 
-static simulationGrid glf(10,30,SIMULATION_WIDTH,SIMULATION_HIGH, &g1, &g2); 
+static simulationGrid glf(10,30,SIMULATION_WIDTH,SIMULATION_HIGH, &g1, &g2, &g3); 
 
 /************* Main Window *****************************************/
 Fl_Double_Window *elanjaWindow=(Fl_Double_Window *)0;
@@ -61,7 +61,7 @@ Fl_Menu_Item menu_Visualizza[] = {
  {"View", 0,  0, 0, 64, FL_NORMAL_LABEL, 0, 14, 0},
  {"Region View", 0, (Fl_Callback*)regionStatsCallback, (void*)(&regionStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {"Region Count", 0, (Fl_Callback*)regionCountStatsCallback, (void*)(&regionCountStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
- //{"Max Region", 0, (Fl_Callback*)maxRegionCallback, (void*)(&regionStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
+ {"Max Region", 0, (Fl_Callback*)maxRegionStatsCallback, (void*)(&maxRegionStats), 0, FL_NORMAL_LABEL, 0, 14, 0},
  {0,0,0,0,0,0,0,0,0},
  {0,0,0,0,0,0,0,0,0}
 };
@@ -189,6 +189,8 @@ int main(int argc, char **argv)
       			o->menu(menu_Visualizza);
 		}
     		elanjaWindow->add(glf);
+		elanjaWindow->size_range(550,422,WINDOW_WIDTH,WINDOW_HIGH,100,77,1);
+		elanjaWindow->resizable(&glf);
     		elanjaWindow->end();
 	}
 	elanjaWindow->show(argc, argv); /* Show me */

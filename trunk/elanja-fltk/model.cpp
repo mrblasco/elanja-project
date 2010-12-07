@@ -10,7 +10,7 @@ int pippo;
 
 extern int w, h;
  
-void model::init(int linear_lattice_dimension, int agents, int nFeatures, int pos_traits, int outdegree, double delta, int maxSide){
+void model::init(int linear_lattice_dimension, int agents, int nFeatures, int pos_traits, int outdegree, double delta, int maxSide, int gridH, int gridW){
 
 	printf("Initializing Model ... \n");	
 
@@ -24,6 +24,8 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 	this->delta = delta;
 	this->maxSide = maxSide;
 	this->nRegions = 0;
+	this->gridH = gridH;
+	this->gridW = gridW;
      
 	/* Memory allocation needed */
 	if(A) free(A);
@@ -124,7 +126,7 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 	genFeatures();
 
 	/* Generates Agents Positions */
-	coordinates(x, y, SIMULATION_WIDTH, SIMULATION_HIGH);
+	coordinates(x, y, gridW, gridH);
 
 	/* Compute Regions */
 	computeRegions();
@@ -216,6 +218,8 @@ int i, j, k;
 int tmp, tmp2;
 int offset;
 	
+	printf("Resize, w = %d, h = %d \n", w, h);
+
 	offset = (int)(w)/(m.linear_lattice_dimension);
 	if(m.linear_lattice_dimension == 20)
 	{
@@ -257,7 +261,7 @@ void computeRegions()
 {
 	int i, j, k, a, test;
 
-	//Labeling
+	/* Labeling */
 	a = 0;
 	m.label[0]= a;
 	for(i=1;i<m.agents;i++)
