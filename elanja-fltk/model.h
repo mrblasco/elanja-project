@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <iostream>
 
-//#include "elanja-fltk.h"
 #include "const.h"
 
 class model{
