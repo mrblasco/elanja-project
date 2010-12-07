@@ -11,8 +11,7 @@ class regionCountStats : public glStats
 {
 public:
 	regionCountStats(int w,int h,const char *l=0);
-     double clusteringHistory[STATS_W];	
-     double clustAvgHistory[STATS_W];	
+     	double regionHistory[STATS2_W];		
 
 protected:
 	void paint();

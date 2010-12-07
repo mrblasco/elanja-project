@@ -10,7 +10,7 @@ widgetWindow:
 guiControls: simulationGrid
 	$(CC) -c gui_controls.cpp
 
-simulationGrid: graphic1 model
+simulationGrid: graphic1 graphic2  model
 	$(CC) -c simulationGrid.cpp
 
 glStats: 
@@ -18,6 +18,12 @@ glStats:
 
 graphic1: glStats
 	$(CC) -c regionStats.cpp
+
+graphic2: glStats		
+	$(CC) -c regionCountStats.cpp		
+			
+graphic3: glStats		
+	$(CC) -c maxRegionStats.cpp
 
 	
 model:

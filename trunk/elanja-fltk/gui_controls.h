@@ -27,5 +27,6 @@ void kleinbergCallback(Fl_Check_Button * s,void * data);
 void linkCallback(Fl_Check_Button * s,void * data);
 
 void regionStatsCallback(Fl_Widget*, void*);
+void regionCountStatsCallback(Fl_Widget*, void*);
 
 #endif
