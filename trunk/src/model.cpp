@@ -168,7 +168,7 @@ void model::step(){
 		tempo = 0;
 		mean_max_reg = var_max_reg = 0;
 
-		//for(s=0;s<n_iter;s++)
+		for(s=0;s<n_iter;s++)
 		{
 			cout << "Simulation " << s+1 << endl;
 

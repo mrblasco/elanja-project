@@ -7,7 +7,7 @@ Compilazione:
 
 andare nella cartella principale del progetto:
 
-	cd ~/elnja-project
+	cd ~/elanja-project
 
 ed eseguire:
 
