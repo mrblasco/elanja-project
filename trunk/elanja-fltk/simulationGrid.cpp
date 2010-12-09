@@ -52,16 +52,16 @@ void simulationGrid::init(){
 	glMatrixMode (GL_MODELVIEW);
 	glColor4d(0.2,0,1,0.2); 	
 
-	
-	/* Initial Parameters */
-	gui_linear_lattice_dimension = LINEAR_LATTICE_DIMENSION_INIT;  
-	gui_delta = DELTA_INIT;
-	gui_pos_traits  = POS_TRAITS_INIT;
-	simSpeed = SIM_SPEED_INIT;
-	
+	if(!resized)
+	{
+		/* Initial Parameters */
+		gui_linear_lattice_dimension = LINEAR_LATTICE_DIMENSION_INIT;  
+		gui_delta = DELTA_INIT;
+		gui_pos_traits  = POS_TRAITS_INIT;
+		simSpeed = SIM_SPEED_INIT;
+	}
 	if(resized)
 	{
-		printf("Sono dentro resized\n");
 		if(latticeOn)
 		{
 			tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
@@ -100,9 +100,7 @@ void simulationGrid::draw() {
 	/* Grafic Initialization */
 	if (!valid())
 	{
-		printf("Sono dentro valid\n");
-		init();	
-		
+		init();		
 		resized = true;
 	}
 	
@@ -146,7 +144,12 @@ void simulationGrid::draw() {
 	/* Draws all Agents */
 	for(i=0; i<m.agents;i++)
 	{
-		drawAgents(i);
+		//printf("w = %d, h = %d, minimo = %d \n", w(), h(), MIN(w(),h()));
+		drawAgents(i,MIN(w(),h()));
+	//glColor4d((double)(1+m.feature[i*m.nFeatures + 0])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 1])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 2])/(double)m.pos_traits,1.0);
+	
+	//int offset = (int)(w())/(3*m.linear_lattice_dimension+1);
+	//square(m.x[i], m.y[i],2*offset);
 	}
 
 	/* Simulation Step */
@@ -160,12 +163,13 @@ void simulationGrid::draw() {
 	g3->redraw();
 }
 
-void drawAgents(int i){
-	int k, x;		 	
+void drawAgents(int i, int w){
+	int k, x, offset;		 	
 
 	glColor4d((double)(1+m.feature[i*m.nFeatures + 0])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 1])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 2])/(double)m.pos_traits,1.0);
-	 
-	square(m.x[i], m.y[i],5);
+	
+	offset = (int)(w)/(3*m.linear_lattice_dimension+1);
+	square(m.x[i], m.y[i],offset);
 }
 
 void timer_cb(void *p) 
