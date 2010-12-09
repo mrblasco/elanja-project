@@ -70,54 +70,16 @@ void maxRegionStats::paint()
 	}
 }
 
-
 void axis() 
 {
 	int i;
 
 	glColor4d(1.0, 1.0, 1.0,1.0);
 
-	//Axis
-	glBegin(GL_LINES);
-		glVertex2d(1,1);
-		glVertex2d(1,STATS2_H);
-	glEnd();
-	/*glBegin(GL_LINES);
-		glVertex2d(1,1);
-		glVertex2d(STATS2_W,1);
-	glEnd();*/
-
-	//10
-	/*glBegin(GL_LINES);
-		glVertex2d(1,10);
-		glVertex2d(3,10);
-	glEnd();
-	glBegin(GL_LINES);
-		glVertex2d(5,6);
-		glVertex2d(5,15);
-	glEnd();	
-	glBegin(GL_LINES);
-		glVertex2d(7,6);
-		glVertex2d(7,15);
-		glVertex2d(7,15);
-		glVertex2d(11,14);
-		glVertex2d(11,14);
-		glVertex2d(11,6);
-		glVertex2d(11,6);
-		glVertex2d(7,6);
-	glEnd();
-	for(i=15;i<STATS2_W;i=i+10)
-	{
-		glBegin(GL_LINES);
-			glVertex2d(i,10);
-			glVertex2d(i+5,10);
-		glEnd();		
-	}*/
-
 	//100
 	glBegin(GL_LINES);
-		glVertex2d(1,100);
-		glVertex2d(3,100);
+		glVertex2d(0,100);
+		glVertex2d(2,100);
 	glEnd();
 	glBegin(GL_LINES);
 		glVertex2d(5,96);
@@ -153,8 +115,8 @@ void axis()
 
 	//225
 	glBegin(GL_LINES);
-		glVertex2d(1,225);
-		glVertex2d(3,225);
+		glVertex2d(0,225);
+		glVertex2d(2,225);
 	glEnd();
 	glBegin(GL_LINES);
 		glVertex2d(5,230);
@@ -202,8 +164,8 @@ void axis()
 
 	//400
 	glBegin(GL_LINES);
-		glVertex2d(1,400);
-		glVertex2d(3,400);
+		glVertex2d(0,400);
+		glVertex2d(2,400);
 	glEnd();
 	glBegin(GL_LINES);
 		glVertex2d(9,405);

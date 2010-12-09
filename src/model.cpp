@@ -49,13 +49,8 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	/* =========CREATE NETWORK ====================  */
 
 	/* maxSide
-
 	% 0 is no local interactions, i.e., random network
-	% 1 is the square of 4 neighbors
-	% 2 is the square of 8 neighbors 
-
-	note: outdegree needs to be larger than 8 (or 24) to have long-range shortcuts,i.e., small worlds.
-	if maxSide > 2 then outdegree needs to be at least 48 or seg. fault. */
+	% 1 is the square of 4 neighbors */
      	
 	/* Initialize var and network list */
 	int i,j,i2,j2,jj,ii;
@@ -71,7 +66,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 		}
 	}   
 
-	/* create network list -- local neighbors*/
+	/* create network list*/
 	for (i=0;i<edge_agents;i++)
 	{
 		for(j=0;j<edge_agents;j++)
@@ -83,7 +78,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 			{
 				for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
 				{
-					// normalize to torus 
+					/* normalize to torus */
 					i2 = ((edge_agents + ii) % (edge_agents));  
 					j2 = ((edge_agents + jj) % (edge_agents));
 
@@ -142,41 +137,7 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 		}
 		fprintf(out,"\n");
 	}
-     
 
-     /* initialize region and print Adiacency matrix... */
-	/*for(i=0;i<agents;i++)
-	{
-		region[i] = 0;
-		for(j=0;j<agents;j++)
-		{
-			A[i*agents+j] = 0; 
-		}
-	}
-
-	for(i=0;i<agents;i++)
-	{
-		for(g=0;g<outdegree;g++)
-		{
-			l = Nlist[(i*outdegree +g)]; 
-			A[i*agents+l] = 1; 
-			link++;
-		}
-	}
-	cout << "Numero di links " << link << endl;
-
-	ofstream outfile;
-	outfile.open("AdMatrix.txt");
-	for(i=0;i<agents;i++)
-	{
-
-		for(j=0;j<agents;j++)
-		{
-			outfile << A[i*agents+j] << "\t";
-		} 
-		outfile << endl;
-	}
-	outfile.close();*/
 }
 
  
@@ -198,20 +159,16 @@ void model::step(){
 	int i,j,n,m,a,b,t,f,s,l,ll, test;
 	double p, r, prob, tempo, mean_max_reg, var_max_reg;
 	double max_reg[n_iter];
-	double noise = 0.0005;
 	int counter, counter2;
-	
-	/*cout << agents*outdegree << endl;
-	cout << agents*outdegree*0.95 << endl;*/
 
-	for(pos_features=5;pos_features<=35;pos_features=pos_features+5)
+	//for(pos_features=5;pos_features<=65;pos_features=pos_features+5)
 	{
 		cout << "pos_features = " << pos_features << endl;
 
 		tempo = 0;
 		mean_max_reg = var_max_reg = 0;
 
-		for(s=0;s<n_iter;s++)
+		//for(s=0;s<n_iter;s++)
 		{
 			cout << "Simulation " << s+1 << endl;
 
@@ -268,18 +225,10 @@ void model::step(){
 							counter++;
 						}						
 					}
-
-					//Noise
-					/*r = (rand() % 1000001) / (double) 1000000;
-					if(r<=noise)
-					{
-						f = rand() % nFeatures;
-						feature[i*nFeatures+f] = rand() % pos_features;
-					}*/
 				
 				}
 
-				//Check if the system is in a freeze state (to comment when we introduce noise)
+				//Check if the system is in a freeze state
 				index2 = 0;
 				for(i=0;i<agents;i++)
 				{
@@ -306,49 +255,8 @@ void model::step(){
 					control = 1;
 				}
 
-				//Labeling
-				/*a = 0;
-				label[0]= a;
-				for(i=1;i<agents;i++)
-				{
-					test =1;
-					for(j=0;j<i;j++)
-					{
-						if(feature[i*nFeatures+0]==feature[j*nFeatures+0])
-						{
-							if(feature[i*nFeatures+1]==feature[j*nFeatures+1])
-							{
-								if(feature[i*nFeatures+2]==feature[j*nFeatures+2])
-								{
-									label[i] = label[j];          
-									test = 0;
-								}                            
-							}                        
-						}
-					}
-					if(test==1)
-					{
-						a++;
-						label[i] = a;
-					}
-				}
-
-			       // print max frequence
-			       counter2 = 0;
-			       for(j=0;j<agents;j++)
-			       {
-				    n = 0;
-				    for(i=0;i<agents;i++)
-				    {
-				         if(label[i]==j)
-				              n++;
-				    }
-				         if(counter2<n)
-				              counter2 =n;
-			       }*/
-
-				fprintf(out5,"%d %d %d %d\n",pos_features,s+1,t,outdegree*agents-index2);
-				if(t % 1000 == 0) cout << pos_features << "\t" << s+1 << "\t" << t << "\t" << outdegree*agents-index2 << endl;
+				fprintf(out5,"%d %d %d %d \n",pos_features,s+1,t,outdegree*agents-index2,counter);
+				if(t % 1000 == 0) {cout << pos_features << "\t" << s+1 << "\t" << t << "\t" << outdegree*agents-index2 << "\t" << counter << endl;}
 				t++;
 			}
 			cout << "Numero di step eseguiti = " << t << endl;

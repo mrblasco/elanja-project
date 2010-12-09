@@ -15,13 +15,6 @@ void restartCallback(Fl_Widget*, void*);
 void pauseCallback(Fl_Widget*, void*);
 void exitCallback(Fl_Widget*, void*);
 
-/*void agentsSliderCallback(Fl_Widget*, void* data);
-void deltaSliderCallback(Fl_Widget*, void*);
-void epsilonSliderCallback(Fl_Widget*, void*);
-void friendshipSliderCallback(Fl_Widget*, void*);
-void thresholdSliderCallback(Fl_Widget*, void*);
-void simSpeedSliderCallback(Fl_Widget*, void*);*/
-
 void latticeCallback(Fl_Check_Button * s,void * data);
 void kleinbergCallback(Fl_Check_Button * s,void * data);
 void linkCallback(Fl_Check_Button * s,void * data);

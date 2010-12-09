@@ -20,9 +20,9 @@ void glStats::draw(){
 	}
 
 	this->paint();
-
 }
 
-void glStats::paint(){
+void glStats::paint()
+{
 
 }

@@ -1,15 +1,16 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2010.6.2)  29 NOV 2010 11:15
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.17)  9 DEC 2010 11:57
 entering extended mode
+ restricted \write18 enabled.
  %&-line parsing enabled.
 **RelazioneELANJA.tex
 (./RelazioneELANJA.tex
-LaTeX2e <2005/12/01>
-Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
-yphenation, ukrainian, russian, bulgarian, loaded.
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, italian, latin, loaded.
 (/usr/share/texmf-texlive/tex/latex/base/article.cls
-Document Class: article 2005/09/16 v1.4f Standard LaTeX document class
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texmf-texlive/tex/latex/base/size12.clo
-File: size12.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
+File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -23,6 +24,19 @@ File: size12.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
+(/usr/share/texmf-texlive/tex/generic/babel/babel.sty
+Package: babel 2008/07/06 v3.8l The Babel package
+
+(/usr/share/texmf-texlive/tex/generic/babel/italian.ldf
+Language: italian 2008/03/14 v1.2t Italian support from the babel system
+
+(/usr/share/texmf-texlive/tex/generic/babel/babel.def
+File: babel.def 2008/07/06 v3.8l Babel common definitions
+\babel@savecnt=\count87
+\U@D=\dimen103
+)
+Package babel Info: Making " an active character on input line 94.
+))
 (/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
@@ -31,108 +45,123 @@ Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks14
 )
 (/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
-Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
 (/usr/share/texmf-texlive/tex/latex/graphics/trig.sty
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
 (/etc/texmf/tex/latex/config/graphics.cfg
-File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: dvips.def on input line 90.
+Package graphics Info: Driver file: dvips.def on input line 91.
 
 (/usr/share/texmf-texlive/tex/latex/graphics/dvips.def
 File: dvips.def 1999/02/16 v3.0i Driver-dependant file (DPC,SPQR)
 ))
-\Gin@req@height=\dimen103
-\Gin@req@width=\dimen104
+\Gin@req@height=\dimen104
+\Gin@req@width=\dimen105
 )
 (./RelazioneELANJA.aux)
 \openout1 = `RelazioneELANJA.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 9.
+LaTeX Font Info:    Try loading font information for LGR+cmr on input line 9.
+ (/usr/share/texmf-texlive/tex/generic/babel/lgrcmr.fd
+File: lgrcmr.fd 2008/06/17 v2.3 Greek Computer Modern
+)
+LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <14.4> on input line 10.
+(Font)              <14.4> on input line 11.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 10.
-
-Overfull \hbox (14.93672pt too wide) in paragraph at lines 10--10
- [][] 
- []
+(Font)              <7> on input line 11.
 
 [1
 
 ]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 29.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 34.
  (/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 29.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 34.
  [2
 
 ]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 41.
+(Font)              <12> on input line 46.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 41.
+(Font)              <8> on input line 46.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 41.
- [3
-
-]
+(Font)              <6> on input line 46.
+File: colors.eps Graphic file (type eps)
+ <colors.eps>
 File: transizione_ret.eps Graphic file (type eps)
 
 <transizione_ret.eps>
+Underfull \hbox (badness 10000) in paragraph at lines 75--95
+
+ []
+
+[3
+
+]
 File: cum_distr_size_ret.eps Graphic file (type eps)
- <cum_distr_size_ret.eps> [4] [5]
-Underfull \hbox (badness 10000) in paragraph at lines 99--119
+ <cum_distr_size_ret.eps>
+File: axelrod.eps Graphic file (type eps)
+ <axelrod.eps> [4] [5] [6]
+Underfull \hbox (badness 10000) in paragraph at lines 115--117
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99--119
+Underfull \hbox (badness 10000) in paragraph at lines 120--129
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 99--119
+Underfull \hbox (badness 10000) in paragraph at lines 131--134
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 99--119
-
- []
-
-[6
+[7
 
 ]
 File: transizione.eps Graphic file (type eps)
  <transizione.eps>
 File: cum_distr_size_qCritico.eps Graphic file (type eps)
- <cum_distr_size_qCritico.eps> [7] [8] [9] [10
+ <cum_distr_size_qCritico.eps> [8] [9] [10
 
-] [11]
-(./RelazioneELANJA.aux) ) 
+]
+File: elanja.eps Graphic file (type eps)
+ <elanja.eps>
+[11] [12]
+Underfull \hbox (badness 2205) in paragraph at lines 202--203
+[]\OT1/cmr/m/n/12 R. Axel-rod, \OT1/cmr/m/it/12 The Dis-se-mi-na-tion of Cul-tu
+-re\OT1/cmr/m/n/12 , Jour-nal of Con-flict
+ []
+
+[13
+
+] (./RelazioneELANJA.aux) ) 
 Here is how much of TeX's memory you used:
- 585 strings out of 94835
- 7106 string characters out of 1179205
- 56825 words of memory out of 1500000
- 3815 multiletter control sequences out of 10000+50000
- 9763 words of font info for 34 fonts, out of 1200000 for 2000
- 212 hyphenation exceptions out of 8191
- 25i,6n,19p,522b,281s stack positions out of 5000i,500n,6000p,200000b,5000s
+ 1007 strings out of 495036
+ 13262 string characters out of 1181470
+ 69157 words of memory out of 3000000
+ 4217 multiletter control sequences out of 15000+50000
+ 10109 words of font info for 35 fonts, out of 3000000 for 9000
+ 28 hyphenation exceptions out of 8191
+ 25i,6n,24p,700b,285s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on RelazioneELANJA.dvi (11 pages, 18108 bytes).
+Output written on RelazioneELANJA.dvi (13 pages, 27288 bytes).
