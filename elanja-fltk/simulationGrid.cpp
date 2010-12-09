@@ -164,7 +164,7 @@ void drawAgents(int i, int w){
 	glColor4d((double)(1+m.feature[i*m.nFeatures + 0])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 1])/(double)m.pos_traits,(double)(1+m.feature[i*m.nFeatures + 2])/(double)m.pos_traits,1.0);
 	
 	offset = (int)(w)/(3*m.linear_lattice_dimension+1);
-	square(m.x[i], m.y[i],offset);
+	square(m.x[i], m.y[i],2*offset);
 }
 
 void timer_cb(void *p) 
