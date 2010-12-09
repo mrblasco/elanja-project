@@ -33,7 +33,7 @@ protected: /* do not delete */
 
 void timer_cb(void *p);  /*  step delay */
 void square(double x, double y, double radius); /* draws square */
-void drawAgents(int agent); /* draws agents */
+void drawAgents(int agent, int w); /* draws agents */
 void link(int i); /* draws links */
 
 #endif
