@@ -16,4 +16,6 @@ protected:
 	void paint();
 };
 
+void axis();
+
 #endif
