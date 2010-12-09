@@ -55,6 +55,7 @@ void pauseCallback(Fl_Widget* button, void*){
 	playItem->label("@> Play");
 	playItem->callback((Fl_Callback*)playCallback);
 }
+
 /****************************************************/
 /************Parameters Callbacks********************/
 /****************************************************/
@@ -83,8 +84,6 @@ void latticeCallback(Fl_Check_Button *s, void *data){
 	Fl_Check_Button* lattice = (Fl_Check_Button*)s;
 
 	latticeOn=!latticeOn;
-
-	
 
 	if(kleinberg->value())
 	{

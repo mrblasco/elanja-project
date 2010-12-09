@@ -48,6 +48,9 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 
 	/* =========CREATE NETWORK ====================  */
 
+	/* maxSide
+	% 0 is no local interactions, i.e., random network
+	% 1 is the square of 4 neighbors */
      	
 	/* Initialize var and network list */
 	int i,j,i2,j2,jj,ii;
@@ -218,9 +221,6 @@ int i, j, k;
 int tmp, tmp2;
 int offset, offset2;
 	
-	printf("Resize, w = %d, h = %d, min = %d \n", w, h, MIN(w,h));
-	printf("Uso come dimensione finestra %d \n", MIN(w,h));
-
 	offset = (int)(MIN(w,h))/(3*m.linear_lattice_dimension+1);
 	offset2 = 0.5*((MIN(w,h)%(3*m.linear_lattice_dimension+1))+2*offset)-offset;
 
