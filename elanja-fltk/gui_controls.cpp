@@ -13,9 +13,10 @@ bool restart;
 bool restartB = false;
 bool restartS = false;
 double simSpeed;
-bool latticeOn = true;
+bool latticeOn = false;
 bool kleinbergOn = false;
-bool linkVisualization = true;
+bool randomOn = true;
+bool linkVisualization = false;
 bool resized = false;
 
 extern model m;
@@ -79,45 +80,77 @@ void simSpeedSliderCallback(Fl_Value_Slider* s, void*){
 }
 
 void latticeCallback(Fl_Check_Button *s, void *data){
-	Fl_Check_Button * kleinberg;
-	kleinberg = (Fl_Check_Button *)data;
-	Fl_Check_Button* lattice = (Fl_Check_Button*)s;
+	Fl_Value_Slider * deltaSlider;
+	deltaSlider = (Fl_Value_Slider *)data;
 
 	latticeOn=!latticeOn;
 
-	if(kleinberg->value())
+	if(kleinbergButton->value())
 	{
-		kleinberg->value(0);
+		kleinbergButton->value(0);
 		kleinbergOn=!kleinbergOn;
+		deltaSlider->deactivate();
 		restart = true;
 	}
-	else
+	else if(randomButton->value())
 	{
-		kleinberg->value(1);
-		kleinbergOn=!kleinbergOn;
+		randomButton->value(0);
+		randomOn=!randomOn;
+		deltaSlider->activate();
 		restart = true;
 	}
+
+	if(deltaSlider->active())
+		deltaSlider->deactivate();
 }
 
 void kleinbergCallback(Fl_Check_Button *s,void * data){
-	Fl_Check_Button * lattice;
-	lattice = (Fl_Check_Button *)data;
-	Fl_Check_Button* kleinberg = (Fl_Check_Button*)s;
+	Fl_Value_Slider * deltaSlider;
+	deltaSlider = (Fl_Value_Slider *)data;
 
 	kleinbergOn=!kleinbergOn;
 
-	if(lattice->value())
+	if(latticeButton->value())
 	{
-		lattice->value(0);
+		latticeButton->value(0);
 		latticeOn=!latticeOn;
 		restart = true;
 	}
-	else
+	else if(randomButton->value())
 	{
-		lattice->value(1);
-		latticeOn=!latticeOn;
+		randomButton->value(0);
+		randomOn=!randomOn;
 		restart = true;
 	}
+	
+	if(!(deltaSlider->active()))
+		deltaSlider->activate();
+	
+}
+
+void randomCallback(Fl_Check_Button *s,void * data){
+	Fl_Value_Slider * deltaSlider;
+	deltaSlider = (Fl_Value_Slider *)data;
+
+	randomOn=!randomOn;
+
+	if(latticeButton->value())
+	{
+		latticeButton->value(0);
+		latticeOn=!latticeOn;
+		deltaSlider->deactivate();
+		restart = true;
+	}
+	else if(kleinbergButton->value())
+	{
+		kleinbergButton->value(0);
+		kleinbergOn=!kleinbergOn;
+		deltaSlider->deactivate();
+		restart = true;
+	}
+	
+	if(deltaSlider->active())
+		deltaSlider->deactivate();
 	
 }
 

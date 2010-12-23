@@ -57,6 +57,13 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	int neighbors, distance;
 	double ll,outcome;
 	int l, g, n, k, mlinks;
+	int friendscount[agents];
+	int maxRand;
+	
+	for(i=0;i<agents;i++)
+	{
+		friendscount[i] = 0;
+	}
 
 	for (i=0;i<agents;i++)
 	{
@@ -67,62 +74,122 @@ void model::init(int edge_agents, int agents, int nFeatures, int pos_features, i
 	}   
 
 	/* create network list*/
-	for (i=0;i<edge_agents;i++)
+	if(maxSide == -1)
 	{
-		for(j=0;j<edge_agents;j++)
+		for (i=0;i<agents;i++)
 		{
-			neighbors=0;
-
-			/* local links */
-			for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
+			maxRand = 0;
+			while(friendscount[i]<outdegree)
 			{
-				for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
+				if(maxRand < agents)
 				{
-					/* normalize to torus */
-					i2 = ((edge_agents + ii) % (edge_agents));  
-					j2 = ((edge_agents + jj) % (edge_agents));
-
-					if ( ( (i!=i2) || (j!=j2) ) )
+					j = (rand() % (agents-i-1)) +i+1;
+					if((j != i) && (friendscount[j]<4))
 					{
-						if( (i==i2) || (j==j2) )
+						mlinks = 0;
+						for (k = 0 ; k < outdegree; k++)
 						{
-                                   Nlist[(i*edge_agents +j)*outdegree + neighbors] = (i2*edge_agents +j2);
-							neighbors++;
+							if(Nlist[i*outdegree+k]==j)
+							mlinks = 1;
+						}
+						if(mlinks==0)
+						{
+							Nlist[i*outdegree +friendscount[i]] = j;
+							Nlist[j*outdegree +friendscount[j]] = i;
+							friendscount[i]++;
+							friendscount[j]++;
+						}
+					}
+					maxRand++;
+				}
+				else
+				{
+					printf("Prando quello che viene \n");
+					for(j=0;j<agents;j++)
+					{
+						if(friendscount[j]<4)
+						{
+							if(k != i)
+							{
+								mlinks = 0;
+								for (k = 0 ; k < outdegree; k++)
+								{
+									if(Nlist[i*outdegree+k]==j)
+									mlinks = 1;
+								}
+								if(mlinks==0)
+								{
+									Nlist[i*outdegree +friendscount[i]] = j;
+									Nlist[j*outdegree +friendscount[j]] = i;
+									friendscount[i]++;
+									friendscount[j]++;
+								}
+							}
 						}
 					}
 				}
 			}
+		}
+	}
+	else
+	{
+		for (i=0;i<edge_agents;i++)
+		{
+			for(j=0;j<edge_agents;j++)
+			{
+				neighbors=0;
 
-			/* ... then shortcuts are added */
-			while (neighbors < outdegree)
-			{         
-				i2 = (rand()%edge_agents);
-				j2 = (rand()%edge_agents);
-
-				distance =  floor (sqrt(pow(MIN(fabs(i-i2),edge_agents-fabs(i-i2)),2) + pow(MIN(fabs(j-j2),edge_agents-fabs(j-j2)),2)));
-
-				if(distance > maxSide )
-				{   
-					mlinks = 0;  /* check to avoid multiple links*/
-
-					outcome =  pow(distance, (- delta) );
-					ll = (double) (rand()%1000) / (double) 1000;
-					if ( ll < outcome )
+				/* local links */
+				for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
+				{
+					for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
 					{
-						for (k = 0 ; k < neighbors; k++)
+						/* normalize to torus */
+						i2 = ((edge_agents + ii) % (edge_agents));  
+						j2 = ((edge_agents + jj) % (edge_agents));
+
+						if ( ( (i!=i2) || (j!=j2) ) )
 						{
-							if( Nlist[ (i*edge_agents +j)*outdegree + k ] == (i2*edge_agents +j2))
-								mlinks = 1;
-						}
-						if(mlinks == 0)
-						{
-                            				Nlist[ (i*edge_agents +j)*outdegree + k ]  = (i2*edge_agents +j2);
-							neighbors++;
+							if( (i==i2) || (j==j2) )
+							{
+		                           Nlist[(i*edge_agents +j)*outdegree + neighbors] = (i2*edge_agents +j2);
+								neighbors++;
+							}
 						}
 					}
 				}
-			}
-		}  
+
+				/* ... then shortcuts are added */
+				while (neighbors < outdegree)
+				{         
+					i2 = (rand()%edge_agents);
+					j2 = (rand()%edge_agents);
+
+					distance =  floor (sqrt(pow(MIN(fabs(i-i2),edge_agents-fabs(i-i2)),2) + pow(MIN(fabs(j-j2),edge_agents-fabs(j-j2)),2)));
+
+					if(distance > maxSide )
+					{   
+						mlinks = 0;  /* check to avoid multiple links*/
+
+						outcome =  pow(distance, (- delta) );
+						ll = (double) (rand()%1000) / (double) 1000;
+						if ( ll < outcome )
+						{
+							for (k = 0 ; k < neighbors; k++)
+							{
+								if( Nlist[ (i*edge_agents +j)*outdegree + k ] == (i2*edge_agents +j2))
+									mlinks = 1;
+							}
+							if(mlinks == 0)
+							{
+		                    				Nlist[ (i*edge_agents +j)*outdegree + k ]  = (i2*edge_agents +j2);
+								neighbors++;
+							}
+						}
+					}
+				}
+			}  
+		}
 	}
 	
 	FILE *out;

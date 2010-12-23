@@ -34,6 +34,9 @@ extern Fl_Check_Button *latticeButton;
 extern void kleinbergCallback(Fl_Check_Button*, void*);
 extern Fl_Check_Button *kleinbergButton;
 
+extern void randomCallback(Fl_Check_Button*, void*);
+extern Fl_Check_Button *randomButton;
+
 #include <FL/Fl_Menu_Bar.H>
 extern void exitCallback(Fl_Menu_*, void*);
 extern void playCallback(Fl_Menu_*, void*);

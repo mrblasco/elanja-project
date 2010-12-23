@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 	} 	else 	{
 
           printf(">>>>>>>>>>>>>>>>>>>>>>>>> E R R O R <<<<<<<<<<<<<<<<<<<<<<<<<<<<< \n");
-		printf("	- usage: ./main <n LINEAR EDGE AGENTS> <n NUMBER of FEATURES> <n POSSIBLE FEATURES> <n NUMBER OF ITERACTION> <DEGREE> <DELTA> <MAXSIDE>\n");
+		printf("	- usage: ./main <n LINEAR EDGE AGENTS> <n NUMBER of FEATURES> <n POSSIBLE FEATURES> <n NUMBER OF ITERACTION> <DEGREE> <DELTA> <MAXSIDE> <RANDOM>\n");
 		exit(0);
 	}
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.17)  9 DEC 2010 11:57
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=latex 2010.8.17)  14 DEC 2010 14:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -141,27 +141,39 @@ Underfull \hbox (badness 10000) in paragraph at lines 131--134
 File: transizione.eps Graphic file (type eps)
  <transizione.eps>
 File: cum_distr_size_qCritico.eps Graphic file (type eps)
- <cum_distr_size_qCritico.eps> [8] [9] [10
+ <cum_distr_size_qCritico.eps> [8] [9]
+Overfull \hbox (8.05779pt too wide) in paragraph at lines 153--153
+[]\OT1/cmr/bx/n/17.28 L'Evoluzione Cul-tu-ra-le su Ran-dom Net-work 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 154--163
+
+ []
+
+File: transizione_new.eps Graphic file (type eps)
+<transizione_new.eps> [10
+
+] [11
 
 ]
 File: elanja.eps Graphic file (type eps)
- <elanja.eps>
-[11] [12]
-Underfull \hbox (badness 2205) in paragraph at lines 202--203
+ <elanja.eps> [12] [13]
+Underfull \hbox (badness 2205) in paragraph at lines 224--225
 []\OT1/cmr/m/n/12 R. Axel-rod, \OT1/cmr/m/it/12 The Dis-se-mi-na-tion of Cul-tu
 -re\OT1/cmr/m/n/12 , Jour-nal of Con-flict
  []
 
-[13
+[14
 
 ] (./RelazioneELANJA.aux) ) 
 Here is how much of TeX's memory you used:
- 1007 strings out of 495036
- 13262 string characters out of 1181470
+ 1010 strings out of 495036
+ 13313 string characters out of 1181470
  69157 words of memory out of 3000000
- 4217 multiletter control sequences out of 15000+50000
+ 4219 multiletter control sequences out of 15000+50000
  10109 words of font info for 35 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  25i,6n,24p,700b,285s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on RelazioneELANJA.dvi (13 pages, 27288 bytes).
+Output written on RelazioneELANJA.dvi (14 pages, 29484 bytes).

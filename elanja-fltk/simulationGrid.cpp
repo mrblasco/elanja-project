@@ -11,6 +11,7 @@ extern int gui_pos_traits ;
 extern double gui_threshold; 
 extern bool latticeOn;
 extern bool kleinbergOn;
+extern bool randomOn;
 extern bool linkVisualization;
 extern bool resized;
 extern bool restartS;
@@ -67,10 +68,15 @@ void simulationGrid::init(){
 			tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
 			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta,1, w(), h());
 		}
-		else
+		else if(kleinbergOn)
 		{
 			tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
 			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta,0, w(), h());
+		}
+		else
+		{
+			tmpAgents = gui_linear_lattice_dimension*gui_linear_lattice_dimension;
+			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta,-1, w(), h());
 		}
 		resized = false;
 	}
@@ -86,6 +92,13 @@ void simulationGrid::init(){
 		initModel=false; 
 		restart = false;
 	}
+	else if(initModel && randomOn)
+	{ 
+		printf("Arrivo qua Init modello \n");
+		m.init(LINEAR_LATTICE_DIMENSION_INIT, AGENTS, NFEATURES, POS_TRAITS_INIT, OUTDEGREE, DELTA_INIT,-1, w(), h());   
+		initModel=false; 
+		restart = false;
+	}
 	else
 	{		
 		restart = true;
@@ -97,7 +110,7 @@ void simulationGrid::draw() {
 
 	int i, j, k, tmpAgents;
 	
-	/* Grafic Reinitialization */
+	/* Graphic Reinitialization */
 	if (!valid())
 	{
 		init();		
@@ -123,9 +136,14 @@ void simulationGrid::draw() {
      			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 1,w(), h());
 			restartS = true;
 		}
-		else
+		else if(kleinbergOn)
 		{
 			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, 0, w(), h());
+			restartS = true;
+		}
+		else
+		{
+			m.init(gui_linear_lattice_dimension, tmpAgents, NFEATURES, gui_pos_traits, OUTDEGREE, gui_delta, -1, w(), h());
 			restartS = true;
 		}         
 		restart = false;
