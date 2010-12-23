@@ -39,24 +39,27 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 	if(reg_size) free(reg_size);
 	this->reg_size = (int*) malloc(sizeof(double)*(agents*(nFeatures+1))); /* labels histogram */
 	if(Nlist) free(Nlist);
-	this->Nlist = (int*)malloc(sizeof(int)*(linear_lattice_dimension*linear_lattice_dimension*outdegree));
+	this->Nlist = (int*)malloc(sizeof(int)*(agents*outdegree));
 	if(x) free(x);
 	this->x = (int*)malloc(sizeof(int)*agents);
 	if(y) free(y);
 	this->y = (int*)malloc(sizeof(int)*agents);
 
 
-	/* =========CREATE NETWORK ====================  */
+	/* =========CREATE NETWORK ==================== */
 
 	/* maxSide
 	% 0 is no local interactions, i.e., random network
-	% 1 is the square of 4 neighbors */
+	% 1 is the square of 4 neighbors 
+	*/
      	
 	/* Initialize var and network list */
 	int i,j,i2,j2,jj,ii;
 	int neighbors, distance;
 	double ll,outcome;
 	int l, g, n, k, mlinks;
+	int friendscount[agents];
+	int maxRand;
 
 	for (i=0;i<agents;i++)
 	{
@@ -66,63 +69,128 @@ void model::init(int linear_lattice_dimension, int agents, int nFeatures, int po
 		}
 	}   
 
-	/* create network list -- local neighbors*/
-	for (i=0;i<linear_lattice_dimension;i++)
+	for(i=0;i<agents;i++)
 	{
-		for(j=0;j<linear_lattice_dimension;j++)
+		friendscount[i] = 0;
+	}
+
+	/* create random network list*/
+	if(maxSide == -1)
+	{
+		for (i=0;i<agents;i++)
 		{
-			neighbors=0;
-
-			/* local links */
-			for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
+			maxRand = 0;
+			while(friendscount[i]<outdegree)
 			{
-				for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
+				if(maxRand < agents)
 				{
-					// normalize to torus 
-					i2 = ((linear_lattice_dimension + ii) % (linear_lattice_dimension));  
-					j2 = ((linear_lattice_dimension + jj) % (linear_lattice_dimension));
-
-					if ( ( (i!=i2) || (j!=j2) ) )
+					j = (rand() % (agents-i-1)) +i+1;
+					if((j != i) && (friendscount[j]<4))
 					{
-						if( (i==i2) || (j==j2) )
+						mlinks = 0;
+						for (k = 0 ; k < outdegree; k++)
 						{
-                                   Nlist[(i*linear_lattice_dimension +j)*outdegree + neighbors] = (i2*linear_lattice_dimension +j2);
-							neighbors++;
+							if(Nlist[i*outdegree+k]==j)
+							mlinks = 1;
+						}
+						if(mlinks==0)
+						{
+							Nlist[i*outdegree +friendscount[i]] = j;
+							Nlist[j*outdegree +friendscount[j]] = i;
+							friendscount[i]++;
+							friendscount[j]++;
+						}
+					}
+					maxRand++;
+				}
+				else
+				{
+					for(j=0;j<agents;j++)
+					{
+						if(friendscount[j]<4)
+						{
+							if(k != i)
+							{
+								mlinks = 0;
+								for (k = 0 ; k < outdegree; k++)
+								{
+									if(Nlist[i*outdegree+k]==j)
+									mlinks = 1;
+								}
+								if(mlinks==0)
+								{
+									Nlist[i*outdegree +friendscount[i]] = j;
+									Nlist[j*outdegree +friendscount[j]] = i;
+									friendscount[i]++;
+									friendscount[j]++;
+								}
+							}
 						}
 					}
 				}
 			}
+		}
+	}
+	else
+	{
+		/* create network list -- local neighbors*/
+		for (i=0;i<linear_lattice_dimension;i++)
+		{
+			for(j=0;j<linear_lattice_dimension;j++)
+			{
+				neighbors=0;
 
-			/* ... then shortcuts are added */
-			while (neighbors < outdegree)
-			{         
-				i2 = (rand()%linear_lattice_dimension);
-				j2 = (rand()%linear_lattice_dimension);
-
-				distance =  floor (sqrt(pow(MIN(fabs(i-i2),linear_lattice_dimension-fabs(i-i2)),2) + pow(MIN(fabs(j-j2),linear_lattice_dimension-fabs(j-j2)),2)));
-
-				if(distance > maxSide )
-				{   
-					mlinks = 0;  /* check to avoid multiple links*/
-
-					outcome =  pow(distance, (- delta) );
-					ll = (double) (rand()%1000) / (double) 1000;
-					if ( ll < outcome )
+				/* local links */
+				for(ii=(i-maxSide); ii<(i+maxSide+1);ii++)
+				{
+					for (jj=(j-maxSide); jj<(j+maxSide+1); jj++)
 					{
-						for (k = 0 ; k < neighbors; k++)
+						// normalize to torus 
+						i2 = ((linear_lattice_dimension + ii) % (linear_lattice_dimension));  
+						j2 = ((linear_lattice_dimension + jj) % (linear_lattice_dimension));
+
+						if ( ( (i!=i2) || (j!=j2) ) )
 						{
-							if( Nlist[ (i*linear_lattice_dimension +j)*outdegree + k ] == (i2*linear_lattice_dimension +j2))
-								mlinks = 1;
-						}
-						if(mlinks == 0)
-						{
-                            				Nlist[ (i*linear_lattice_dimension +j)*outdegree + k ]  = (i2*linear_lattice_dimension +j2);
-							neighbors++;
+							if( (i==i2) || (j==j2) )
+							{
+		                           Nlist[(i*linear_lattice_dimension +j)*outdegree + neighbors] = (i2*linear_lattice_dimension +j2);
+								neighbors++;
+							}
 						}
 					}
 				}
-			}
-		}  
+
+				/* ... then shortcuts are added */
+				while (neighbors < outdegree)
+				{         
+					i2 = (rand()%linear_lattice_dimension);
+					j2 = (rand()%linear_lattice_dimension);
+
+					distance =  floor (sqrt(pow(MIN(fabs(i-i2),linear_lattice_dimension-fabs(i-i2)),2) + pow(MIN(fabs(j-j2),linear_lattice_dimension-fabs(j-j2)),2)));
+
+					if(distance > maxSide )
+					{   
+						mlinks = 0;  /* check to avoid multiple links*/
+
+						outcome =  pow(distance, (- delta) );
+						ll = (double) (rand()%1000) / (double) 1000;
+						if ( ll < outcome )
+						{
+							for (k = 0 ; k < neighbors; k++)
+							{
+								if( Nlist[ (i*linear_lattice_dimension +j)*outdegree + k ] == (i2*linear_lattice_dimension +j2))
+									mlinks = 1;
+							}
+							if(mlinks == 0)
+							{
+		                    				Nlist[ (i*linear_lattice_dimension +j)*outdegree + k ]  = (i2*linear_lattice_dimension +j2);
+								neighbors++;
+							}
+						}
+					}
+				}
+			}  
+		}
 	}
 	
 	/* Generates Agents Features */

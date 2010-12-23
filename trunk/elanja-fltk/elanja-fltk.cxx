@@ -47,6 +47,8 @@ Fl_Check_Button *latticeButton=(Fl_Check_Button *)0;
 
 Fl_Check_Button *kleinbergButton=(Fl_Check_Button *)0;
 
+Fl_Check_Button *randomButton=(Fl_Check_Button *)0;
+
 Fl_Check_Button *linkButton=(Fl_Check_Button *)0;
 
 /************* Menu ************************************************/
@@ -141,6 +143,7 @@ int main(int argc, char **argv)
         			deltaSlider->labelsize(12);
         			deltaSlider->value(DELTA_INIT);
 				deltaSlider->step(10);
+				deltaSlider->deactivate();
         			deltaSlider->callback((Fl_Callback*)deltaSliderCallback);
         			deltaSlider->align(FL_ALIGN_TOP_LEFT);
       			}
@@ -161,25 +164,34 @@ int main(int argc, char **argv)
 			{ 	/* Lattice Network Button */
 				latticeButton = new Fl_Check_Button(715, 335, 150, 25, "Lattice Network");
 				kleinbergButton = new Fl_Check_Button(715, 365, 150, 25, "Kleinberg Network");
+				randomButton = new Fl_Check_Button(715, 395, 150, 25, "Random Network");
         			latticeButton->down_box(FL_DOWN_BOX);
 				latticeButton->labelfont(1);
 			        latticeButton->labelsize(12);
-				latticeButton->value(1);
-        			latticeButton->callback((Fl_Callback*)latticeCallback, (void*)(kleinbergButton));
-      			} 
-			{ 	/* Kleinberg Network Button */
+				latticeButton->value(0);
+        			latticeButton->callback((Fl_Callback*)latticeCallback, (void*)(deltaSlider));
+      			 
+			 	/* Kleinberg Network Button */
 				
         			kleinbergButton->down_box(FL_DOWN_BOX);
 				kleinbergButton->labelfont(1);
 			        kleinbergButton->labelsize(12);
-        			kleinbergButton->callback((Fl_Callback*)kleinbergCallback, (void*)(latticeButton));
+				kleinbergButton->value(0);
+        			kleinbergButton->callback((Fl_Callback*)kleinbergCallback, (void*)(deltaSlider));
+
+				/* Random Network Button */
+				randomButton->down_box(FL_DOWN_BOX);
+				randomButton->labelfont(1);
+			        randomButton->labelsize(12);
+				randomButton->value(1);
+        			randomButton->callback((Fl_Callback*)randomCallback, (void*)(deltaSlider));
       			} 
       			{ 	/* Link Visualization Button */
 				linkButton = new Fl_Check_Button(715, 435, 150, 25, "Link Visualization");
 		        	linkButton->down_box(FL_DOWN_BOX);
 				linkButton->labelfont(1);
 			        linkButton->labelsize(12);
-				linkButton->value(1);
+				linkButton->value(0);
         			linkButton->callback((Fl_Callback*)linkCallback);
 	      		} 
       			parametersGroup->end();

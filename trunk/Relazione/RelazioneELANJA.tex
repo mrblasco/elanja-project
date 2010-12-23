@@ -149,6 +149,28 @@ La pendenza della curva di transizione dipende dunque dalla geografia del networ
 \end{figure}
 
 \clearpage
+
+\section{L'Evoluzione Culturale su Random Network}
+Nella sezione precedente rimane aperta una questione: il fatto che la pendenza della curva di transizione aumenta al diminuire di 
+$\delta$ \`{e} dovuto solo alla variazione di $\delta$ o dipende fortemente anche dal fatto che i link sono direzionati e non indirezionati
+come nel caso del reticolo?
+Per rispondere a questa domanda abbiamo studiato un terzo modello: abbiamo creato un network random con link non direzionati, in cui ogni agente ha quattro amici.
+Questo network \`{e} analogo al caso $\delta = 0$ della sezione precedente, ma con la differenza che i link sono indirezionati e non pi\`{u} direzionati.
+\\ \\I risultati ottenuti (Figura \ref{transiz_new}) mostrano che effettivamente i risultati della sezione precedente sono
+profondamente influenzati dalla direzionalit\`{a} dei link, infatti nel caso $\delta = 0$ e link non direzionati (cio\`{e} network random con link non direzionati)
+la transizione di fase \`{e} netta come nel caso del reticolo. Una differenza rispetto al caso del reticolo \`{e} per\`{o} il valore di
+\textit{q} a cui avviene la transizione, che \`{e} maggiore nel caso del random network.
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.8\textwidth]{transizione_new.eps}
+\end{center}
+\caption{Transizione tra una fase culturalmente polarizzata e una fase culturalmente fragmentata al variare di $q$, nei tre casi: reticolo, random network diretto, random network indiretto. La transizione \`{e} studiata attraverso il parametro d'ordine $<S_{max}>/L^2$. I risultati ottenuti sono mediati su dieci realizzazioni ed \`{e} riportata dunque anche la varianza.}
+\label{transiz_new}
+\end{figure}
+
+\clearpage
+
 \section{Software}
 Il progetto \`e stato implementato utilizzando il linguaggio C++, con l'utilizzo delle librerie fltk sotto ambiente Linux. Sono stati
 utilizzati gli editor Kate e Gedit per la scrittura del codice, il programma Gnuplot per la realizzazione delle figure e l'ambiente Kile per
